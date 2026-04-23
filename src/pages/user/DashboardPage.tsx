@@ -1,0 +1,84 @@
+import { useAuthStore } from '@/stores/auth.store';
+import { Card, CardHeader, CardTitle, CardContent, Badge } from '@/components/ui';
+import { useProfile } from '@/hooks/useUser';
+import { formatDate } from '@/lib/utils';
+import { getInitials } from '@/lib/utils';
+import { Shield, Mail, Calendar, CheckCircle, XCircle } from 'lucide-react';
+import { Spinner } from '@/components/ui';
+
+export default function DashboardPage() {
+  const { user } = useAuthStore();
+  const { data: profile, isLoading } = useProfile();
+
+  if (isLoading || !profile) {
+    return <Spinner />;
+  }
+
+  const stats = [
+    { label: 'Email Verified', value: profile.isVerified ? 'Yes' : 'No', icon: CheckCircle, variant: profile.isVerified ? 'success' as const : 'warning' as const },
+    { label: 'MFA Enabled', value: profile.mfaEnabled ? 'Yes' : 'No', icon: Shield, variant: profile.mfaEnabled ? 'success' as const : 'warning' as const },
+    { label: 'Account Active', value: profile.isActive ? 'Yes' : 'No', icon: profile.isActive ? CheckCircle : XCircle, variant: profile.isActive ? 'success' as const : 'danger' as const },
+    { label: 'Last Login', value: formatDate(profile.lastLogin), icon: Calendar, variant: 'default' as const },
+  ];
+
+  return (
+    <div>
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-gray-900">
+          Welcome back, {user?.fullName?.split(' ')[0]}
+        </h1>
+        <p className="text-gray-500 mt-1">Here's an overview of your account</p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Profile card */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Profile</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center gap-4">
+              {profile.image ? (
+                <img src={profile.image} alt="" className="h-16 w-16 rounded-full object-cover" />
+              ) : (
+                <div className="h-16 w-16 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center text-xl font-semibold">
+                  {getInitials(profile.fullName)}
+                </div>
+              )}
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">{profile.fullName}</h3>
+                <div className="flex items-center gap-2 text-sm text-gray-500">
+                  <Mail className="h-4 w-4" />
+                  {profile.email}
+                </div>
+                <Badge variant={profile.role === 'admin' ? 'info' : 'default'} className="mt-1">
+                  {profile.role}
+                </Badge>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Stats card */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Account Status</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {stats.map((stat) => (
+                <div key={stat.label} className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <stat.icon className="h-4 w-4" />
+                    {stat.label}
+                  </div>
+                  <Badge variant={stat.variant}>{stat.value}</Badge>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+}
