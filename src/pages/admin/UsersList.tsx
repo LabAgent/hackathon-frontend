@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
 import { useListUsers } from '@/hooks/useAdmin';
-import { Card, CardContent, Button, Badge, Pagination, Spinner, Modal } from '@/components/ui';
+import { Card, CardContent, Button, Badge, Pagination, Spinner, Modal, ErrorBanner } from '@/components/ui';
 import { Search, Eye, Edit2, Lock, Unlock, Trash2 } from 'lucide-react';
 import { useLockUser, useDeactivateUser } from '@/hooks/useAdmin';
 import { formatDate, getInitials } from '@/lib/utils';
@@ -13,7 +13,7 @@ export default function UsersList() {
   const [lockModal, setLockModal] = useState<{ id: string; locked: boolean } | null>(null);
   const [deactivateModal, setDeactivateModal] = useState<string | null>(null);
 
-  const { data, isLoading } = useListUsers({
+  const { data, isLoading, isError, error } = useListUsers({
     page,
     limit: 10,
     search: search || undefined,
@@ -49,6 +49,7 @@ export default function UsersList() {
         </div>
       </div>
 
+      {isError && <ErrorBanner error={error} className="mb-6" />}
       {/* Filters */}
       <Card className="mb-6">
         <CardContent className="flex flex-col sm:flex-row gap-4">

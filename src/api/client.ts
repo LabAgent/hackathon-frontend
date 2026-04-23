@@ -1,6 +1,6 @@
 import axios from 'axios';
 import type { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
-import type { RefreshTokenRequest, LoginResponse } from '@/types';
+import type { RefreshTokenRequest } from '@/types';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 

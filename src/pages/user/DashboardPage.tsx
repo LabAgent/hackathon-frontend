@@ -4,11 +4,15 @@ import { useProfile } from '@/hooks/useUser';
 import { formatDate } from '@/lib/utils';
 import { getInitials } from '@/lib/utils';
 import { Shield, Mail, Calendar, CheckCircle, XCircle } from 'lucide-react';
-import { Spinner } from '@/components/ui';
+import { Spinner, ErrorBanner } from '@/components/ui';
 
 export default function DashboardPage() {
   const { user } = useAuthStore();
-  const { data: profile, isLoading } = useProfile();
+  const { data: profile, isLoading, isError, error } = useProfile();
+
+  if (isError) {
+    return <ErrorBanner error={error} />;
+  }
 
   if (isLoading || !profile) {
     return <Spinner />;

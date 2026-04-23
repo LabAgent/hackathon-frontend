@@ -6,6 +6,7 @@ import { Link, useNavigate } from 'react-router';
 import { Button, Input, ErrorBanner } from '@/components/ui';
 import { useLogin } from '@/hooks/useAuth';
 import { useAuthStore } from '@/stores/auth.store';
+import type { LoginResponse, MfaRequiredResponse } from '@/types';
 
 const schema = z.object({
   email: z.string().email('Invalid email address'),
@@ -32,16 +33,19 @@ export default function AdminLoginPage() {
     login(data, {
       onSuccess: (response) => {
         if ('mfaRequired' in response && response.mfaRequired) {
-          useAuthStore.getState().setTempToken(response.tempToken);
+          useAuthStore.getState().setTempToken((response as MfaRequiredResponse).tempToken);
           navigate('/mfa/verify', { replace: true });
           return;
         }
-        const user = response.user ?? (response as any).user;
-        if (user?.role !== 'admin') {
+        const loginResp = response as LoginResponse;
+        if (loginResp.user?.role !== 'admin') {
           useAuthStore.getState().logout();
           setAdminError('This account does not have admin privileges.');
           return;
         }
+      },
+      onError: () => {
+        setAdminError('Invalid email or password.');
       },
     });
   };

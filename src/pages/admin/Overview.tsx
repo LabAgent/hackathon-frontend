@@ -1,13 +1,18 @@
 import { useQuery } from '@tanstack/react-query';
 import { adminApi } from '@/api/admin.api';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui';
+import { ErrorBanner } from '@/components/ui';
 import { Users, UserCheck, UserX, Shield } from 'lucide-react';
 
 export default function AdminOverview() {
-  const { data: usersData } = useQuery({
+  const { data: usersData, isError, error } = useQuery({
     queryKey: ['admin', 'users', { page: 1, limit: 1000 }],
     queryFn: () => adminApi.listUsers({ page: 1, limit: 1000 }),
   });
+
+  if (isError) {
+    return <ErrorBanner error={error} />;
+  }
 
   const users = usersData?.users ?? [];
   const totalUsers = usersData?.total ?? 0;

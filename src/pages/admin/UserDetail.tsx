@@ -1,12 +1,17 @@
 import { useParams, Link } from 'react-router';
 import { useGetUser } from '@/hooks/useAdmin';
 import { Card, CardHeader, CardTitle, CardContent, Badge, Button, Spinner } from '@/components/ui';
+import { ErrorBanner } from '@/components/ui';
 import { formatDate, getInitials } from '@/lib/utils';
 import { ArrowLeft, Edit2, Mail, Shield, Calendar, CheckCircle, XCircle, Key } from 'lucide-react';
 
 export default function UserDetail() {
   const { id } = useParams<{ id: string }>();
-  const { data: user, isLoading } = useGetUser(id!);
+  const { data: user, isLoading, isError, error } = useGetUser(id!);
+
+  if (isError) {
+    return <ErrorBanner error={error} />;
+  }
 
   if (isLoading || !user) {
     return <div className="flex justify-center py-12"><Spinner /></div>;
