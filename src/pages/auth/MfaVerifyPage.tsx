@@ -15,7 +15,7 @@ type FormData = z.infer<typeof schema>;
 
 export default function MfaVerifyPage() {
   const [useBackup, setUseBackup] = useState(false);
-  const { tempToken } = useAuthStore();
+  const tempToken = useAuthStore((s) => s.tempToken);
   const { mutate: verifyMfa, isPending: mfaPending, error: mfaError } = useVerifyMfa();
 
   const backupSchema = z.object({

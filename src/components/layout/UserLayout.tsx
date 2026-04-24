@@ -5,22 +5,20 @@ import { getInitials } from '@/lib/utils';
 import { User, LogOut, ChevronDown } from 'lucide-react';
 
 export function UserLayout() {
-  const { user, logout } = useAuthStore();
+  const user = useAuthStore((s) => s.user);
+  const logout = useAuthStore((s) => s.logout);
   const navigate = useNavigate();
   const [profileDropdown, setProfileDropdown] = useState(false);
 
-  const handleLogout = async () => {
+  const handleLogout = () => {
     const refreshToken = localStorage.getItem('refreshToken');
-    if (refreshToken) {
-      try {
-        const { authApi } = await import('@/api/auth.api');
-        await authApi.logout(refreshToken);
-      } catch {
-        // ignore
-      }
-    }
     logout();
     navigate('/login');
+    if (refreshToken) {
+      import('@/api/auth.api').then(({ authApi }) =>
+        authApi.logout(refreshToken).catch(() => {}),
+      );
+    }
   };
 
   return (

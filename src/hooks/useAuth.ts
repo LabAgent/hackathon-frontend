@@ -29,7 +29,8 @@ export function useLogin() {
 
 export function useVerifyMfa() {
   const navigate = useNavigate();
-  const { login, tempToken } = useAuthStore();
+  const login = useAuthStore((s) => s.login);
+  const tempToken = useAuthStore((s) => s.tempToken);
 
   return useMutation({
     mutationFn: (data: Omit<MfaVerifyRequest, 'tempToken'>) =>
@@ -49,7 +50,8 @@ export function useVerifyMfa() {
 
 export function useVerifyMfaBackup() {
   const navigate = useNavigate();
-  const { login, tempToken } = useAuthStore();
+  const login = useAuthStore((s) => s.login);
+  const tempToken = useAuthStore((s) => s.tempToken);
 
   return useMutation({
     mutationFn: (backupCode: string) =>
@@ -116,15 +118,14 @@ export function useResendVerification() {
 
 export function useLogout() {
   const navigate = useNavigate();
-  const { logout } = useAuthStore();
-  const doLogout = async () => {
+  const logout = useAuthStore((s) => s.logout);
+  const doLogout = () => {
     const refreshToken = localStorage.getItem('refreshToken');
-    if (refreshToken) {
-      try { await authApi.logout(refreshToken); } catch { /* ignore */ }
-    }
     logout();
     navigate('/login', { replace: true });
+    if (refreshToken) {
+      authApi.logout(refreshToken).catch(() => {});
+    }
   };
   return { logout: doLogout };
 }
-

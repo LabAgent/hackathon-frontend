@@ -7,7 +7,7 @@ import { Shield, Mail, Calendar, CheckCircle, XCircle, User, Lock } from 'lucide
 import { Spinner, ErrorBanner } from '@/components/ui';
 
 export default function DashboardPage() {
-  const { user } = useAuthStore();
+  const user = useAuthStore((s) => s.user);
   const { data: profile, isLoading, isError, error } = useProfile();
 
   if (isError) {

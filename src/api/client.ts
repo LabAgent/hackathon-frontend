@@ -1,11 +1,13 @@
 import axios from 'axios';
 import type { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
 import type { RefreshTokenRequest } from '@/types';
+import { useAuthStore } from '@/stores/auth.store';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 
 const apiClient: AxiosInstance = axios.create({
   baseURL: `${API_BASE_URL}/api`,
+  timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -13,7 +15,7 @@ const apiClient: AxiosInstance = axios.create({
 
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    const token = localStorage.getItem('accessToken');
+    const token = useAuthStore.getState().accessToken;
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -37,6 +39,11 @@ const processQueue = (error: unknown, token: string | null = null) => {
     }
   });
   failedQueue = [];
+};
+
+const redirectToLogin = () => {
+  window.history.replaceState({}, '', '/login');
+  window.dispatchEvent(new PopStateEvent('popstate'));
 };
 
 apiClient.interceptors.response.use(
@@ -67,11 +74,11 @@ apiClient.interceptors.response.use(
       originalRequest._retry = true;
       isRefreshing = true;
 
-      const refreshToken = localStorage.getItem('refreshToken');
+      const { refreshToken, logout, setTokens } = useAuthStore.getState();
       if (!refreshToken) {
         isRefreshing = false;
-        localStorage.clear();
-        window.location.href = '/login';
+        logout();
+        redirectToLogin();
         return Promise.reject(error);
       }
 
@@ -83,8 +90,7 @@ apiClient.interceptors.response.use(
         const data = response.data?.data ?? response.data;
         const { accessToken, refreshToken: newRefreshToken } = data;
 
-        localStorage.setItem('accessToken', accessToken);
-        localStorage.setItem('refreshToken', newRefreshToken);
+        setTokens(accessToken, newRefreshToken);
 
         processQueue(null, accessToken);
 
@@ -92,8 +98,8 @@ apiClient.interceptors.response.use(
         return apiClient(originalRequest);
       } catch (refreshError) {
         processQueue(refreshError, null);
-        localStorage.clear();
-        window.location.href = '/login';
+        logout();
+        redirectToLogin();
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;

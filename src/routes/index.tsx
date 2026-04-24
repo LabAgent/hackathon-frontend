@@ -1,4 +1,5 @@
 import { createBrowserRouter, Navigate } from 'react-router';
+import { lazy, Suspense, type ComponentType, type LazyExoticComponent } from 'react';
 import { AuthLayout } from '@/components/layout/AuthLayout';
 import { UserLayout } from '@/components/layout/UserLayout';
 import { AdminLayout } from '@/components/layout/AdminLayout';
@@ -6,25 +7,33 @@ import { AuthGuard } from '@/components/guards/AuthGuard';
 import { GuestGuard } from '@/components/guards/GuestGuard';
 import { AdminGuard } from '@/components/guards/AdminGuard';
 
-import LoginPage from '@/pages/auth/LoginPage';
-import RegisterPage from '@/pages/auth/RegisterPage';
-import VerifyEmailPage from '@/pages/auth/VerifyEmailPage';
-import ForgotPasswordPage from '@/pages/auth/ForgotPasswordPage';
-import ResetPasswordPage from '@/pages/auth/ResetPasswordPage';
-import ResendVerificationPage from '@/pages/auth/ResendVerificationPage';
-import MfaVerifyPage from '@/pages/auth/MfaVerifyPage';
+const LoginPage = lazy(() => import('@/pages/auth/LoginPage'));
+const RegisterPage = lazy(() => import('@/pages/auth/RegisterPage'));
+const VerifyEmailPage = lazy(() => import('@/pages/auth/VerifyEmailPage'));
+const ForgotPasswordPage = lazy(() => import('@/pages/auth/ForgotPasswordPage'));
+const ResetPasswordPage = lazy(() => import('@/pages/auth/ResetPasswordPage'));
+const ResendVerificationPage = lazy(() => import('@/pages/auth/ResendVerificationPage'));
+const MfaVerifyPage = lazy(() => import('@/pages/auth/MfaVerifyPage'));
 
-import DashboardPage from '@/pages/user/DashboardPage';
-import ProfilePage from '@/pages/user/ProfilePage';
-import ChangePasswordPage from '@/pages/user/ChangePasswordPage';
-import SecurityPage from '@/pages/user/SecurityPage';
-import MfaSetupPage from '@/pages/user/MfaSetupPage';
+const DashboardPage = lazy(() => import('@/pages/user/DashboardPage'));
+const ProfilePage = lazy(() => import('@/pages/user/ProfilePage'));
+const ChangePasswordPage = lazy(() => import('@/pages/user/ChangePasswordPage'));
+const SecurityPage = lazy(() => import('@/pages/user/SecurityPage'));
+const MfaSetupPage = lazy(() => import('@/pages/user/MfaSetupPage'));
 
-import AdminLoginPage from '@/pages/admin/AdminLoginPage';
-import AdminOverview from '@/pages/admin/Overview';
-import UsersList from '@/pages/admin/UsersList';
-import UserDetail from '@/pages/admin/UserDetail';
-import UserEdit from '@/pages/admin/UserEdit';
+const AdminLoginPage = lazy(() => import('@/pages/admin/AdminLoginPage'));
+const AdminOverview = lazy(() => import('@/pages/admin/Overview'));
+const UsersList = lazy(() => import('@/pages/admin/UsersList'));
+const UserDetail = lazy(() => import('@/pages/admin/UserDetail'));
+const UserEdit = lazy(() => import('@/pages/admin/UserEdit'));
+
+function LazyPage({ Component }: { Component: LazyExoticComponent<ComponentType> }) {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="h-8 w-8 animate-spin rounded-full border-4 border-primary-600 border-t-transparent" /></div>}>
+      <Component />
+    </Suspense>
+  );
+}
 
 export const router = createBrowserRouter([
   {
@@ -32,67 +41,62 @@ export const router = createBrowserRouter([
     element: <Navigate to="/login" replace />,
   },
 
-  // Auth routes (guest only)
   {
     element: <GuestGuard />,
     children: [
       {
         element: <AuthLayout />,
         children: [
-          { path: 'login', element: <LoginPage /> },
-          { path: 'register', element: <RegisterPage /> },
-          { path: 'forgot-password', element: <ForgotPasswordPage /> },
-          { path: 'resend-verification', element: <ResendVerificationPage /> },
-          { path: 'admin/login', element: <AdminLoginPage /> },
+          { path: 'login', element: <LazyPage Component={LoginPage} /> },
+          { path: 'register', element: <LazyPage Component={RegisterPage} /> },
+          { path: 'forgot-password', element: <LazyPage Component={ForgotPasswordPage} /> },
+          { path: 'resend-verification', element: <LazyPage Component={ResendVerificationPage} /> },
+          { path: 'admin/login', element: <LazyPage Component={AdminLoginPage} /> },
         ],
       },
     ],
   },
 
-  // Auth routes (no guard - accessible anytime)
   {
     element: <AuthLayout />,
     children: [
-      { path: 'verify-email', element: <VerifyEmailPage /> },
-      { path: 'reset-password', element: <ResetPasswordPage /> },
-      { path: 'mfa/verify', element: <MfaVerifyPage /> },
+      { path: 'verify-email', element: <LazyPage Component={VerifyEmailPage} /> },
+      { path: 'reset-password', element: <LazyPage Component={ResetPasswordPage} /> },
+      { path: 'mfa/verify', element: <LazyPage Component={MfaVerifyPage} /> },
     ],
   },
 
-  // Authenticated user routes
   {
     element: <AuthGuard />,
     children: [
       {
         element: <UserLayout />,
         children: [
-          { path: 'dashboard', element: <DashboardPage /> },
-          { path: 'profile', element: <ProfilePage /> },
-          { path: 'profile/password', element: <ChangePasswordPage /> },
-          { path: 'security', element: <SecurityPage /> },
-          { path: 'security/mfa/setup', element: <MfaSetupPage /> },
+          { path: 'dashboard', element: <LazyPage Component={DashboardPage} /> },
+          { path: 'profile', element: <LazyPage Component={ProfilePage} /> },
+          { path: 'profile/password', element: <LazyPage Component={ChangePasswordPage} /> },
+          { path: 'security', element: <LazyPage Component={SecurityPage} /> },
+          { path: 'security/mfa/setup', element: <LazyPage Component={MfaSetupPage} /> },
         ],
       },
     ],
   },
 
-  // Admin routes (admin only, WordPress-like layout)
   {
     element: <AdminGuard />,
     children: [
       {
         element: <AdminLayout />,
         children: [
-          { path: 'admin', element: <AdminOverview /> },
-          { path: 'admin/users', element: <UsersList /> },
-          { path: 'admin/users/:id', element: <UserDetail /> },
-          { path: 'admin/users/:id/edit', element: <UserEdit /> },
+          { path: 'admin', element: <LazyPage Component={AdminOverview} /> },
+          { path: 'admin/users', element: <LazyPage Component={UsersList} /> },
+          { path: 'admin/users/:id', element: <LazyPage Component={UserDetail} /> },
+          { path: 'admin/users/:id/edit', element: <LazyPage Component={UserEdit} /> },
         ],
       },
     ],
   },
 
-  // Catch-all
   {
     path: '*',
     element: <Navigate to="/login" replace />,

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
 import { useListUsers } from '@/hooks/useAdmin';
 import { Card, CardContent, Button, Badge, Pagination, Spinner, Modal, ErrorBanner } from '@/components/ui';
@@ -9,14 +9,23 @@ import { formatDate, getInitials } from '@/lib/utils';
 export default function UsersList() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [role, setRole] = useState('');
   const [lockModal, setLockModal] = useState<{ id: string; locked: boolean } | null>(null);
   const [deactivateModal, setDeactivateModal] = useState<string | null>(null);
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [search]);
+
   const { data, isLoading, isError, error } = useListUsers({
     page,
     limit: 10,
-    search: search || undefined,
+    search: debouncedSearch || undefined,
     role: role || undefined,
   });
 

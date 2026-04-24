@@ -2,7 +2,8 @@ import { Outlet, Navigate, useLocation } from 'react-router';
 import { useAuthStore } from '@/stores/auth.store';
 
 export function AuthGuard() {
-  const { isAuthenticated, isAdmin } = useAuthStore();
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const isAdmin = useAuthStore((s) => s.isAdmin);
   const location = useLocation();
 
   if (!isAuthenticated) {

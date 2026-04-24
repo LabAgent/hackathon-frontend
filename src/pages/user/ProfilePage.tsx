@@ -17,7 +17,7 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 export default function ProfilePage() {
-  const { setUser } = useAuthStore();
+  const setUser = useAuthStore((s) => s.setUser);
   const { data: profile, isLoading } = useProfile();
   const updateProfile = useUpdateProfile();
   const uploadImage = useUploadImage();

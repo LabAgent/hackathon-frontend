@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -19,7 +18,6 @@ export default function LoginPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const { mutate: login, isPending, error } = useLogin();
-  const [loginError, setLoginError] = useState<string | null>(null);
 
   const {
     register: reg,
@@ -30,7 +28,6 @@ export default function LoginPage() {
   });
 
   const onSubmit = (data: FormData) => {
-    setLoginError(null);
     login(data, {
       onSuccess: (response) => {
         if ('mfaRequired' in response && response.mfaRequired) {
@@ -39,13 +36,8 @@ export default function LoginPage() {
           return;
         }
         const loginResp = response as LoginResponse;
-        if (loginResp.user?.role === 'admin') {
-          useAuthStore.getState().logout();
-          setLoginError('Admin accounts must sign in through the admin login page.');
-          return;
-        }
         useAuthStore.getState().login(loginResp.accessToken, loginResp.refreshToken, loginResp.user);
-        navigate('/dashboard', { replace: true });
+        navigate(loginResp.user?.role === 'admin' ? '/admin' : '/dashboard', { replace: true });
       },
     });
   };
@@ -65,7 +57,7 @@ export default function LoginPage() {
           </div>
         )}
 
-        <ErrorBanner error={loginError ? new Error(loginError) : error} />
+        <ErrorBanner error={error} />
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Input
