@@ -9,43 +9,35 @@ interface ErrorBannerProps {
 
 const categoryConfig: Record<
   ErrorCategory,
-  { label: string; containerClass: string; labelClass: string }
+  { icon: string; containerClass: string; iconClass: string }
 > = {
   server: {
-    label: 'Server Error',
+    icon: '⚠',
     containerClass: 'bg-red-50 border-red-200 text-red-800',
-    labelClass: 'bg-red-100 text-red-700',
+    iconClass: 'text-red-500',
   },
   client: {
-    label: 'Validation Error',
+    icon: 'ℹ',
     containerClass: 'bg-amber-50 border-amber-200 text-amber-800',
-    labelClass: 'bg-amber-100 text-amber-700',
+    iconClass: 'text-amber-500',
   },
   unknown: {
-    label: 'Error',
+    icon: '⚠',
     containerClass: 'bg-red-50 border-red-200 text-red-800',
-    labelClass: 'bg-red-100 text-red-700',
+    iconClass: 'text-red-500',
   },
 };
 
 export function ErrorBanner({ error, className }: ErrorBannerProps) {
   if (!error) return null;
 
-  const { category, message, statusCode } = getErrorInfo(error);
+  const { category, message } = getErrorInfo(error);
   const config = categoryConfig[category];
 
   return (
     <div className={cn('mb-4 rounded-lg border px-4 py-3 text-sm', config.containerClass, className)}>
       <div className="flex items-start gap-2">
-        <span
-          className={cn(
-            'inline-flex items-center rounded px-2 py-0.5 text-xs font-semibold shrink-0',
-            config.labelClass,
-          )}
-        >
-          {config.label}
-          {statusCode ? ` ${statusCode}` : ''}
-        </span>
+        <span className={cn('shrink-0 text-base leading-5', config.iconClass)}>{config.icon}</span>
         <span>{message}</span>
       </div>
     </div>
