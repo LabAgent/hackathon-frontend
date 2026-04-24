@@ -1,9 +1,12 @@
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Link, useLocation } from 'react-router';
+import { Link, useLocation, useNavigate } from 'react-router';
 import { Button, Input, ErrorBanner } from '@/components/ui';
 import { useLogin } from '@/hooks/useAuth';
+import { useAuthStore } from '@/stores/auth.store';
+import type { LoginResponse, MfaRequiredResponse } from '@/types';
 
 const schema = z.object({
   email: z.string().email('Invalid email address'),
@@ -14,7 +17,9 @@ type FormData = z.infer<typeof schema>;
 
 export default function LoginPage() {
   const location = useLocation();
+  const navigate = useNavigate();
   const { mutate: login, isPending, error } = useLogin();
+  const [loginError, setLoginError] = useState<string | null>(null);
 
   const {
     register: reg,
@@ -25,7 +30,24 @@ export default function LoginPage() {
   });
 
   const onSubmit = (data: FormData) => {
-    login(data);
+    setLoginError(null);
+    login(data, {
+      onSuccess: (response) => {
+        if ('mfaRequired' in response && response.mfaRequired) {
+          useAuthStore.getState().setTempToken((response as MfaRequiredResponse).tempToken);
+          navigate('/mfa/verify', { replace: true });
+          return;
+        }
+        const loginResp = response as LoginResponse;
+        if (loginResp.user?.role === 'admin') {
+          useAuthStore.getState().logout();
+          setLoginError('Admin accounts must sign in through the admin login page.');
+          return;
+        }
+        useAuthStore.getState().login(loginResp.accessToken, loginResp.refreshToken, loginResp.user);
+        navigate('/dashboard', { replace: true });
+      },
+    });
   };
 
   const state = location.state as { registered?: boolean } | null;
@@ -43,7 +65,7 @@ export default function LoginPage() {
           </div>
         )}
 
-        <ErrorBanner error={error} />
+        <ErrorBanner error={loginError ? new Error(loginError) : error} />
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Input

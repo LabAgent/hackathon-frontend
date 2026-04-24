@@ -1,9 +1,9 @@
+import { Link } from 'react-router';
 import { useAuthStore } from '@/stores/auth.store';
 import { Card, CardHeader, CardTitle, CardContent, Badge } from '@/components/ui';
 import { useProfile } from '@/hooks/useUser';
-import { formatDate } from '@/lib/utils';
-import { getInitials } from '@/lib/utils';
-import { Shield, Mail, Calendar, CheckCircle, XCircle } from 'lucide-react';
+import { formatDate, getInitials } from '@/lib/utils';
+import { Shield, Mail, Calendar, CheckCircle, XCircle, User, Lock } from 'lucide-react';
 import { Spinner, ErrorBanner } from '@/components/ui';
 
 export default function DashboardPage() {
@@ -23,6 +23,12 @@ export default function DashboardPage() {
     { label: 'MFA Enabled', value: profile.mfaEnabled ? 'Yes' : 'No', icon: Shield, variant: profile.mfaEnabled ? 'success' as const : 'warning' as const },
     { label: 'Account Active', value: profile.isActive ? 'Yes' : 'No', icon: profile.isActive ? CheckCircle : XCircle, variant: profile.isActive ? 'success' as const : 'danger' as const },
     { label: 'Last Login', value: formatDate(profile.lastLogin), icon: Calendar, variant: 'default' as const },
+  ];
+
+  const quickActions = [
+    { label: 'Profile', description: 'View and edit your personal information', path: '/profile', icon: User },
+    { label: 'Security', description: 'Manage 2FA and security settings', path: '/security', icon: Shield },
+    { label: 'Change Password', description: 'Update your account password', path: '/profile/password', icon: Lock },
   ];
 
   return (
@@ -82,6 +88,30 @@ export default function DashboardPage() {
             </div>
           </CardContent>
         </Card>
+      </div>
+
+      {/* Quick actions */}
+      <div className="mt-8">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {quickActions.map((action) => (
+            <Link
+              key={action.path}
+              to={action.path}
+              className="block p-4 bg-white rounded-lg border border-gray-200 hover:border-primary-300 hover:shadow-sm transition-all group"
+            >
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-lg bg-primary-50 text-primary-600 flex items-center justify-center group-hover:bg-primary-100 transition-colors">
+                  <action.icon className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="font-medium text-gray-900 group-hover:text-primary-700 transition-colors">{action.label}</h3>
+                  <p className="text-sm text-gray-500">{action.description}</p>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
       </div>
     </div>
   );

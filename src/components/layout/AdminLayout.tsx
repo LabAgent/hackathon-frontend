@@ -122,14 +122,10 @@ export function AdminLayout() {
                   <>
                     <div className="fixed inset-0 z-40" onClick={() => setProfileDropdown(false)} />
                     <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg border border-gray-200 shadow-lg z-50 py-1">
-                      <Link
-                        to="/dashboard"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                        onClick={() => setProfileDropdown(false)}
-                      >
-                        <LayoutDashboard className="inline h-4 w-4 mr-2" />
-                        User Dashboard
-                      </Link>
+                      <div className="px-4 py-2 border-b border-gray-100">
+                        <p className="text-sm font-medium text-gray-900">{user?.fullName}</p>
+                        <p className="text-xs text-gray-500">Administrator</p>
+                      </div>
                       <button
                         onClick={handleLogout}
                         className="w-full text-left px-4 py-2 text-sm text-danger-600 hover:bg-gray-50"

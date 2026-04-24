@@ -12,7 +12,6 @@ import type {
   ResetPasswordRequest,
   ResendVerificationRequest,
   VerifyEmailRequest,
-  LoginResponse,
 } from '@/types';
 import type { AxiosError } from 'axios';
 
@@ -23,21 +22,8 @@ export function useRegister() {
 }
 
 export function useLogin() {
-  const navigate = useNavigate();
-  const { login, setTempToken } = useAuthStore();
-
   return useMutation({
     mutationFn: (data: LoginRequest) => authApi.login(data),
-    onSuccess: (response) => {
-      if ('mfaRequired' in response && response.mfaRequired) {
-        setTempToken(response.tempToken);
-        navigate('/mfa/verify', { replace: true });
-      } else {
-        const loginResp = response as LoginResponse;
-        login(loginResp.accessToken, loginResp.refreshToken, loginResp.user);
-        navigate(loginResp.user.role === 'admin' ? '/admin' : '/dashboard', { replace: true });
-      }
-    },
   });
 }
 

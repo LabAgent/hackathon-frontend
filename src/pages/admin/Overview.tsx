@@ -6,8 +6,8 @@ import { Users, UserCheck, UserX, Shield } from 'lucide-react';
 
 export default function AdminOverview() {
   const { data: usersData, isError, error } = useQuery({
-    queryKey: ['admin', 'users', { page: 1, limit: 1000 }],
-    queryFn: () => adminApi.listUsers({ page: 1, limit: 1000 }),
+    queryKey: ['admin', 'users', { page: 1, limit: 25 }],
+    queryFn: () => adminApi.listUsers({ page: 1, limit: 25 }),
   });
 
   if (isError) {

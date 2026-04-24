@@ -2,6 +2,28 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { AuthUser, UserRole } from '@/types';
 
+function decodeJwtPayload(token: string): Record<string, unknown> | null {
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split('')
+        .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+        .join(''),
+    );
+    return JSON.parse(jsonPayload);
+  } catch {
+    return null;
+  }
+}
+
+function getRoleFromToken(token: string | null): UserRole | null {
+  if (!token) return null;
+  const payload = decodeJwtPayload(token);
+  return (payload?.role as UserRole) ?? null;
+}
+
 interface AuthState {
   accessToken: string | null;
   refreshToken: string | null;
@@ -29,7 +51,11 @@ export const useAuthStore = create<AuthState>()(
       setTokens: (accessToken, refreshToken) => {
         localStorage.setItem('accessToken', accessToken);
         localStorage.setItem('refreshToken', refreshToken);
-        set({ accessToken, refreshToken });
+        set({
+          accessToken,
+          refreshToken,
+          isAdmin: getRoleFromToken(accessToken) === 'admin',
+        });
       },
 
       setUser: (user) => {
@@ -73,7 +99,6 @@ export const useAuthStore = create<AuthState>()(
         refreshToken: state.refreshToken,
         user: state.user,
         isAuthenticated: state.isAuthenticated,
-        isAdmin: state.isAdmin,
       }),
     },
   ),

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -6,7 +7,7 @@ import { Card, CardHeader, CardTitle, CardContent, Button, Input, Alert, ErrorBa
 import { useProfile, useUpdateProfile, useUploadImage } from '@/hooks/useUser';
 import { getInitials } from '@/lib/utils';
 import { useAuthStore } from '@/stores/auth.store';
-import { Camera, Loader2 } from 'lucide-react';
+import { ArrowLeft, Camera, Loader2 } from 'lucide-react';
 
 const schema = z.object({
   fullName: z.string().min(2, 'Name must be at least 2 characters').optional(),
@@ -63,6 +64,10 @@ export default function ProfilePage() {
 
   return (
     <div>
+      <Link to="/dashboard" className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 mb-4">
+        <ArrowLeft className="h-4 w-4" />
+        Back to Dashboard
+      </Link>
       <h1 className="text-2xl font-bold text-gray-900 mb-6">Profile</h1>
 
       {successMessage && (

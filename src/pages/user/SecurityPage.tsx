@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Button, Alert, Badge, Modal, ErrorBanner } from '@/components/ui';
 import { useProfile } from '@/hooks/useUser';
 import { useDisableMfa, useRegenerateBackupCodes } from '@/hooks/useAuth';
+import { Link } from 'react-router';
 import { useNavigate } from 'react-router';
-import { Shield, Key, AlertTriangle, Loader2 } from 'lucide-react';
+import { ArrowLeft, Shield, Key, AlertTriangle, Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -61,6 +62,10 @@ export default function SecurityPage() {
 
   return (
     <div>
+      <Link to="/dashboard" className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 mb-4">
+        <ArrowLeft className="h-4 w-4" />
+        Back to Dashboard
+      </Link>
       <h1 className="text-2xl font-bold text-gray-900 mb-6">Security</h1>
 
       {disableSuccess && <Alert variant="success" className="mb-4">{disableSuccess}</Alert>}
