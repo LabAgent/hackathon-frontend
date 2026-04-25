@@ -67,7 +67,7 @@ export default function LabAssistantPage() {
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<{ role: string; content: string; agent?: string }[]>([]);
   const [convId, setConvId] = useState<string | undefined>();
-  const { events, reasoning, content, isStreaming, activeAgent, error, sendMessage, reset } = useAgentChat();
+  const { events, reasoning, content, isStreaming, activeAgent, error, sendMessage, reset, returnedConversationId } = useAgentChat();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const wasStreamingRef = useRef(false);
 
@@ -91,6 +91,12 @@ export default function LabAssistantPage() {
   };
 
   useEffect(() => {
+    if (returnedConversationId && !convId) {
+      setConvId(returnedConversationId);
+    }
+  }, [returnedConversationId]);
+
+  useEffect(() => {
     if (wasStreamingRef.current && !isStreaming && content) {
       wasStreamingRef.current = false;
       setMessages(prev => [...prev, { role: 'assistant', content, agent: activeAgent || 'planner' }]);
@@ -100,19 +106,23 @@ export default function LabAssistantPage() {
   const handleSelectConversation = async (id: string) => {
     setConvId(id);
     reset();
+    setMessages([]);
     try {
       const res = await chatApi.getConversation(id);
-      const conv = (res as any)?.data || res;
-      if (conv?.messages) {
+      const conv = res?.data ?? res;
+      if (conv?.messages && conv.messages.length > 0) {
         setMessages(
           conv.messages.map((m: any) => ({
             role: m.role,
-            content: m.content,
+            content: m.content || '',
             agent: m.agentName || 'planner',
           }))
         );
+      } else {
+        setMessages([]);
       }
-    } catch {
+    } catch (e) {
+      console.error('Failed to load conversation:', e);
       setMessages([]);
     }
   };
@@ -127,7 +137,7 @@ export default function LabAssistantPage() {
         >
           + New Chat
         </button>
-        {((conversations as any)?.data || []).map((c: AgentConversation) => (
+        {(conversations ?? []).map((c: AgentConversation) => (
           <button
             key={c.id}
             onClick={() => handleSelectConversation(c.id)}

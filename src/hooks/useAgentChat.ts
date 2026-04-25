@@ -9,6 +9,7 @@ interface UseAgentChatReturn {
   isStreaming: boolean;
   activeAgent: string | null;
   error: string | null;
+  returnedConversationId: string | null;
   sendMessage: (content: string, conversationId?: string) => Promise<void>;
   reset: () => void;
 }
@@ -20,6 +21,7 @@ export function useAgentChat(): UseAgentChatReturn {
   const [isStreaming, setIsStreaming] = useState(false);
   const [activeAgent, setActiveAgent] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [returnedConversationId, setReturnedConversationId] = useState<string | null>(null);
 
   const reset = useCallback(() => {
     setEvents([]);
@@ -33,6 +35,7 @@ export function useAgentChat(): UseAgentChatReturn {
   const sendMessage = useCallback(async (message: string, conversationId?: string) => {
     reset();
     setIsStreaming(true);
+    setReturnedConversationId(null);
 
     try {
       const response = await chatApi.createAndStream(message, conversationId);
@@ -65,6 +68,11 @@ export function useAgentChat(): UseAgentChatReturn {
             try {
               const event: ProgressEvent = JSON.parse(data);
 
+              if (event.type === 'conversation_id') {
+                setReturnedConversationId((event as any).conversationId);
+                continue;
+              }
+
               setEvents(prev => [...prev, event]);
 
               if (event.type === 'reasoning') {
@@ -92,5 +100,5 @@ export function useAgentChat(): UseAgentChatReturn {
     }
   }, [reset]);
 
-  return { events, reasoning, content, isStreaming, activeAgent, error, sendMessage, reset };
+  return { events, reasoning, content, isStreaming, activeAgent, error, returnedConversationId, sendMessage, reset };
 }
