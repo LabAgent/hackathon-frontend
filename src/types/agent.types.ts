@@ -21,6 +21,7 @@ export interface AgentMessage {
 }
 
 export type ProgressEvent =
+  | { type: 'conversation_id'; conversationId: string }
   | { type: 'agent_start'; agent: string; message: string }
   | { type: 'reasoning'; agent: string; chunk: string }
   | { type: 'content'; agent: string; chunk: string }

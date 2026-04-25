@@ -45,14 +45,14 @@ export default function LoginPage() {
   const state = location.state as { registered?: boolean } | null;
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
+    <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-xl border border-ocean-700/20 p-8">
         <h2 className="text-2xl font-bold text-gray-900 text-center mb-2">Welcome back</h2>
         <p className="text-sm text-gray-500 text-center mb-6">
-          Enter your credentials to access your account
+          Enter your credentials to access Sandy's Treedome Lab
         </p>
 
         {state?.registered && (
-          <div className="mb-4 p-3 rounded-lg bg-success-50 text-success-700 text-sm">
+          <div className="mb-4 p-3 rounded-lg bg-kelp-50 text-kelp-700 text-sm">
             Registration successful! Please check your email to verify your account, then sign in.
           </div>
         )}
@@ -64,7 +64,7 @@ export default function LoginPage() {
             label="Email"
             id="email"
             type="email"
-            placeholder="john@example.com"
+            placeholder="sandy@treedome.lab"
             error={errors.email?.message}
             {...reg('email')}
           />
@@ -79,19 +79,19 @@ export default function LoginPage() {
           <div className="flex items-center justify-end">
             <Link
               to="/forgot-password"
-              className="text-sm text-primary-600 hover:text-primary-700"
+              className="text-sm text-ocean-600 hover:text-ocean-700"
             >
               Forgot password?
             </Link>
           </div>
-          <Button type="submit" loading={isPending} className="w-full">
-            Sign in
+          <Button type="submit" loading={isPending} className="w-full bg-ocean-600 hover:bg-ocean-700">
+            Sign in to Treedome Lab
           </Button>
         </form>
 
         <p className="mt-6 text-center text-sm text-gray-500">
           Don't have an account?{' '}
-          <Link to="/register" className="text-primary-600 hover:text-primary-700 font-medium">
+          <Link to="/register" className="text-ocean-600 hover:text-ocean-700 font-medium">
             Create one
           </Link>
         </p>

@@ -25,7 +25,7 @@ export interface ProjectRequirement {
   projectId: number;
   inventoryId: number;
   requiredQuantity: number;
-  inventory?: Inventory;
+  inventory?: import('./inventory.types').Inventory;
 }
 
 export interface CreateProjectDTO {

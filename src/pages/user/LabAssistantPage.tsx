@@ -174,7 +174,14 @@ export default function LabAssistantPage() {
                 <h3 className="text-lg font-medium text-gray-700">How can I help you today?</h3>
                 <p className="text-gray-400 text-sm mt-1">I can search the web, manage inventory, run experiments, and more.</p>
                 <div className="flex flex-wrap justify-center gap-2 mt-4">
-                  {['Search for kelp growth studies', 'Check low stock items', 'Show all research projects'].map(s => (
+                  {[
+                    'Search for kelp growth studies',
+                    'Check low stock items',
+                    'Show all research projects',
+                    'Suggest hypotheses about underwater acoustics',
+                    'What supplies need reordering?',
+                    'Create a new project called "Jellyfish Migration Patterns"',
+                  ].map(s => (
                     <button key={s} onClick={() => setInput(s)} className="text-xs px-3 py-1.5 rounded-full bg-ocean-50 text-ocean-600 hover:bg-ocean-100 transition-colors">{s}</button>
                   ))}
                 </div>
