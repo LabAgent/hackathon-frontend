@@ -70,6 +70,7 @@ export function useAgentChat(): UseAgentChatReturn {
 
               if (event.type === 'conversation_id') {
                 setReturnedConversationId((event as any).conversationId);
+                console.log('Received conversation_id:', (event as any).conversationId);
                 continue;
               }
 

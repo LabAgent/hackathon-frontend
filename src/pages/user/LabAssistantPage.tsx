@@ -71,10 +71,17 @@ export default function LabAssistantPage() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const wasStreamingRef = useRef(false);
 
-  const { data: conversations, refetch: refetchConversations } = useQuery({
+  const { data: conversationsData, refetch: refetchConversations } = useQuery({
     queryKey: ['conversations'],
-    queryFn: () => chatApi.getConversations(),
+    queryFn: async () => {
+      const res = await chatApi.getConversations();
+      const data = (res as any)?.data;
+      if (Array.isArray(data)) return data;
+      if (Array.isArray(res)) return res;
+      return [];
+    },
   });
+  const conversations: AgentConversation[] = conversationsData ?? [];
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -109,10 +116,13 @@ export default function LabAssistantPage() {
     setMessages([]);
     try {
       const res = await chatApi.getConversation(id);
-      const conv = res?.data ?? res;
-      if (conv?.messages && conv.messages.length > 0) {
+      const data = (res as any)?.data;
+      const conv = data && typeof data === 'object' ? data : res;
+      console.log('Loaded conversation:', conv?.id, 'messages:', conv?.messages?.length);
+      const msgs = Array.isArray(conv?.messages) ? conv.messages : [];
+      if (msgs.length > 0) {
         setMessages(
-          conv.messages.map((m: any) => ({
+          msgs.map((m: any) => ({
             role: m.role,
             content: m.content || '',
             agent: m.agentName || 'planner',
@@ -137,7 +147,7 @@ export default function LabAssistantPage() {
         >
           + New Chat
         </button>
-        {(conversations ?? []).map((c: AgentConversation) => (
+        {conversations.map((c: AgentConversation) => (
           <button
             key={c.id}
             onClick={() => handleSelectConversation(c.id)}
