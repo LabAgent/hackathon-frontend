@@ -1,117 +1,130 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
-import { useAuthStore } from '@/stores/auth.store';
-import { Card, CardHeader, CardTitle, CardContent, Badge } from '@/components/ui';
-import { useProfile } from '@/hooks/useUser';
-import { formatDate, getInitials } from '@/lib/utils';
-import { Shield, Mail, Calendar, CheckCircle, XCircle, User, Lock } from 'lucide-react';
-import { Spinner, ErrorBanner } from '@/components/ui';
+import { useQuery } from '@tanstack/react-query';
+import { Beaker, Package, Bot, AlertTriangle, FlaskConical, TrendingUp } from 'lucide-react';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui';
+import { researchApi, inventoryApi } from '@/api';
 
 export default function DashboardPage() {
-  const user = useAuthStore((s) => s.user);
-  const { data: profile, isLoading, isError, error } = useProfile();
+  const [user, setUser] = useState<any>(null);
 
-  if (isError) {
-    return <ErrorBanner error={error} />;
-  }
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('auth-storage');
+      if (stored) setUser(JSON.parse(stored)?.state?.user);
+    } catch {}
+  }, []);
 
-  if (isLoading || !profile) {
-    return <Spinner />;
-  }
+  const { data: projectStats } = useQuery({ queryKey: ['project-stats'], queryFn: () => researchApi.getStats() });
+  const { data: inventoryStats } = useQuery({ queryKey: ['inventory-stats'], queryFn: () => inventoryApi.getStats() });
+  const { data: lowStockAlerts } = useQuery({ queryKey: ['low-stock-alerts'], queryFn: () => inventoryApi.getLowStockAlerts() });
+  const { data: projects } = useQuery({ queryKey: ['projects'], queryFn: () => researchApi.list() });
+
+  const role = user?.role || 'user';
+  const roleName = role === 'admin' ? 'Sandy (Admin)' : role === 'researcher' ? 'Researcher' : role === 'lab_assistant' ? 'Lab Assistant' : 'User';
 
   const stats = [
-    { label: 'Email Verified', value: profile.isVerified ? 'Yes' : 'No', icon: CheckCircle, variant: profile.isVerified ? 'success' as const : 'warning' as const },
-    { label: 'MFA Enabled', value: profile.mfaEnabled ? 'Yes' : 'No', icon: Shield, variant: profile.mfaEnabled ? 'success' as const : 'warning' as const },
-    { label: 'Account Active', value: profile.isActive ? 'Yes' : 'No', icon: profile.isActive ? CheckCircle : XCircle, variant: profile.isActive ? 'success' as const : 'danger' as const },
-    { label: 'Last Login', value: formatDate(profile.lastLogin), icon: Calendar, variant: 'default' as const },
-  ];
-
-  const quickActions = [
-    { label: 'Profile', description: 'View and edit your personal information', path: '/profile', icon: User },
-    { label: 'Security', description: 'Manage 2FA and security settings', path: '/security', icon: Shield },
-    { label: 'Change Password', description: 'Update your account password', path: '/profile/password', icon: Lock },
+    { label: 'Projects', value: (projectStats as any)?.data?.total ?? 0, icon: Beaker, color: 'text-ocean-500', link: '/research' },
+    { label: 'Ongoing', value: (projectStats as any)?.data?.ongoing ?? 0, icon: TrendingUp, color: 'text-kelp-500', link: '/research' },
+    { label: 'Inventory Items', value: (inventoryStats as any)?.data?.total ?? 0, icon: Package, color: 'text-sandy-500', link: '/inventory' },
+    { label: 'Low Stock Alerts', value: (inventoryStats as any)?.data?.lowStock ?? 0, icon: AlertTriangle, color: 'text-coral-500', link: '/inventory' },
   ];
 
   return (
-    <div>
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">
-          Welcome back, {user?.fullName?.split(' ')[0]}
-        </h1>
-        <p className="text-gray-500 mt-1">Here's an overview of your account</p>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Welcome to Sandy's Treedome Lab</h1>
+          <p className="text-gray-500 mt-1">Role: <span className="font-medium text-ocean-600">{roleName}</span></p>
+        </div>
+        <Link
+          to="/assistant"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-ocean-500 text-white rounded-lg hover:bg-ocean-600 transition-colors"
+        >
+          <Bot className="h-5 w-5" />
+          Ask AI Assistant
+        </Link>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Profile card */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Profile</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-4">
-              {profile.image ? (
-                <img src={profile.image} alt="" className="h-16 w-16 rounded-full object-cover" />
-              ) : (
-                <div className="h-16 w-16 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center text-xl font-semibold">
-                  {getInitials(profile.fullName)}
-                </div>
-              )}
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900">{profile.fullName}</h3>
-                <div className="flex items-center gap-2 text-sm text-gray-500">
-                  <Mail className="h-4 w-4" />
-                  {profile.email}
-                </div>
-                <Badge variant={profile.role === 'admin' ? 'info' : 'default'} className="mt-1">
-                  {profile.role}
-                </Badge>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Stats card */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Account Status</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {stats.map((stat) => (
-                <div key={stat.label} className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <stat.icon className="h-4 w-4" />
-                    {stat.label}
-                  </div>
-                  <Badge variant={stat.variant}>{stat.value}</Badge>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Quick actions */}
-      <div className="mt-8">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {quickActions.map((action) => (
-            <Link
-              key={action.path}
-              to={action.path}
-              className="block p-4 bg-white rounded-lg border border-gray-200 hover:border-primary-300 hover:shadow-sm transition-all group"
-            >
-              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-lg bg-primary-50 text-primary-600 flex items-center justify-center group-hover:bg-primary-100 transition-colors">
-                  <action.icon className="h-5 w-5" />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {stats.map((stat) => (
+          <Link key={stat.label} to={stat.link}>
+            <Card className="hover:shadow-md transition-shadow cursor-pointer">
+              <CardContent className="flex items-center gap-4 py-5">
+                <div className={`p-3 rounded-xl bg-gray-50 ${stat.color}`}>
+                  <stat.icon className="h-6 w-6" />
                 </div>
                 <div>
-                  <h3 className="font-medium text-gray-900 group-hover:text-primary-700 transition-colors">{action.label}</h3>
-                  <p className="text-sm text-gray-500">{action.description}</p>
+                  <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+                  <p className="text-sm text-gray-500">{stat.label}</p>
                 </div>
-              </div>
-            </Link>
-          ))}
-        </div>
+              </CardContent>
+            </Card>
+          </Link>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle className="flex items-center gap-2">
+              <FlaskConical className="h-5 w-5 text-ocean-500" />
+              Recent Projects
+            </CardTitle>
+            <Link to="/research" className="text-sm text-ocean-600 hover:text-ocean-700">View all</Link>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {((projects as any)?.data || []).slice(0, 5).map((r: any) => (
+                <Link key={r.id} to={`/research/${r.id}`} className="flex items-center justify-between py-2 hover:bg-gray-50 rounded-lg px-2 -mx-2 transition-colors">
+                  <div>
+                    <p className="font-medium text-gray-900 text-sm">{r.name}</p>
+                    <p className="text-xs text-gray-500">{r.status} - {new Date(r.createdAt).toLocaleDateString()}</p>
+                  </div>
+                  <span className={`text-xs px-2 py-1 rounded-full font-medium ${
+                    r.status === 'ongoing' ? 'bg-kelp-50 text-kelp-600' :
+                    r.status === 'completed' ? 'bg-ocean-50 text-ocean-600' :
+                    'bg-sandy-50 text-sandy-600'
+                  }`}>
+                    {r.status}
+                  </span>
+                </Link>
+              ))}
+              {(!projects || !((projects as any)?.data?.length)) && (
+                <p className="text-gray-400 text-sm py-4 text-center">No projects yet</p>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle className="flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5 text-coral-500" />
+              Low Stock Alerts
+            </CardTitle>
+            <Link to="/inventory" className="text-sm text-ocean-600 hover:text-ocean-700">View all</Link>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {((lowStockAlerts as any)?.data || []).slice(0, 5).map((item: any) => (
+                <div key={item.id} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
+                  <div>
+                    <p className="font-medium text-gray-900 text-sm">{item.name}</p>
+                    <p className="text-xs text-gray-500">{item.category || 'No category'}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-bold text-coral-500">{item.quantity} / {item.minRequired}</p>
+                    <p className="text-xs text-coral-400">-{item.deficit} below threshold</p>
+                  </div>
+                </div>
+              ))}
+              {(!lowStockAlerts || !((lowStockAlerts as any)?.data?.length)) && (
+                <p className="text-gray-400 text-sm py-4 text-center">All items are well stocked!</p>
+              )}
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

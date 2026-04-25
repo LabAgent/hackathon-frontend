@@ -10,7 +10,7 @@ import type { UserRole } from '@/types';
 
 const schema = z.object({
   fullName: z.string().min(2, 'Name must be at least 2 characters').optional(),
-  role: z.enum(['user', 'admin']).optional(),
+  role: z.enum(['user', 'admin', 'researcher', 'lab_assistant']).optional(),
   isActive: z.boolean().optional(),
 });
 

@@ -37,7 +37,7 @@ export default function LoginPage() {
         }
         const loginResp = response as LoginResponse;
         useAuthStore.getState().login(loginResp.accessToken, loginResp.refreshToken, loginResp.user);
-        navigate(loginResp.user?.role === 'admin' ? '/admin' : '/dashboard', { replace: true });
+        navigate('/dashboard', { replace: true });
       },
     });
   };

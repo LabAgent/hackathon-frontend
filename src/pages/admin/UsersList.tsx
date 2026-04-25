@@ -82,6 +82,8 @@ export default function UsersList() {
             <option value="">All Roles</option>
             <option value="user">User</option>
             <option value="admin">Admin</option>
+            <option value="researcher">Researcher</option>
+            <option value="lab_assistant">Lab Assistant</option>
           </select>
         </CardContent>
       </Card>

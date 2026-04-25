@@ -27,6 +27,42 @@
   --color-warning-500: #f59e0b;
   --color-warning-600: #d97706;
 
+  --color-ocean-50: #e6f7ff;
+  --color-ocean-100: #b3e5ff;
+  --color-ocean-200: #80d3ff;
+  --color-ocean-300: #4dc1ff;
+  --color-ocean-400: #26b1ff;
+  --color-ocean-500: #0077be;
+  --color-ocean-600: #005f96;
+  --color-ocean-700: #004770;
+  --color-ocean-800: #003459;
+  --color-ocean-900: #0c1445;
+
+  --color-sandy-50: #fef9ef;
+  --color-sandy-100: #fdf0d5;
+  --color-sandy-200: #fbe5aa;
+  --color-sandy-300: #f8d670;
+  --color-sandy-400: #f4c430;
+  --color-sandy-500: #e6ac00;
+  --color-sandy-600: #b8860b;
+  --color-sandy-700: #8b6508;
+
+  --color-coral-50: #fff0ed;
+  --color-coral-100: #ffd9d3;
+  --color-coral-200: #ffb3a7;
+  --color-coral-300: #ff8d7b;
+  --color-coral-400: #ff6b6b;
+  --color-coral-500: #e74c3c;
+  --color-coral-600: #c0392b;
+
+  --color-kelp-50: #eefce6;
+  --color-kelp-100: #d5f5c7;
+  --color-kelp-200: #a8e88e;
+  --color-kelp-300: #6dcc50;
+  --color-kelp-400: #2ecc71;
+  --color-kelp-500: #27ae60;
+  --color-kelp-600: #1e8449;
+
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
 }
 

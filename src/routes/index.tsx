@@ -16,6 +16,10 @@ const ResendVerificationPage = lazy(() => import('@/pages/auth/ResendVerificatio
 const MfaVerifyPage = lazy(() => import('@/pages/auth/MfaVerifyPage'));
 
 const DashboardPage = lazy(() => import('@/pages/user/DashboardPage'));
+const ResearchPage = lazy(() => import('@/pages/user/ResearchPage'));
+const ResearchDetailPage = lazy(() => import('@/pages/user/ResearchDetailPage'));
+const InventoryPage = lazy(() => import('@/pages/user/InventoryPage'));
+const LabAssistantPage = lazy(() => import('@/pages/user/LabAssistantPage'));
 const ProfilePage = lazy(() => import('@/pages/user/ProfilePage'));
 const ChangePasswordPage = lazy(() => import('@/pages/user/ChangePasswordPage'));
 const SecurityPage = lazy(() => import('@/pages/user/SecurityPage'));
@@ -29,7 +33,7 @@ const UserEdit = lazy(() => import('@/pages/admin/UserEdit'));
 
 function LazyPage({ Component }: { Component: LazyExoticComponent<ComponentType> }) {
   return (
-    <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="h-8 w-8 animate-spin rounded-full border-4 border-primary-600 border-t-transparent" /></div>}>
+    <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="h-8 w-8 animate-spin rounded-full border-4 border-ocean-400 border-t-transparent" /></div>}>
       <Component />
     </Suspense>
   );
@@ -38,7 +42,7 @@ function LazyPage({ Component }: { Component: LazyExoticComponent<ComponentType>
 export const router = createBrowserRouter([
   {
     path: '/',
-    element: <Navigate to="/login" replace />,
+    element: <Navigate to="/dashboard" replace />,
   },
 
   {
@@ -73,6 +77,10 @@ export const router = createBrowserRouter([
         element: <UserLayout />,
         children: [
           { path: 'dashboard', element: <LazyPage Component={DashboardPage} /> },
+          { path: 'research', element: <LazyPage Component={ResearchPage} /> },
+          { path: 'research/:id', element: <LazyPage Component={ResearchDetailPage} /> },
+          { path: 'inventory', element: <LazyPage Component={InventoryPage} /> },
+          { path: 'assistant', element: <LazyPage Component={LabAssistantPage} /> },
           { path: 'profile', element: <LazyPage Component={ProfilePage} /> },
           { path: 'profile/password', element: <LazyPage Component={ChangePasswordPage} /> },
           { path: 'security', element: <LazyPage Component={SecurityPage} /> },
@@ -99,6 +107,6 @@ export const router = createBrowserRouter([
 
   {
     path: '*',
-    element: <Navigate to="/login" replace />,
+    element: <Navigate to="/dashboard" replace />,
   },
 ]);

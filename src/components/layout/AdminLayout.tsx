@@ -10,11 +10,13 @@ import {
   X,
   Shield,
   ChevronDown,
+  Beaker,
 } from 'lucide-react';
 
 const sidebarItems = [
   { label: 'Overview', path: '/admin', icon: LayoutDashboard },
   { label: 'Users', path: '/admin/users', icon: Users },
+  { label: 'Back to Lab', path: '/dashboard', icon: Beaker },
 ];
 
 export function AdminLayout() {

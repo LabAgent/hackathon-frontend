@@ -38,7 +38,7 @@ export function useVerifyMfa() {
     onSuccess: (response) => {
       const { accessToken, refreshToken, user } = response;
       login(accessToken, refreshToken, user);
-      navigate(user.role === 'admin' ? '/admin' : '/dashboard', { replace: true });
+      navigate('/dashboard', { replace: true });
     },
     onError: (error: AxiosError) => {
       if (error.response?.status === 401) {
@@ -59,7 +59,7 @@ export function useVerifyMfaBackup() {
     onSuccess: (response) => {
       const { accessToken, refreshToken, user } = response;
       login(accessToken, refreshToken, user);
-      navigate(user.role === 'admin' ? '/admin' : '/dashboard', { replace: true });
+      navigate('/dashboard', { replace: true });
     },
   });
 }
