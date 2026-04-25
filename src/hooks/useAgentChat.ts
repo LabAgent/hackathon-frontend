@@ -87,6 +87,7 @@ export function useAgentChat(): UseAgentChatReturn {
       }
     } catch (err: any) {
       setError(err.message);
+    } finally {
       setIsStreaming(false);
     }
   }, [reset]);

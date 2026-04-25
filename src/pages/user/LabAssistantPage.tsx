@@ -69,8 +69,9 @@ export default function LabAssistantPage() {
   const [convId, setConvId] = useState<string | undefined>();
   const { events, reasoning, content, isStreaming, activeAgent, error, sendMessage, reset } = useAgentChat();
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const wasStreamingRef = useRef(false);
 
-  const { data: conversations } = useQuery({
+  const { data: conversations, refetch: refetchConversations } = useQuery({
     queryKey: ['conversations'],
     queryFn: () => chatApi.getConversations(),
   });
@@ -84,14 +85,37 @@ export default function LabAssistantPage() {
     const msg = input.trim();
     setInput('');
     setMessages(prev => [...prev, { role: 'user', content: msg }]);
+    wasStreamingRef.current = true;
     await sendMessage(msg, convId);
+    refetchConversations();
   };
 
   useEffect(() => {
-    if (!isStreaming && content) {
+    if (wasStreamingRef.current && !isStreaming && content) {
+      wasStreamingRef.current = false;
       setMessages(prev => [...prev, { role: 'assistant', content, agent: activeAgent || 'planner' }]);
     }
-  }, [isStreaming]);
+  }, [isStreaming, content, activeAgent]);
+
+  const handleSelectConversation = async (id: string) => {
+    setConvId(id);
+    reset();
+    try {
+      const res = await chatApi.getConversation(id);
+      const conv = (res as any)?.data || res;
+      if (conv?.messages) {
+        setMessages(
+          conv.messages.map((m: any) => ({
+            role: m.role,
+            content: m.content,
+            agent: m.agentName || 'planner',
+          }))
+        );
+      }
+    } catch {
+      setMessages([]);
+    }
+  };
 
   return (
     <div className="flex h-[calc(100vh-4rem)] gap-4">
@@ -106,7 +130,7 @@ export default function LabAssistantPage() {
         {((conversations as any)?.data || []).map((c: AgentConversation) => (
           <button
             key={c.id}
-            onClick={() => { setConvId(c.id); }}
+            onClick={() => handleSelectConversation(c.id)}
             className={`w-full text-left px-3 py-2 rounded-lg text-sm truncate transition-colors ${convId === c.id ? 'bg-gray-100 text-gray-900' : 'text-gray-600 hover:bg-gray-50'}`}
           >
             {c.title || 'Untitled'}
@@ -139,7 +163,7 @@ export default function LabAssistantPage() {
 
             {messages.map((msg, i) => (
               <div key={i} className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : ''}`}>
-                {msg.role === 'assistant' && (
+                {msg.role !== 'user' && (
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${AGENT_COLORS[msg.agent || 'planner'] || 'bg-ocean-100 text-ocean-600'}`}>
                     {(() => { const Ic = AGENT_ICONS[msg.agent || 'planner'] || Bot; return <Ic className="h-4 w-4" />; })()}
                   </div>

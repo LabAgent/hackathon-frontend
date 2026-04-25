@@ -1,4 +1,5 @@
 import apiClient from './client';
+import { useAuthStore } from '@/stores/auth.store';
 import type { AgentConversation } from '@/types';
 
 export const chatApi = {
@@ -8,14 +9,14 @@ export const chatApi = {
 
   createAndStream: (content: string, conversationId?: string) => {
     const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/+$/, '');
-    const token = JSON.parse(localStorage.getItem('auth-storage') || '{}')?.state?.accessToken || '';
-    const url = `${API_BASE_URL}/api/chat/stream`;
+    const token = useAuthStore.getState().accessToken;
+    const url = API_BASE_URL ? `${API_BASE_URL}/api/chat` : '/api/chat';
 
     return fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
       body: JSON.stringify({ content, conversationId }),
     });
