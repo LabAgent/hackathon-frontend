@@ -1,10 +1,10 @@
 import { useParams, Link } from 'react-router';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { ArrowLeft, Plus, FlaskConical, Bot } from 'lucide-react';
+import { ArrowLeft, Plus, FlaskConical, Bot, Package } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent, Button, Spinner } from '@/components/ui';
-import { researchApi } from '@/api';
+import { researchApi, inventoryApi } from '@/api';
 import { useState } from 'react';
-import type { Project, ExperimentsLog } from '@/types';
+import type { Project, ExperimentsLog, Inventory } from '@/types';
 
 export default function ResearchDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -13,11 +13,21 @@ export default function ResearchDetailPage() {
   const [expResult, setExpResult] = useState('');
   const [expSuccess, setExpSuccess] = useState(true);
   const [expNotes, setExpNotes] = useState('');
+  const [showAddReq, setShowAddReq] = useState(false);
+  const [reqItemId, setReqItemId] = useState<number | ''>('');
+  const [reqQty, setReqQty] = useState(1);
 
   const { data, isLoading } = useQuery({
     queryKey: ['project', id],
     queryFn: () => researchApi.get(Number(id!)),
   });
+
+  const { data: inventoryData } = useQuery({
+    queryKey: ['inventory'],
+    queryFn: () => inventoryApi.list(),
+  });
+
+  const inventoryItems: Inventory[] = (inventoryData as any)?.data || [];
 
   const project: Project = (data as any)?.data;
   const addExpMutation = useMutation({
@@ -28,6 +38,11 @@ export default function ResearchDetailPage() {
   const updateStatusMutation = useMutation({
     mutationFn: (status: string) => researchApi.update(Number(id!), { status: status as any }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['project', id] }),
+  });
+
+  const addReqMutation = useMutation({
+    mutationFn: (d: { projectId: number; inventoryId: number; requiredQuantity: number }) => researchApi.addRequirement(d),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['project', id] }); setShowAddReq(false); setReqItemId(''); setReqQty(1); },
   });
 
   if (isLoading || !project) return <div className="flex justify-center py-12"><Spinner /></div>;
@@ -117,6 +132,69 @@ export default function ResearchDetailPage() {
             ))}
             {(!project.experiments || project.experiments.length === 0) && (
               <p className="text-gray-400 text-sm text-center py-6">No experiment logs yet. Add one to get started.</p>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle className="flex items-center gap-2">
+            <Package className="h-5 w-5 text-sandy-500" />
+            Required Materials ({project.requirements?.length || 0})
+          </CardTitle>
+          <Button size="sm" onClick={() => setShowAddReq(true)} className="flex items-center gap-1">
+            <Plus className="h-3 w-3" /> Add Requirement
+          </Button>
+        </CardHeader>
+        <CardContent>
+          {showAddReq && (
+            <div className="space-y-3 mb-4 p-4 bg-gray-50 rounded-lg">
+              <div className="space-y-1">
+                <label className="text-sm font-medium text-gray-700">Inventory Item</label>
+                <select
+                  className="block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                  value={reqItemId}
+                  onChange={(e) => setReqItemId(Number(e.target.value))}
+                >
+                  <option value="">Select an item...</option>
+                  {inventoryItems.map((item) => (
+                    <option key={item.id} value={item.id}>{item.name} (Stock: {item.quantity} {item.unit || 'units'})</option>
+                  ))}
+                </select>
+              </div>
+              <div className="space-y-1">
+                <label className="text-sm font-medium text-gray-700">Required Quantity</label>
+                <input
+                  type="number"
+                  min={1}
+                  className="block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                  value={reqQty}
+                  onChange={(e) => setReqQty(Number(e.target.value))}
+                />
+              </div>
+              <div className="flex gap-2">
+                <Button size="sm" onClick={() => addReqMutation.mutate({ projectId: Number(id!), inventoryId: Number(reqItemId), requiredQuantity: reqQty })} loading={addReqMutation.isPending} disabled={!reqItemId}>Add</Button>
+                <Button size="sm" variant="ghost" onClick={() => setShowAddReq(false)}>Cancel</Button>
+              </div>
+            </div>
+          )}
+          <div className="space-y-3">
+            {(project.requirements || []).map((req) => (
+              <div key={req.id} className="flex items-center justify-between py-3 border-b border-gray-100 last:border-0">
+                <div>
+                  <p className="font-medium text-sm text-gray-900">{req.inventory?.name || `Item #${req.inventoryId}`}</p>
+                  <p className="text-xs text-gray-500">Required: {req.requiredQuantity} units</p>
+                </div>
+                {req.inventory && (
+                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${req.inventory.quantity >= req.requiredQuantity ? 'bg-kelp-50 text-kelp-600' : 'bg-coral-50 text-coral-600'}`}>
+                    {req.inventory.quantity >= req.requiredQuantity ? 'In Stock' : `Short by ${req.requiredQuantity - req.inventory.quantity}`}
+                  </span>
+                )}
+              </div>
+            ))}
+            {(!project.requirements || project.requirements.length === 0) && (
+              <p className="text-gray-400 text-sm text-center py-6">No material requirements yet. Add items needed for this project.</p>
             )}
           </div>
         </CardContent>

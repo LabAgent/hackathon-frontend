@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
-import { Beaker, Package, Bot, AlertTriangle, FlaskConical, TrendingUp } from 'lucide-react';
+import { Beaker, Package, Bot, AlertTriangle, FlaskConical, TrendingUp, Zap } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui';
 import { researchApi, inventoryApi } from '@/api';
 
@@ -126,6 +126,37 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
       </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Zap className="h-5 w-5 text-sandy-500" />
+            Challenge Scenarios
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-gray-500 mb-4">Try these prompts with Sandy's AI Lab Assistant to see multi-agent orchestration in action:</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {[
+              { label: 'Research Agent', prompt: 'Search for recent studies about jellyfish migration patterns in the Pacific Ocean', desc: 'Triggers: Planner → Research → web_search', color: 'bg-purple-50 border-purple-200 hover:bg-purple-100' },
+              { label: 'Inventory Agent', prompt: 'Which lab supplies are running low and need reordering?', desc: 'Triggers: Planner → Inventory → alert_low_stock + suggest_reorder', color: 'bg-sandy-50 border-sandy-200 hover:bg-sandy-100' },
+              { label: 'Database Agent', prompt: 'Show me all ongoing research projects and their status', desc: 'Triggers: Planner → Database → query_records', color: 'bg-kelp-50 border-kelp-200 hover:bg-kelp-100' },
+              { label: 'Multi-Step', prompt: 'Analyze experiment results for project 1 and suggest what supplies I need to continue', desc: 'Triggers: Planner → Research → Database → Inventory', color: 'bg-ocean-50 border-ocean-200 hover:bg-ocean-100' },
+            ].map((scenario) => (
+              <Link
+                key={scenario.label}
+                to="/assistant"
+                state={{ prompt: scenario.prompt }}
+                className={`block p-3 rounded-lg border-2 transition-colors ${scenario.color}`}
+              >
+                <p className="font-semibold text-sm text-gray-900">{scenario.label}</p>
+                <p className="text-xs text-gray-600 mt-1 line-clamp-2">"{scenario.prompt}"</p>
+                <p className="text-xs text-gray-400 mt-1">{scenario.desc}</p>
+              </Link>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

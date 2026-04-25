@@ -95,6 +95,8 @@ export default function UserEdit() {
               >
                 <option value="user">User</option>
                 <option value="admin">Admin</option>
+                <option value="researcher">Researcher</option>
+                <option value="lab_assistant">Lab Assistant</option>
               </select>
               {errors.role && <p className="text-sm text-danger-600">{errors.role.message}</p>}
             </div>

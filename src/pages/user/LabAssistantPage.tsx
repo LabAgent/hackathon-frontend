@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
+import { useLocation } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
-import { Bot, Send, FlaskConical, Package, Database, Loader2, Sparkles, ChevronDown } from 'lucide-react';
+import { Bot, Send, FlaskConical, Package, Database, Loader2, Sparkles, ChevronDown, Menu, X } from 'lucide-react';
 import { Card } from '@/components/ui';
 import { useAgentChat } from '@/hooks/useAgentChat';
 import { chatApi } from '@/api';
@@ -27,6 +28,46 @@ function AgentBadge({ agent }: { agent: string }) {
       <Icon className="h-3 w-3" />
       {agent}
     </span>
+  );
+}
+
+function AgentFlowVisualizer({ events, activeAgent }: { events: ProgressEvent[]; activeAgent: string | null }) {
+  const routeEvents = events.filter(e => e.type === 'route');
+  const toolEvents = events.filter(e => e.type === 'tool_call');
+  if (!activeAgent && routeEvents.length === 0 && toolEvents.length === 0) return null;
+
+  const flowSteps: { agent: string; action: string }[] = [];
+  flowSteps.push({ agent: 'planner', action: 'Analyzing' });
+  for (const e of routeEvents) {
+    flowSteps.push({ agent: (e as any).from || 'planner', action: 'Routing' });
+    flowSteps.push({ agent: (e as any).to, action: 'Working' });
+  }
+  for (const e of toolEvents) {
+    const agent = (e as any).agent || activeAgent || 'planner';
+    if (flowSteps.length > 0 && flowSteps[flowSteps.length - 1].agent === agent && flowSteps[flowSteps.length - 1].action === 'Working') {
+      continue;
+    }
+    flowSteps.push({ agent, action: `Using ${(e as any).tool}` });
+  }
+  if (activeAgent) {
+    const last = flowSteps[flowSteps.length - 1];
+    if (last && last.agent === activeAgent) {
+      last.action = 'Synthesizing';
+    }
+  }
+
+  return (
+    <div className="flex items-center gap-1 flex-wrap">
+      {flowSteps.map((step, i) => (
+        <span key={i} className="flex items-center gap-1">
+          {i > 0 && <span className="text-gray-300">→</span>}
+          <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium ${AGENT_COLORS[step.agent] || 'bg-gray-100 text-gray-600'}`}>
+            {(() => { const Ic = AGENT_ICONS[step.agent] || Bot; return <Ic className="h-2.5 w-2.5" />; })()}
+            {step.agent}
+          </span>
+        </span>
+      ))}
+    </div>
   );
 }
 
@@ -64,9 +105,12 @@ function ThinkingBlock({ events, reasoning }: { events: ProgressEvent[]; reasoni
 }
 
 export default function LabAssistantPage() {
-  const [input, setInput] = useState('');
+  const location = useLocation();
+  const initialPrompt = (location.state as any)?.prompt || '';
+  const [input, setInput] = useState(initialPrompt);
   const [messages, setMessages] = useState<{ role: string; content: string; agent?: string }[]>([]);
   const [convId, setConvId] = useState<string | undefined>();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const { events, reasoning, content, isStreaming, activeAgent, error, sendMessage, reset, returnedConversationId } = useAgentChat();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const wasStreamingRef = useRef(false);
@@ -139,10 +183,19 @@ export default function LabAssistantPage() {
 
   return (
     <div className="flex h-[calc(100vh-4rem)] gap-4">
-      <div className="w-64 shrink-0 space-y-2 overflow-y-auto">
+      {/* Mobile overlay */}
+      {sidebarOpen && (
+        <div className="fixed inset-0 bg-black/30 z-40 md:hidden" onClick={() => setSidebarOpen(false)} />
+      )}
+
+      {/* Sidebar */}
+      <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-xl transform transition-transform md:relative md:transform-none md:shadow-none md:bg-transparent ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'} flex flex-col gap-2 p-4 pt-16 md:pt-0 overflow-y-auto`}>
+        <button className="absolute top-4 right-4 md:hidden" onClick={() => setSidebarOpen(false)}>
+          <X className="h-5 w-5 text-gray-500" />
+        </button>
         <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider px-2">Conversations</h3>
         <button
-          onClick={() => { setConvId(undefined); setMessages([]); reset(); }}
+          onClick={() => { setConvId(undefined); setMessages([]); reset(); setSidebarOpen(false); }}
           className="w-full text-left px-3 py-2 rounded-lg bg-ocean-50 text-ocean-600 text-sm font-medium hover:bg-ocean-100 transition-colors"
         >
           + New Chat
@@ -150,7 +203,7 @@ export default function LabAssistantPage() {
         {conversations.map((c: AgentConversation) => (
           <button
             key={c.id}
-            onClick={() => handleSelectConversation(c.id)}
+            onClick={() => { handleSelectConversation(c.id); setSidebarOpen(false); }}
             className={`w-full text-left px-3 py-2 rounded-lg text-sm truncate transition-colors ${convId === c.id ? 'bg-gray-100 text-gray-900' : 'text-gray-600 hover:bg-gray-50'}`}
           >
             {c.title || 'Untitled'}
@@ -161,11 +214,19 @@ export default function LabAssistantPage() {
       <div className="flex-1 flex flex-col">
         <Card className="flex-1 flex flex-col overflow-hidden">
           <div className="px-4 py-3 border-b border-gray-200 flex items-center gap-2">
+            <button className="md:hidden p-1.5 rounded-lg hover:bg-gray-100" onClick={() => setSidebarOpen(true)}>
+              <Menu className="h-5 w-5 text-gray-600" />
+            </button>
             <Bot className="h-5 w-5 text-ocean-500" />
             <h2 className="font-semibold text-gray-900">Sandy's AI Lab Assistant</h2>
             {activeAgent && <AgentBadge agent={activeAgent} />}
             {isStreaming && <Loader2 className="h-4 w-4 animate-spin text-ocean-500 ml-auto" />}
           </div>
+          {(isStreaming || (events.length > 0 && events.some(e => e.type === 'route'))) && (
+            <div className="px-4 pb-2">
+              <AgentFlowVisualizer events={events} activeAgent={activeAgent} />
+            </div>
+          )}
 
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
             {messages.length === 0 && !isStreaming && (
