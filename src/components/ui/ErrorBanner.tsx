@@ -13,18 +13,18 @@ const categoryConfig: Record<
 > = {
   server: {
     icon: '⚠',
-    containerClass: 'bg-red-50 border-red-200 text-red-800',
-    iconClass: 'text-red-500',
+    containerClass: 'bg-bb-danger-light border-bb-coral/30 text-bb-danger',
+    iconClass: 'text-bb-coral',
   },
   client: {
     icon: 'ℹ',
-    containerClass: 'bg-amber-50 border-amber-200 text-amber-800',
-    iconClass: 'text-amber-500',
+    containerClass: 'bg-bb-warning-light border-bb-pineapple/30 text-bb-warning',
+    iconClass: 'text-bb-pineapple',
   },
   unknown: {
     icon: '⚠',
-    containerClass: 'bg-red-50 border-red-200 text-red-800',
-    iconClass: 'text-red-500',
+    containerClass: 'bg-bb-danger-light border-bb-coral/30 text-bb-danger',
+    iconClass: 'text-bb-coral',
   },
 };
 
@@ -35,7 +35,7 @@ export function ErrorBanner({ error, className }: ErrorBannerProps) {
   const config = categoryConfig[category];
 
   return (
-    <div className={cn('mb-4 rounded-lg border px-4 py-3 text-sm', config.containerClass, className)}>
+    <div className={cn('mb-4 rounded-2xl border-2 px-4 py-3 text-sm shadow-warm', config.containerClass, className)}>
       <div className="flex items-start gap-2">
         <span className={cn('shrink-0 text-base leading-5', config.iconClass)}>{config.icon}</span>
         <span>{message}</span>

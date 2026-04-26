@@ -62,7 +62,7 @@ export default function SecurityPage() {
 
   return (
     <div>
-      <Link to="/dashboard" className="inline-flex items-center gap-1.5 text-sm text-ocean-300 hover:text-white font-bold mb-4">
+      <Link to="/dashboard" className="inline-flex items-center gap-1.5 text-sm text-bb-porthole hover:text-white font-bold mb-4">
         <ArrowLeft className="h-4 w-4" />
         ← Back to Dashboard
       </Link>
@@ -76,7 +76,7 @@ export default function SecurityPage() {
       <Card className="mb-6">
         <CardHeader className="flex flex-row items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="h-11 w-11 rounded-xl bg-gary-50 flex items-center justify-center text-xl">
+            <div className="h-11 w-11 rounded-xl bg-bb-purple-light/20 flex items-center justify-center text-xl">
               🛡️
             </div>
             <div>
@@ -113,13 +113,13 @@ export default function SecurityPage() {
             </div>
           ) : (
             <div className="space-y-4">
-              <div className="flex items-start gap-3 p-4 bg-sponge-50 rounded-xl border-2 border-sponge-200">
+              <div className="flex items-start gap-3 p-4 bg-bb-warning-light rounded-2xl border-2 border-bb-pineapple/30">
                 <span className="text-xl">⚠️</span>
                 <div>
-                  <p className="text-sm font-bold text-sponge-700">
+                  <p className="text-sm font-bold text-bb-pineapple-dark">
                     Your Treedome is not protected!
                   </p>
-                  <p className="text-sm text-sponge-600 mt-1">
+                  <p className="text-sm text-bb-pineapple mt-1">
                     Enable two-factor authentication to add an extra layer of security.
                   </p>
                 </div>
@@ -136,7 +136,7 @@ export default function SecurityPage() {
         <Card>
           <CardHeader>
             <div className="flex items-center gap-3">
-              <div className="h-11 w-11 rounded-xl bg-ocean-50 flex items-center justify-center text-xl">
+              <div className="h-11 w-11 rounded-xl bg-bb-ocean/15 flex items-center justify-center text-xl">
                 🔑
               </div>
               <div>
@@ -186,8 +186,8 @@ export default function SecurityPage() {
       </Modal>
 
       <Modal open={showBackupModal} onClose={() => setShowBackupModal(false)} title="🔑 Your Backup Codes">
-        <div className="mb-4 p-3 bg-sponge-50 rounded-xl border-2 border-sponge-200">
-          <p className="text-sm text-sponge-700 font-bold">
+        <div className="mb-4 p-3 bg-bb-warning-light rounded-2xl border-2 border-bb-pineapple/30">
+          <p className="text-sm text-bb-pineapple-dark font-bold">
             Save these backup codes in a safe place. Each code can only be used once.
           </p>
         </div>
@@ -195,7 +195,7 @@ export default function SecurityPage() {
           {backupCodes.map((code) => (
             <div
               key={code}
-              className="px-3 py-2 bg-ocean-50 rounded-xl font-mono text-sm text-center font-bold text-ocean-800"
+              className="px-3 py-2 bg-bb-sand-light rounded-2xl font-mono text-sm text-center font-bold text-bb-brown"
             >
               {code}
             </div>

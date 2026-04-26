@@ -94,7 +94,7 @@ export default function AdminLoginPage() {
 
       <p className="mt-6 text-center text-sm text-ocean-400">
         Regular researcher?{' '}
-        <Link to="/login" className="text-sponge-500 hover:text-sponge-600 font-bold">
+        <Link to="/login" className="text-bb-pineapple hover:text-bb-pineapple-dark font-bold">
           🧽 Sign in here
         </Link>
       </p>

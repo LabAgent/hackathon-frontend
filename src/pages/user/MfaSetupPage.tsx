@@ -64,14 +64,14 @@ export default function MfaSetupPage() {
               <h2 className="text-lg font-bold text-ocean-800 font-[var(--font-display)]">Two-factor authentication is now enabled!</h2>
               <p className="text-sm text-ocean-500 mt-1">Save these backup codes in a safe place</p>
             </div>
-            <div className="bg-sponge-50 rounded-xl p-3 mb-4 border-2 border-sponge-200">
-              <p className="text-sm text-sponge-700 font-bold">
+            <div className="bg-bb-warning-light rounded-2xl p-3 mb-4 border-2 border-bb-pineapple/30">
+              <p className="text-sm text-bb-pineapple-dark font-bold">
                 🔑 Each backup code can only be used once. Store them securely.
               </p>
             </div>
             <div className="grid grid-cols-2 gap-2 mb-6">
               {backupCodes.map((code) => (
-                <div key={code} className="px-3 py-2 bg-ocean-50 rounded-xl font-mono text-sm text-center font-bold text-ocean-800">
+                <div key={code} className="px-3 py-2 bg-bb-sand-light rounded-2xl font-mono text-sm text-center font-bold text-bb-brown">
                   {code}
                 </div>
               ))}
@@ -124,7 +124,7 @@ export default function MfaSetupPage() {
               <div>
                 <p className="text-sm text-ocean-500 mb-2 font-medium">Or enter the secret manually:</p>
                 <div className="flex items-center gap-2">
-                  <code className="flex-1 px-3 py-2 bg-ocean-50 rounded-xl text-xs break-all font-bold text-ocean-800">
+                  <code className="flex-1 px-3 py-2 bg-bb-sand-light rounded-2xl text-xs break-all font-bold text-bb-brown">
                     {setupMfa.data.secret}
                   </code>
                   <Button
@@ -173,7 +173,7 @@ export default function MfaSetupPage() {
       )}
 
       <div className="mt-4">
-        <Button variant="ghost" onClick={() => navigate('/security')} className="text-ocean-300 hover:bg-white/10">
+        <Button variant="ghost" onClick={() => navigate('/security')} className="text-bb-porthole hover:bg-white/10">
           ← Back to Security
         </Button>
       </div>

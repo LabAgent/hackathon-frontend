@@ -64,7 +64,7 @@ export default function ProfilePage() {
 
   return (
     <div>
-      <Link to="/dashboard" className="inline-flex items-center gap-1.5 text-sm text-ocean-300 hover:text-white font-bold mb-4">
+      <Link to="/dashboard" className="inline-flex items-center gap-1.5 text-sm text-bb-porthole hover:text-white font-bold mb-4">
         <ArrowLeft className="h-4 w-4" />
         ← Back to Dashboard
       </Link>
@@ -84,13 +84,13 @@ export default function ProfilePage() {
           <CardContent className="flex flex-col items-center py-8">
             <div className="relative">
               {profile.image ? (
-                <img src={profile.image} alt="" className="h-24 w-24 rounded-full object-cover border-4 border-sponge-400" />
+                <img src={profile.image} alt="" className="h-24 w-24 rounded-full object-cover border-4 border-bb-pineapple" />
               ) : (
-                <div className="h-24 w-24 rounded-full bg-gradient-to-br from-sponge-400 to-sponge-500 text-ocean-900 flex items-center justify-center text-2xl font-bold shadow-lg">
+                <div className="h-24 w-24 rounded-full bg-gradient-to-br from-bb-pineapple to-bb-yellow text-white flex items-center justify-center text-2xl font-bold shadow-warm-lg">
                   {getInitials(profile.fullName)}
                 </div>
               )}
-              <label className="absolute bottom-0 right-0 h-9 w-9 bg-gradient-to-r from-sponge-400 to-sponge-500 rounded-full flex items-center justify-center cursor-pointer hover:from-sponge-300 hover:to-sponge-400 transition-all shadow-lg">
+              <label className="absolute bottom-0 right-0 h-9 w-9 bg-gradient-to-r from-bb-pineapple to-bb-pineapple-light text-white rounded-full flex items-center justify-center cursor-pointer hover:from-bb-pineapple-light hover:to-bb-yellow transition-all shadow-warm-lg">
                 <Camera className="h-4 w-4 text-ocean-900" />
                 <input
                   type="file"

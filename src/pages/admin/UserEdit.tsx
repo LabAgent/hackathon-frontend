@@ -61,7 +61,7 @@ export default function UserEdit() {
   return (
     <div>
       <div className="flex items-center gap-3 mb-6">
-        <Link to={`/admin/users/${id}`} className="p-2 text-ocean-400 hover:text-white hover:bg-white/10 rounded-xl transition-all">
+        <Link to={`/admin/users/${id}`} className="p-2 text-bb-porthole hover:text-white hover:bg-white/15 rounded-2xl transition-all">
           <ArrowLeft className="h-5 w-5" />
         </Link>
         <h1 className="text-2xl font-bold text-white font-[var(--font-display)] flex items-center gap-2">
@@ -89,18 +89,18 @@ export default function UserEdit() {
             />
 
             <div className="space-y-1.5">
-              <label htmlFor="role" className="block text-sm font-semibold text-ocean-700">Role</label>
+              <label htmlFor="role" className="block text-sm font-semibold text-bb-brown-light">Role</label>
               <select
                 id="role"
                 {...reg('role')}
-                className="block w-full rounded-xl border-2 border-ocean-200 px-3 py-2.5 text-sm focus:outline-none focus:border-sponge-400 transition-all"
+                className="wooden-input block w-full px-3 py-2.5 text-sm"
               >
                 <option value="user">🧽 User</option>
                 <option value="admin">🦀 Admin</option>
                 <option value="researcher">🔬 Researcher</option>
                 <option value="lab_assistant">🐿️ Lab Assistant</option>
               </select>
-              {errors.role && <p className="text-sm text-krabs-400 font-medium">{errors.role.message}</p>}
+              {errors.role && <p className="text-sm text-bb-coral font-medium">{errors.role.message}</p>}
             </div>
 
             <div className="flex items-center gap-3">
@@ -108,14 +108,14 @@ export default function UserEdit() {
                 type="checkbox"
                 id="isActive"
                 {...reg('isActive')}
-                className="h-4 w-4 rounded border-ocean-300 text-sponge-500 focus:ring-sponge-400"
+                className="h-4 w-4 rounded border-bb-sand-dark text-bb-pineapple focus:ring-bb-pineapple"
               />
-              <label htmlFor="isActive" className="text-sm text-ocean-700 font-semibold">
-                Account Active {isActive !== undefined && <span className="text-ocean-400">({isActive ? '✅ Currently active' : '💤 Currently inactive'})</span>}
+                <label htmlFor="isActive" className="text-sm text-bb-brown-light font-semibold">
+                Account Active {isActive !== undefined && <span className="text-bb-stone">({isActive ? '✅ Currently active' : '💤 Currently inactive'})</span>}
               </label>
             </div>
 
-            <div className="flex justify-end gap-3 pt-4 border-t-2 border-ocean-100">
+            <div className="flex justify-end gap-3 pt-4 border-t-2 border-bb-sand/30">
               <Link to={`/admin/users/${id}`}>
                 <Button variant="secondary" type="button">Cancel</Button>
               </Link>

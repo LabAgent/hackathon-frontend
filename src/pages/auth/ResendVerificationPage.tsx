@@ -43,7 +43,7 @@ export default function ResendVerificationPage() {
       {sent ? (
         <div className="text-center">
           <div className="text-5xl mb-4">✅</div>
-          <p className="text-kelp-600 mb-4 font-medium">Verification code sent! Check your inbox.</p>
+          <p className="text-bb-success mb-4 font-medium">Verification code sent! Check your inbox.</p>
           <div className="space-y-2">
             <Link to="/verify-email">
               <Button variant="ocean" className="w-full">Enter Code</Button>
@@ -70,7 +70,7 @@ export default function ResendVerificationPage() {
             </Button>
           </form>
           <p className="mt-4 text-center text-sm text-ocean-400">
-            <Link to="/login" className="text-sponge-500 hover:text-sponge-600 font-bold">
+            <Link to="/login" className="text-bb-pineapple hover:text-bb-pineapple-dark font-bold">
               ← Back to Login
             </Link>
           </p>

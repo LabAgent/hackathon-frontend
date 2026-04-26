@@ -19,8 +19,8 @@ const EXPERIMENT_STATUS_OPTIONS: { value: ExperimentStatus; label: string }[] = 
   { value: 'failed', label: 'Failed' },
 ];
 
-const inputCls = 'w-full rounded-xl border-2 border-ocean-200 px-3 py-2.5 text-sm focus:outline-none focus:border-sponge-400 bg-white transition-colors';
-const labelCls = 'block text-sm font-semibold text-ocean-700 mb-1';
+const inputCls = 'wooden-input w-full px-3 py-2.5 text-sm transition-colors';
+const labelCls = 'block text-sm font-semibold text-bb-brown-light mb-1';
 
 export default function ResearchDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -230,7 +230,7 @@ export default function ResearchDetailPage() {
         </CardHeader>
         <CardContent>
           {showAddExp && (
-            <div className="space-y-3 mb-4 p-4 bg-ocean-50/50 rounded-xl border-2 border-ocean-100">
+            <div className="space-y-3 mb-4 p-4 bg-bb-sand-light/40 rounded-xl border-2 border-bb-sand/30">
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className={labelCls}>Status</label>
@@ -268,7 +268,7 @@ export default function ResearchDetailPage() {
 
           <div className="space-y-3">
             {(project.experiments || []).map((exp: ExperimentsLog) => (
-              <div key={exp.id} className="flex items-start justify-between py-3 border-b border-ocean-100 last:border-0 gap-3">
+              <div key={exp.id} className="flex items-start justify-between py-3 border-b border-bb-sand/30 last:border-0 gap-3">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1 flex-wrap">
                     <span className={`text-xs px-2 py-0.5 rounded-full font-bold ${expStatusColor(exp.status || 'planned')}`}>
@@ -314,7 +314,7 @@ export default function ResearchDetailPage() {
         </CardHeader>
         <CardContent>
           {showAddReq && (
-            <div className="space-y-3 mb-4 p-4 bg-ocean-50/50 rounded-xl border-2 border-ocean-100">
+            <div className="space-y-3 mb-4 p-4 bg-bb-sand-light/40 rounded-xl border-2 border-bb-sand/30">
               <div>
                 <label className={labelCls}>Inventory Item</label>
                 <select className={inputCls} value={reqItemId} onChange={(e) => setReqItemId(Number(e.target.value))}>
@@ -337,7 +337,7 @@ export default function ResearchDetailPage() {
 
           <div className="space-y-3">
             {(project.requirements || []).map((req) => (
-              <div key={req.id} className="flex items-center justify-between py-3 border-b border-ocean-100 last:border-0 gap-3">
+              <div key={req.id} className="flex items-center justify-between py-3 border-b border-bb-sand/30 last:border-0 gap-3">
                 <div className="min-w-0">
                   <p className="font-bold text-sm text-ocean-800">{req.inventory?.name || `Item #${req.inventoryId}`}</p>
                   <p className="text-xs text-ocean-400">Required: {req.requiredQuantity} units</p>

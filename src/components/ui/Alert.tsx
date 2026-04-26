@@ -8,15 +8,15 @@ interface AlertProps {
 }
 
 const variantStyles = {
-  error: 'bg-danger-50 text-danger-700 border-danger-200',
-  success: 'bg-success-50 text-success-700 border-success-200',
-  warning: 'bg-warning-50 text-warning-600 border-warning-200',
-  info: 'bg-primary-50 text-primary-700 border-primary-200',
+  error: 'bg-bb-danger-light text-bb-danger border-bb-coral/30',
+  success: 'bg-bb-success-light text-bb-success border-bb-tropical/30',
+  warning: 'bg-bb-warning-light text-bb-warning border-bb-pineapple/30',
+  info: 'bg-bb-info-light text-bb-info border-bb-ocean/30',
 };
 
 export function Alert({ variant = 'info', children, className }: AlertProps) {
   return (
-    <div className={cn('rounded-lg border px-4 py-3 text-sm', variantStyles[variant], className)}>
+    <div className={cn('rounded-2xl border-2 px-4 py-3 text-sm shadow-warm', variantStyles[variant], className)}>
       {children}
     </div>
   );

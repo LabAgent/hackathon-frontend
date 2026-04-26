@@ -19,29 +19,29 @@ export function Table<T>({ columns, data, keyExtractor, className, emptyMessage 
     <div className={cn('overflow-x-auto', className)}>
       <table className="w-full">
         <thead>
-          <tr className="border-b border-gray-200">
+          <tr className="border-b-2 border-bb-sand/40">
             {columns.map((col) => (
               <th
                 key={col.key}
-                className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                className="px-4 py-3 text-left text-xs font-bold text-bb-stone uppercase tracking-wider font-[var(--font-display)]"
               >
                 {col.header}
               </th>
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-200">
+        <tbody className="divide-y divide-bb-sand/25">
           {data.length === 0 ? (
             <tr>
-              <td colSpan={columns.length} className="px-4 py-8 text-center text-gray-500">
+              <td colSpan={columns.length} className="px-4 py-8 text-center text-bb-stone">
                 {emptyMessage}
               </td>
             </tr>
           ) : (
             data.map((item) => (
-              <tr key={keyExtractor(item)} className="hover:bg-gray-50 transition-colors">
+              <tr key={keyExtractor(item)} className="hover:bg-bb-sand/15 transition-colors">
                 {columns.map((col) => (
-                  <td key={col.key} className="px-4 py-3 text-sm text-gray-700">
+                  <td key={col.key} className="px-4 py-3 text-sm text-bb-brown-light">
                     {col.render
                       ? col.render(item)
                       : String((item as Record<string, unknown>)[col.key] ?? '—')}

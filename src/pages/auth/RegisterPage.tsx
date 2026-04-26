@@ -99,7 +99,7 @@ export default function RegisterPage() {
 
       <p className="mt-6 text-center text-sm text-ocean-400">
         Already a researcher?{' '}
-        <Link to="/login" className="text-sponge-500 hover:text-sponge-600 font-bold">
+        <Link to="/login" className="text-bb-pineapple hover:text-bb-pineapple-dark font-bold">
           Dive back in!
         </Link>
       </p>

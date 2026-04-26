@@ -30,13 +30,13 @@ export function Pagination({ page, totalPages, onPageChange, className }: Pagina
       <button
         onClick={() => onPageChange(page - 1)}
         disabled={page <= 1}
-        className="px-3 py-1.5 text-sm rounded-md border border-gray-300 disabled:opacity-50 disabled:pointer-events-none hover:bg-gray-50 transition-colors"
+        className="px-3 py-1.5 text-sm rounded-xl border-2 border-bb-sand-dark/30 bg-bb-sand-light/80 text-bb-brown disabled:opacity-50 disabled:pointer-events-none hover:bg-bb-sand hover:scale-[1.03] transition-all font-bold font-[var(--font-display)]"
       >
         Prev
       </button>
       {uniquePages.map((p, i) =>
         typeof p === 'string' ? (
-          <span key={`dots-${i}`} className="px-2 text-gray-400">
+          <span key={`dots-${i}`} className="px-2 text-bb-stone">
             ...
           </span>
         ) : (
@@ -44,10 +44,10 @@ export function Pagination({ page, totalPages, onPageChange, className }: Pagina
             key={p}
             onClick={() => onPageChange(p)}
             className={cn(
-              'px-3 py-1.5 text-sm rounded-md transition-colors',
+              'px-3 py-1.5 text-sm rounded-xl transition-all font-bold font-[var(--font-display)]',
               p === page
-                ? 'bg-primary-600 text-white'
-                : 'border border-gray-300 hover:bg-gray-50',
+                ? 'bg-bb-pineapple text-white border-2 border-bb-pineapple-dark shadow-warm'
+                : 'border-2 border-bb-sand-dark/30 bg-bb-sand-light/80 text-bb-brown hover:bg-bb-sand hover:scale-[1.03]',
             )}
           >
             {p}
@@ -57,7 +57,7 @@ export function Pagination({ page, totalPages, onPageChange, className }: Pagina
       <button
         onClick={() => onPageChange(page + 1)}
         disabled={page >= totalPages}
-        className="px-3 py-1.5 text-sm rounded-md border border-gray-300 disabled:opacity-50 disabled:pointer-events-none hover:bg-gray-50 transition-colors"
+        className="px-3 py-1.5 text-sm rounded-xl border-2 border-bb-sand-dark/30 bg-bb-sand-light/80 text-bb-brown disabled:opacity-50 disabled:pointer-events-none hover:bg-bb-sand hover:scale-[1.03] transition-all font-bold font-[var(--font-display)]"
       >
         Next
       </button>

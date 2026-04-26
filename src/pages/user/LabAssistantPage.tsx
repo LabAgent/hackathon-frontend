@@ -80,7 +80,7 @@ function ThinkingBlock({ events, reasoning }: { events: ProgressEvent[]; reasoni
         <ChevronDown className={`h-4 w-4 transition-transform ${expanded ? 'rotate-180' : ''}`} />
       </button>
       {expanded && (
-        <div className="bg-gary-50/50 border-2 border-gary-100 rounded-xl p-3 space-y-2 max-h-60 overflow-y-auto">
+        <div className="bg-bb-purple-light/15 border-2 border-bb-purple-light/30 rounded-xl p-3 space-y-2 max-h-60 overflow-y-auto">
           {reasoning && <p className="text-gary-600 text-xs italic">{reasoning}<span className="animate-pulse">|</span></p>}
           {events.filter(e => e.type === 'tool_call' || e.type === 'tool_result' || e.type === 'route').map((e, i) => (
             <div key={i} className="text-xs">
@@ -184,7 +184,7 @@ export default function LabAssistantPage() {
 
       <div className={`fixed inset-y-0 left-0 z-50 w-72 flex flex-col transition-transform duration-300 md:relative md:transform-none ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}
         style={{
-          background: 'linear-gradient(180deg, rgba(0,30,61,0.92) 0%, rgba(0,55,100,0.95) 50%, rgba(0,72,119,0.92) 100%)',
+          background: 'linear-gradient(180deg, rgba(74,90,104,0.95) 0%, rgba(61,77,90,0.97) 50%, rgba(53,69,80,0.95) 100%)',
           backdropFilter: 'blur(20px)',
         }}
       >
@@ -203,7 +203,7 @@ export default function LabAssistantPage() {
             onClick={() => { setConvId(undefined); setMessages([]); reset(); setSidebarOpen(false); }}
             className={`w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-bold transition-all ${
               !convId
-                ? 'bg-sponge-400/20 text-sponge-300 border border-sponge-400/30'
+                ? 'bg-bb-pineapple/20 text-bb-pineapple-light border border-bb-pineapple/30'
                 : 'bg-white/5 text-ocean-200 hover:bg-white/10 border border-transparent'
             }`}
           >
@@ -255,7 +255,7 @@ export default function LabAssistantPage() {
 
       <div className="flex-1 flex flex-col">
         <Card className="flex-1 flex flex-col overflow-hidden">
-          <div className="px-4 py-3 border-b-2 border-ocean-100 flex items-center gap-2">
+          <div className="px-4 py-3 border-b-2 border-bb-sand/40 flex items-center gap-2">
             <button className="md:hidden p-1.5 rounded-lg hover:bg-ocean-50" onClick={() => setSidebarOpen(true)}>
               <Menu className="h-5 w-5 text-ocean-500" />
             </button>
@@ -285,7 +285,7 @@ export default function LabAssistantPage() {
                     '🦀 What supplies need reordering?',
                     '🔬 Create a new Jellyfish Migration project',
                   ].map(s => (
-                    <button key={s} onClick={() => setInput(s.replace(/^[^\s]+ /, ''))} className="text-xs px-3 py-1.5 rounded-full bg-ocean-50 text-ocean-600 hover:bg-sponge-50 hover:text-sponge-700 transition-all font-bold">{s}</button>
+                    <button key={s} onClick={() => setInput(s.replace(/^[^\s]+ /, ''))} className="text-xs px-3 py-1.5 rounded-full bg-bb-sand/40 text-bb-brown-light hover:bg-bb-pineapple/15 hover:text-bb-pineapple transition-all font-bold">{s}</button>
                   ))}
                 </div>
               </div>
@@ -300,8 +300,8 @@ export default function LabAssistantPage() {
                 )}
                 <div className={`max-w-[70%] rounded-2xl px-4 py-3 text-sm ${
                   msg.role === 'user'
-                    ? 'bg-gradient-to-r from-sponge-400 to-sponge-500 text-ocean-900 font-medium'
-                    : 'bg-ocean-50 text-ocean-800'
+                    ? 'bg-gradient-to-r from-bb-pineapple to-bb-pineapple-light text-white font-medium'
+                    : 'bg-bb-sand-light/60 text-ocean-800'
                 }`}>
                   <p className="whitespace-pre-wrap">{msg.content}</p>
                 </div>
@@ -325,7 +325,7 @@ export default function LabAssistantPage() {
             )}
 
             {error && (
-              <div className="bg-krabs-50 text-krabs-500 rounded-xl px-4 py-2.5 text-sm font-medium">🚨 {error}</div>
+              <div className="bg-bb-danger-light text-bb-coral rounded-xl px-4 py-2.5 text-sm font-medium">🚨 {error}</div>
             )}
             <div ref={messagesEndRef} />
           </div>
@@ -333,7 +333,7 @@ export default function LabAssistantPage() {
           <div className="px-4 py-3 border-t-2 border-ocean-100">
             <div className="flex gap-2">
               <input
-                className="flex-1 rounded-xl border-2 border-ocean-200 px-4 py-2.5 text-sm focus:outline-none focus:border-sponge-400 bg-white/90 transition-all"
+                className="flex-1 rounded-xl border-2 border-bb-sand-dark/40 px-4 py-2.5 text-sm focus:outline-none focus:border-bb-pineapple bg-bb-sand-light/92 transition-all"
                 placeholder="Ask Karen's Lab Assistant..."
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
@@ -343,7 +343,7 @@ export default function LabAssistantPage() {
               <button
                 onClick={handleSend}
                 disabled={isStreaming || !input.trim()}
-                className="px-5 py-2.5 bg-gradient-to-r from-sponge-400 to-sponge-500 text-ocean-900 rounded-xl hover:from-sponge-300 hover:to-sponge-400 disabled:opacity-50 transition-all font-bold shadow-lg shadow-sponge-400/20"
+                className="px-5 py-2.5 bg-gradient-to-r from-bb-pineapple to-bb-pineapple-light text-white rounded-xl hover:from-bb-pineapple-light hover:to-bb-yellow disabled:opacity-50 transition-all font-bold shadow-warm-lg"
               >
                 <Send className="h-4 w-4" />
               </button>

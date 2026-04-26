@@ -32,7 +32,7 @@ export default function UserDetail() {
     <div>
       <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
         <div className="flex items-center gap-3">
-          <Link to="/admin/users" className="p-2 text-ocean-400 hover:text-white hover:bg-white/10 rounded-xl transition-all">
+          <Link to="/admin/users" className="p-2 text-bb-porthole hover:text-white hover:bg-white/15 rounded-2xl transition-all">
             <ArrowLeft className="h-5 w-5" />
           </Link>
           <h1 className="text-2xl font-bold text-white font-[var(--font-display)] flex items-center gap-2">
@@ -48,14 +48,14 @@ export default function UserDetail() {
         <Card>
           <CardContent className="flex flex-col items-center py-8">
             {user.image ? (
-              <img src={user.image} alt="" className="h-24 w-24 rounded-full object-cover mb-4 border-4 border-sponge-400" />
+              <img src={user.image} alt="" className="h-24 w-24 rounded-full object-cover mb-4 border-4 border-bb-pineapple" />
             ) : (
-              <div className="h-24 w-24 rounded-full bg-gradient-to-br from-sponge-400 to-sponge-500 text-ocean-900 flex items-center justify-center text-2xl font-bold mb-4 shadow-lg">
+              <div className="h-24 w-24 rounded-full bg-gradient-to-br from-bb-pineapple to-bb-yellow text-white flex items-center justify-center text-2xl font-bold mb-4 shadow-warm">
                 {getInitials(user.fullName)}
               </div>
             )}
-            <h2 className="text-lg font-bold text-ocean-800 font-[var(--font-display)]">{user.fullName}</h2>
-            <p className="text-sm text-ocean-500">{user.email}</p>
+            <h2 className="text-lg font-bold text-bb-brown font-[var(--font-display)]">{user.fullName}</h2>
+            <p className="text-sm text-bb-stone">{user.email}</p>
             <div className="flex gap-2 mt-3">
               <Badge variant={user.role === 'admin' ? 'info' : 'default'}>{user.role}</Badge>
               <Badge variant={user.isActive ? 'success' : 'danger'}>{user.isActive ? '✅ Active' : '❌ Inactive'}</Badge>
@@ -72,12 +72,12 @@ export default function UserDetail() {
           <CardContent>
             <dl className="space-y-4">
               {details.map(({ label, value, emoji }) => (
-                <div key={label} className="flex items-center justify-between py-2 border-b border-ocean-100 last:border-0">
-                  <dt className="flex items-center gap-2 text-sm text-ocean-500 font-medium">
+                <div key={label} className="flex items-center justify-between py-2 border-b border-bb-sand/30 last:border-0">
+                  <dt className="flex items-center gap-2 text-sm text-bb-stone font-medium">
                     <span>{emoji}</span>
                     {label}
                   </dt>
-                  <dd className="text-sm font-bold text-ocean-800">{value}</dd>
+                  <dd className="text-sm font-bold text-bb-brown">{value}</dd>
                 </div>
               ))}
             </dl>

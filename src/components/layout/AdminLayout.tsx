@@ -19,8 +19,8 @@ function KrustyKrabScene() {
   return (
     <div className="sb-scene">
       <div className="sand-floor" style={{
-        background: 'linear-gradient(0deg, rgba(229,57,53,0.12) 0%, rgba(229,57,53,0.06) 30%, rgba(229,57,53,0.02) 70%, transparent 100%)',
-        borderTopColor: 'rgba(229,57,53,0.08)',
+        background: 'linear-gradient(0deg, rgba(232,96,96,0.12) 0%, rgba(232,96,96,0.06) 30%, rgba(232,96,96,0.02) 70%, transparent 100%)',
+        borderTopColor: 'rgba(232,96,96,0.08)',
       }} />
 
       <div className="kelp-decor kelp-left" style={{ opacity: 0.15 }} />
@@ -38,8 +38,8 @@ function KrustyKrabScene() {
       </div>
 
       <div className="ocean-waves">
-        <div className="ocean-wave" style={{ background: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 60'%3E%3Cpath fill='%23E53935' fill-opacity='0.08' d='M0,30 C360,60 720,0 1080,30 C1260,45 1350,15 1440,30 L1440,60 L0,60 Z'/%3E%3C/svg%3E\") repeat-x" }} />
-        <div className="ocean-wave" style={{ background: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 60'%3E%3Cpath fill='%23E53935' fill-opacity='0.05' d='M0,30 C360,60 720,0 1080,30 C1260,45 1350,15 1440,30 L1440,60 L0,60 Z'/%3E%3C/svg%3E\") repeat-x" }} />
+        <div className="ocean-wave" style={{ background: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 60'%3E%3Cpath fill='%23E86060' fill-opacity='0.08' d='M0,30 C360,60 720,0 1080,30 C1260,45 1350,15 1440,30 L1440,60 L0,60 Z'/%3E%3C/svg%3E\") repeat-x" }} />
+        <div className="ocean-wave" style={{ background: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 60'%3E%3Cpath fill='%23E86060' fill-opacity='0.05' d='M0,30 C360,60 720,0 1080,30 C1260,45 1350,15 1440,30 L1440,60 L0,60 Z'/%3E%3C/svg%3E\") repeat-x" }} />
       </div>
     </div>
   );
@@ -70,8 +70,9 @@ export function AdminLayout() {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden"
-      style={{ background: 'linear-gradient(180deg, #1a0a0a 0%, #2d1010 25%, #3d1a1a 50%, #4d2020 75%, #5c2828 100%)' }}
+    <div
+      className="min-h-screen relative"
+      style={{ background: 'linear-gradient(180deg, #354550 0%, #3D4D5A 25%, #4A5A68 50%, #5A6B7A 75%, #6E7E8C 100%)' }}
     >
       <KrustyKrabScene />
 
@@ -83,46 +84,50 @@ export function AdminLayout() {
       )}
 
       <aside
-        className={`fixed top-0 left-0 z-50 h-full w-64 bg-ocean-900/95 backdrop-blur-2xl border-r-2 border-krabs-400/20 text-white transition-transform duration-300 lg:translate-x-0 ${
+        className={`fixed top-0 left-0 bottom-0 z-50 w-64 moai-sidebar backdrop-blur-2xl border-r-2 border-bb-porthole/15 text-white transition-transform duration-300 lg:translate-x-0 ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        <div className="flex items-center justify-between h-16 px-6 border-b-2 border-krabs-400/20">
+        <div className="flex items-center justify-between h-16 px-6 border-b border-white/10 relative z-10">
           <div className="flex items-center gap-2.5">
-            <span className="text-xl">🦀</span>
+            <div className="moai-icon-container">
+              <span className="text-lg">🦀</span>
+            </div>
             <div className="flex flex-col">
-              <span className="font-bold text-krabs-300 text-sm leading-tight font-[var(--font-display)]">Mr. Krabs</span>
-              <span className="text-ocean-400 text-xs">Admin Panel</span>
+              <span className="font-bold text-bb-pineapple text-sm leading-tight font-[var(--font-display)]">Mr. Krabs</span>
+              <span className="text-bb-porthole/70 text-xs">Admin Panel</span>
             </div>
           </div>
-          <button className="lg:hidden text-ocean-400 hover:text-white" onClick={() => setSidebarOpen(false)}>
+          <button className="lg:hidden text-bb-porthole/70 hover:text-white" onClick={() => setSidebarOpen(false)}>
             <X className="h-5 w-5" />
           </button>
         </div>
-        <nav className="p-4 space-y-1">
+        <nav className="p-4 space-y-1 relative z-10">
           {sidebarItems.map((item) => (
             <Link
               key={item.path}
               to={item.path}
               onClick={() => setSidebarOpen(false)}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold transition-all ${
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-2xl text-sm font-bold transition-all ${
                 isActive(item.path)
-                  ? 'bg-krabs-400/20 text-krabs-300'
-                  : 'text-ocean-200 hover:bg-white/10 hover:text-white'
+                  ? 'bg-bb-pineapple/20 text-bb-pineapple-light border border-bb-pineapple/30'
+                  : 'text-bb-porthole-light/80 hover:bg-white/10 hover:text-white'
               }`}
             >
-              <span className="emoji-icon">{item.icon}</span>
+              <div className="moai-icon-container !w-8 !h-8">
+                <span className="text-sm">{item.icon}</span>
+              </div>
               {item.label}
             </Link>
           ))}
         </nav>
       </aside>
 
-      <div className="lg:ml-64">
-        <header className="bg-ocean-900/70 backdrop-blur-2xl border-b-2 border-krabs-400/20 sticky top-0 z-30">
+      <div className="lg:ml-64 min-h-screen flex flex-col">
+        <header className="ocean-road-nav backdrop-blur-2xl sticky top-0 z-30">
           <div className="flex items-center justify-between h-16 px-4 sm:px-6">
             <button
-              className="lg:hidden p-2 text-ocean-300 hover:text-white"
+              className="lg:hidden p-2 text-bb-porthole hover:text-white"
               onClick={() => setSidebarOpen(true)}
             >
               <Menu className="h-5 w-5" />
@@ -132,32 +137,32 @@ export function AdminLayout() {
               <div className="relative">
                 <button
                   onClick={() => setProfileDropdown(!profileDropdown)}
-                  className="flex items-center gap-2 p-1.5 rounded-xl hover:bg-white/10 transition-all"
+                  className="flex items-center gap-2 p-1.5 rounded-2xl hover:bg-white/15 transition-all hover:scale-[1.03]"
                 >
                   {user?.image ? (
-                    <img src={user.image} alt="" className="h-8 w-8 rounded-full object-cover border-2 border-krabs-400" />
+                    <img src={user.image} alt="" className="h-8 w-8 rounded-full object-cover border-2 border-bb-pineapple" />
                   ) : (
-                    <div className="h-9 w-9 rounded-full bg-gradient-to-br from-krabs-400 to-krabs-500 text-white flex items-center justify-center text-sm font-bold shadow-lg">
+                    <div className="h-9 w-9 rounded-full bg-gradient-to-br from-bb-coral to-bb-pineapple text-white flex items-center justify-center text-sm font-bold shadow-warm border-2 border-bb-pineapple-dark">
                       {user ? getInitials(user.fullName) : 'A'}
                     </div>
                   )}
                   <div className="hidden sm:block text-left">
                     <p className="text-sm font-bold text-white">{user?.fullName}</p>
-                    <p className="text-xs text-krabs-300">🦀 Administrator</p>
+                    <p className="text-xs text-bb-pineapple-light">🦀 Administrator</p>
                   </div>
-                  <ChevronDown className="h-4 w-4 text-ocean-300 hidden sm:block" />
+                  <ChevronDown className="h-4 w-4 text-bb-porthole/70 hidden sm:block" />
                 </button>
                 {profileDropdown && (
                   <>
                     <div className="fixed inset-0 z-40" onClick={() => setProfileDropdown(false)} />
-                    <div className="absolute right-0 mt-2 w-48 bg-ocean-800/95 backdrop-blur-xl rounded-2xl border-2 border-krabs-400/20 shadow-2xl z-50 py-2">
-                      <div className="px-4 py-2 border-b border-ocean-700">
+                    <div className="absolute right-0 mt-2 w-48 bg-bb-stone-dark/95 backdrop-blur-xl rounded-2xl border-2 border-bb-porthole/15 shadow-warm-xl z-50 py-2 moai-sidebar">
+                      <div className="px-4 py-2 border-b border-white/10 relative z-10">
                         <p className="text-sm font-bold text-white">{user?.fullName}</p>
-                        <p className="text-xs text-krabs-300">🦀 Administrator</p>
+                        <p className="text-xs text-bb-pineapple-light">🦀 Administrator</p>
                       </div>
                       <button
                         onClick={handleLogout}
-                        className="w-full text-left px-4 py-2.5 text-sm text-krabs-400 hover:bg-krabs-400/10 font-bold flex items-center gap-2"
+                        className="w-full text-left px-4 py-2.5 text-sm text-bb-coral hover:bg-bb-coral/10 font-bold flex items-center gap-2 relative z-10"
                       >
                         <LogOut className="h-4 w-4" />
                         Sign out
@@ -170,7 +175,7 @@ export function AdminLayout() {
           </div>
         </header>
 
-        <main className="p-4 sm:p-6 lg:p-8 relative z-10">
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 relative z-10">
           <Outlet />
         </main>
       </div>

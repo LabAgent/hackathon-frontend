@@ -90,7 +90,7 @@ export default function ResearchPage() {
           <CardContent className="space-y-4">
             <Input placeholder="Project name" value={newName} onChange={(e: any) => setNewName(e.target.value)} />
             <textarea
-              className="w-full rounded-xl border-2 border-ocean-200 p-3 text-sm focus:outline-none focus:border-sponge-400 bg-white/90 transition-all"
+              className="w-full rounded-xl border-2 border-bb-sand-dark/40 p-3 text-sm focus:outline-none focus:border-bb-pineapple bg-white/90 transition-all"
               rows={3}
               placeholder="Description (optional)"
               value={newDesc}
@@ -100,7 +100,7 @@ export default function ResearchPage() {
               <div className="space-y-1">
                 <label className="text-sm font-semibold text-ocean-700">Status</label>
                 <select
-                  className="block w-full rounded-xl border-2 border-ocean-200 px-3 py-2.5 text-sm focus:outline-none focus:border-sponge-400"
+                  className="block w-full rounded-xl border-2 border-bb-sand-dark/40 px-3 py-2.5 text-sm focus:outline-none focus:border-bb-pineapple"
                   value={newStatus}
                   onChange={(e) => setNewStatus(e.target.value as ProjectStatus)}
                 >
@@ -129,7 +129,7 @@ export default function ResearchPage() {
           <div className="space-y-1">
             <label className="text-sm font-semibold text-ocean-700">Description</label>
             <textarea
-              className="w-full rounded-xl border-2 border-ocean-200 p-3 text-sm focus:outline-none focus:border-sponge-400"
+              className="w-full rounded-xl border-2 border-bb-sand-dark/40 p-3 text-sm focus:outline-none focus:border-bb-pineapple"
               rows={3}
               value={editDesc}
               onChange={(e) => setEditDesc(e.target.value)}
@@ -139,8 +139,8 @@ export default function ResearchPage() {
             <div className="space-y-1">
               <label className="text-sm font-semibold text-ocean-700">Status</label>
               <select
-                className="block w-full rounded-xl border-2 border-ocean-200 px-3 py-2.5 text-sm focus:outline-none focus:border-sponge-400"
-                value={editStatus}
+className="block w-full rounded-xl border-2 border-bb-sand-dark/40 px-3 py-2.5 text-sm focus:outline-none focus:border-bb-pineapple"
+                  value={editStatus}
                 onChange={(e) => setEditStatus(e.target.value as ProjectStatus)}
               >
                 {STATUS_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
@@ -173,7 +173,7 @@ export default function ResearchPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filtered.map((r) => (
-            <div key={r.id} className="group bg-white/90 backdrop-blur-xl rounded-2xl p-5 border-2 border-white/40 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-200 h-full">
+            <div key={r.id} className="group bg-bb-sand-light/92 backdrop-blur-xl rounded-3xl p-5 border-2 border-bb-sand-dark/30 shadow-warm-lg hover:shadow-warm-xl hover:-translate-y-1 transition-all duration-200 h-full">
               <Link to={`/research/${r.id}`}>
                 <div className="flex items-start justify-between mb-3">
                   <h3 className="font-bold text-ocean-800 text-sm line-clamp-2 font-[var(--font-display)]">{r.name}</h3>

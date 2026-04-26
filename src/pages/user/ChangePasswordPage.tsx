@@ -56,7 +56,7 @@ export default function ChangePasswordPage() {
 
   return (
     <div>
-      <button onClick={() => navigate('/dashboard')} className="inline-flex items-center gap-1.5 text-sm text-ocean-300 hover:text-white font-bold mb-4">
+      <button onClick={() => navigate('/dashboard')} className="inline-flex items-center gap-1.5 text-sm text-bb-porthole hover:text-white font-bold mb-4">
         <ArrowLeft className="h-4 w-4" />
         ← Back to Dashboard
       </button>

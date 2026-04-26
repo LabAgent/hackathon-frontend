@@ -41,7 +41,7 @@ export default function DashboardPage() {
         </div>
         <Link
           to="/assistant"
-          className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-sponge-400 to-sponge-500 text-ocean-900 rounded-xl hover:from-sponge-300 hover:to-sponge-400 transition-all font-bold shadow-lg shadow-sponge-400/25"
+          className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-bb-pineapple to-bb-pineapple-light text-white rounded-xl hover:from-sponge-300 hover:to-sponge-400 transition-all font-bold shadow-warm-lg"
         >
           <span className="emoji-icon">🤖</span>
           Ask AI Assistant
@@ -51,7 +51,7 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat) => (
           <Link key={stat.label} to={stat.link}>
-            <div className="group bg-white/90 backdrop-blur-xl rounded-2xl p-5 border-2 border-white/40 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-200 cursor-pointer">
+            <div className="group bg-bb-sand-light/92 backdrop-blur-xl rounded-3xl p-5 border-2 border-bb-sand-dark/30 shadow-warm-lg pineapply-panel sandy-texture hover:shadow-xl hover:-translate-y-1 transition-all duration-200 cursor-pointer">
               <div className="flex items-center gap-4">
                 <div className={`p-3 rounded-xl bg-gradient-to-br ${stat.color} text-white text-2xl shadow-lg`}>
                   {stat.emoji}

@@ -57,7 +57,7 @@ export default function LoginPage() {
       </div>
 
       {state?.registered && (
-        <div className="mb-4 p-3 rounded-xl bg-kelp-50 text-kelp-600 text-sm font-medium border-2 border-kelp-200">
+        <div className="mb-4 p-3 rounded-xl bg-bb-success-light text-bb-success text-sm font-medium border-2 border-bb-tropical/30">
           🎉 Registration successful! Please check your email to verify your account, then sign in.
         </div>
       )}
@@ -96,7 +96,7 @@ export default function LoginPage() {
 
       <p className="mt-6 text-center text-sm text-ocean-400">
         New to Bikini Bottom?{' '}
-        <Link to="/register" className="text-sponge-500 hover:text-sponge-600 font-bold">
+        <Link to="/register" className="text-bb-pineapple hover:text-bb-pineapple-dark font-bold">
           Join Sandy's Team
         </Link>
       </p>

@@ -10,22 +10,22 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = 'sponge', size = 'md', loading, disabled, children, ...props }, ref) => {
-    const baseStyles = 'inline-flex items-center justify-center font-bold transition-all rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none font-[var(--font-display)]';
+    const baseStyles = 'inline-flex items-center justify-center font-bold transition-all rounded-2xl focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none font-[var(--font-display)] tracking-wide';
 
     const variants = {
-      primary: 'bg-ocean-500 text-white hover:bg-ocean-600 focus:ring-ocean-400 shadow-lg shadow-ocean-500/20',
-      secondary: 'bg-white/90 text-ocean-700 border-2 border-ocean-200 hover:bg-ocean-50 focus:ring-ocean-400',
-      danger: 'bg-krabs-400 text-white hover:bg-krabs-500 focus:ring-krabs-400 shadow-lg shadow-krabs-400/20',
-      ghost: 'text-ocean-300 hover:bg-white/10 focus:ring-ocean-400',
-      sponge: 'bg-gradient-to-r from-sponge-400 to-sponge-500 text-ocean-900 hover:from-sponge-300 hover:to-sponge-400 focus:ring-sponge-400 shadow-lg shadow-sponge-400/30',
-      ocean: 'bg-gradient-to-r from-ocean-500 to-ocean-600 text-white hover:from-ocean-400 hover:to-ocean-500 focus:ring-ocean-400 shadow-lg shadow-ocean-500/25',
-      patrick: 'bg-gradient-to-r from-patrick-400 to-patrick-500 text-white hover:from-patrick-300 hover:to-patrick-400 focus:ring-patrick-400 shadow-lg shadow-patrick-400/25',
+      primary: 'bg-bb-ocean text-white border-2 border-bb-ocean-dark hover:bg-bb-ocean-light focus:ring-bb-porthole shadow-warm hover:scale-[1.03] active:scale-[0.98]',
+      secondary: 'bg-bb-sand-light/90 text-bb-brown border-2 border-bb-sand-dark hover:bg-bb-sand focus:ring-bb-porthole shadow-warm hover:scale-[1.03] active:scale-[0.98]',
+      danger: 'bg-bb-coral text-white border-2 border-bb-danger hover:bg-bb-coral-light focus:ring-bb-coral shadow-warm hover:scale-[1.03] active:scale-[0.98]',
+      ghost: 'text-bb-porthole hover:bg-bb-sand/20 focus:ring-bb-porthole hover:scale-[1.03] active:scale-[0.98]',
+      sponge: 'bg-gradient-to-r from-bb-pineapple to-bb-pineapple-light text-white border-2 border-bb-pineapple-dark hover:from-bb-pineapple-light hover:to-bb-yellow focus:ring-bb-pineapple shadow-warm hover:scale-[1.03] active:scale-[0.98] hover:shadow-warm-lg',
+      ocean: 'bg-gradient-to-r from-bb-ocean to-bb-ocean-light text-white border-2 border-bb-ocean-dark hover:from-bb-ocean-light hover:to-bb-porthole focus:ring-bb-ocean shadow-warm hover:scale-[1.03] active:scale-[0.98] hover:shadow-warm-lg',
+      patrick: 'bg-gradient-to-r from-bb-coral to-bb-coral-light text-white border-2 border-bb-danger hover:from-bb-coral-light hover:to-bb-pineapple focus:ring-bb-coral shadow-warm hover:scale-[1.03] active:scale-[0.98] hover:shadow-warm-lg',
     };
 
     const sizes = {
-      sm: 'px-3.5 py-1.5 text-sm rounded-lg',
+      sm: 'px-3.5 py-1.5 text-sm rounded-xl',
       md: 'px-5 py-2.5 text-sm',
-      lg: 'px-7 py-3.5 text-base rounded-2xl',
+      lg: 'px-7 py-3.5 text-base rounded-3xl',
     };
 
     return (

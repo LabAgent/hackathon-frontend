@@ -72,18 +72,19 @@ export function UserLayout() {
 
   return (
     <div className="min-h-screen relative overflow-hidden"
-      style={{ background: 'linear-gradient(180deg, #001e3d 0%, #003660 25%, #004a77 50%, #005f99 75%, #0077be 100%)' }}
+      style={{ background: 'linear-gradient(180deg, #2A7583 0%, #3A95A3 25%, #4AB5C4 50%, #6EC8D4 75%, #8AAFC8 100%)' }}
     >
       <Bubbles />
       <SpongeBobScene />
 
-      <nav className="bg-ocean-900/70 backdrop-blur-2xl border-b-2 border-sponge-400/20 sticky top-0 z-30 relative">
+      <nav className="ocean-road-nav backdrop-blur-2xl sticky top-0 z-30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-8">
               <Link to="/dashboard" className="flex items-center gap-2.5">
                 <span className="text-2xl">🧽</span>
-                <span className="font-bold text-sponge-400 text-xl font-[var(--font-display)]">Bikini Bottom Lab</span>
+                <span className="font-bold text-bb-yellow text-xl font-[var(--font-display)]"
+                  style={{ textShadow: '0 2px 6px rgba(42,26,10,0.4)' }}>Bikini Bottom Lab</span>
               </Link>
 
               <div className="hidden md:flex items-center gap-1.5">
@@ -93,11 +94,12 @@ export function UserLayout() {
                     <Link
                       key={item.to}
                       to={item.to}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all ${
+                      className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-sm font-bold transition-all ${
                         isActive
-                          ? 'bg-sponge-400/20 text-sponge-300 shadow-inner'
-                          : 'text-ocean-200 hover:bg-white/10 hover:text-white'
+                          ? 'bg-bb-yellow/25 text-bb-yellow is-active'
+                          : 'text-white/80 hover:bg-white/15 hover:text-white hover:scale-[1.03]'
                       }`}
+                      style={isActive ? { boxShadow: '0 0 12px rgba(240,208,32,0.4)' } : {}}
                     >
                       <span className="emoji-icon">{item.emoji}</span>
                       {item.label}
@@ -107,7 +109,7 @@ export function UserLayout() {
                 {isAdmin && (
                   <Link
                     to="/admin"
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-ocean-200 hover:bg-white/10 hover:text-white transition-all"
+                    className="flex items-center gap-2 px-4 py-2 rounded-2xl text-sm font-bold text-white/80 hover:bg-white/15 hover:text-white transition-all hover:scale-[1.03]"
                   >
                     <Shield className="h-4 w-4" />
                     Admin
@@ -119,42 +121,42 @@ export function UserLayout() {
             <div className="relative">
               <button
                 onClick={() => setProfileDropdown(!profileDropdown)}
-                className="flex items-center gap-2 p-1.5 rounded-xl hover:bg-white/10 transition-all"
+                className="flex items-center gap-2 p-1.5 rounded-2xl hover:bg-white/15 transition-all hover:scale-[1.03]"
               >
                 {user?.image ? (
-                  <img src={user.image} alt="" className="h-8 w-8 rounded-full object-cover border-2 border-sponge-400" />
+                  <img src={user.image} alt="" className="h-8 w-8 rounded-full object-cover border-2 border-bb-yellow" />
                 ) : (
-                  <div className="h-9 w-9 rounded-full bg-gradient-to-br from-sponge-400 to-sponge-500 text-ocean-900 flex items-center justify-center text-sm font-bold shadow-lg shadow-sponge-400/20">
+                  <div className="h-9 w-9 rounded-full bg-gradient-to-br from-bb-pineapple to-bb-yellow text-white flex items-center justify-center text-sm font-bold shadow-warm border-2 border-bb-pineapple-dark">
                     {user ? getInitials(user.fullName) : '?'}
                   </div>
                 )}
-                <ChevronDown className="h-4 w-4 text-ocean-300" />
+                <ChevronDown className="h-4 w-4 text-white/70" />
               </button>
               {profileDropdown && (
                 <>
                   <div className="fixed inset-0 z-40" onClick={() => setProfileDropdown(false)} />
-                  <div className="absolute right-0 mt-2 w-52 bg-ocean-800/95 backdrop-blur-xl rounded-2xl border-2 border-sponge-400/20 shadow-2xl z-50 py-2 overflow-hidden">
-                    <div className="px-4 py-2 border-b border-ocean-700/50">
+                  <div className="absolute right-0 mt-2 w-52 bg-bb-stone-dark/95 backdrop-blur-xl rounded-2xl border-2 border-bb-porthole/20 shadow-warm-xl z-50 py-2 overflow-hidden moai-sidebar">
+                    <div className="px-4 py-2 border-b border-white/10">
                       <p className="text-sm font-bold text-white">{user?.fullName}</p>
-                      <p className="text-xs text-sponge-300">Bikini Bottom Researcher</p>
+                      <p className="text-xs text-bb-porthole">Bikini Bottom Researcher</p>
                     </div>
                     <Link
                       to="/profile"
-                      className="flex items-center gap-2 px-4 py-2.5 text-sm text-ocean-200 hover:bg-white/10 font-medium"
+                      className="flex items-center gap-2 px-4 py-2.5 text-sm text-bb-porthole-light hover:bg-white/10 font-medium"
                       onClick={() => setProfileDropdown(false)}
                     >
                       👤 Profile
                     </Link>
                     <Link
                       to="/security"
-                      className="flex items-center gap-2 px-4 py-2.5 text-sm text-ocean-200 hover:bg-white/10 font-medium"
+                      className="flex items-center gap-2 px-4 py-2.5 text-sm text-bb-porthole-light hover:bg-white/10 font-medium"
                       onClick={() => setProfileDropdown(false)}
                     >
                       🔒 Security
                     </Link>
                     <button
                       onClick={handleLogout}
-                      className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-krabs-400 hover:bg-krabs-400/10 font-bold"
+                      className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-bb-coral hover:bg-bb-coral/10 font-bold"
                     >
                       <LogOut className="h-4 w-4" />
                       Sign out
@@ -172,8 +174,8 @@ export function UserLayout() {
                 <Link
                   key={item.to}
                   to={item.to}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-all ${
-                    isActive ? 'bg-sponge-400/20 text-sponge-300' : 'text-ocean-300 hover:bg-white/10'
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
+                    isActive ? 'bg-bb-yellow/25 text-bb-yellow' : 'text-white/70 hover:bg-white/10'
                   }`}
                 >
                   <span>{item.emoji}</span>
@@ -184,7 +186,7 @@ export function UserLayout() {
             {isAdmin && (
               <Link
                 to="/admin"
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap text-ocean-300 hover:bg-white/10"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap text-white/70 hover:bg-white/10"
               >
                 <Shield className="h-3.5 w-3.5" />
                 Admin

@@ -19,71 +19,74 @@ export default function AdminOverview() {
   const adminUsers = users.filter((u) => u.role === 'admin').length;
 
   const stats = [
-    { label: 'Total Users', value: totalUsers, emoji: '👥', color: 'from-ocean-400 to-ocean-500' },
-    { label: 'Active Users', value: activeUsers, emoji: '✅', color: 'from-kelp-400 to-kelp-500' },
-    { label: 'Inactive Users', value: totalUsers - activeUsers, emoji: '💤', color: 'from-krabs-400 to-krabs-500' },
-    { label: 'Admins', value: adminUsers, emoji: '🦀', color: 'from-sponge-400 to-sponge-500' },
+    { label: 'Total Users', value: totalUsers, emoji: '👥', color: 'from-bb-ocean to-bb-ocean-dark' },
+    { label: 'Active Users', value: activeUsers, emoji: '✅', color: 'from-bb-tropical to-bb-tropical-dark' },
+    { label: 'Inactive Users', value: totalUsers - activeUsers, emoji: '💤', color: 'from-bb-coral to-bb-coral-light' },
+    { label: 'Admins', value: adminUsers, emoji: '🦀', color: 'from-bb-pineapple to-bb-pineapple-dark' },
   ];
 
   const recentUsers = users.slice(0, 5);
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold text-white mb-6 font-[var(--font-display)] flex items-center gap-2">
-        <span className="emoji-icon">🦀</span> Mr. Krabs' Dashboard
-      </h1>
+    <div className="space-y-6">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-white mb-2 font-[var(--font-display)] flex items-center gap-2">
+          <span className="emoji-icon text-4xl">🦀</span> Mr. Krabs' Dashboard
+        </h1>
+        <p className="text-bb-porthole-light text-sm">Welcome back! Here's what's happening today.</p>
+      </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat) => (
-          <Card key={stat.label}>
-            <CardContent className="flex items-center gap-4">
-              <div className={`h-12 w-12 rounded-xl flex items-center justify-center text-2xl bg-gradient-to-br ${stat.color} shadow-lg`}>
+          <Card key={stat.label} className="hover:scale-105 transition-transform">
+            <CardContent className="flex items-center gap-4 py-6">
+              <div className={`h-14 w-14 rounded-2xl flex items-center justify-center text-3xl bg-gradient-to-br ${stat.color} shadow-warm flex-shrink-0`}>
                 {stat.emoji}
               </div>
-              <div>
-                <p className="text-sm text-ocean-500 font-semibold">{stat.label}</p>
-                <p className="text-2xl font-bold text-ocean-800 font-[var(--font-display)]">{stat.value}</p>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm text-bb-stone font-semibold truncate">{stat.label}</p>
+                <p className="text-3xl font-bold text-bb-brown font-[var(--font-display)]">{stat.value}</p>
               </div>
             </CardContent>
           </Card>
         ))}
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <span className="emoji-icon">👥</span> Recent Users
+      <Card className="overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-bb-ocean/10 to-bb-pineapple/10">
+          <CardTitle className="flex items-center gap-2 text-xl">
+            <span className="emoji-icon text-2xl">👥</span> Recent Users
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-0">
           {recentUsers.length === 0 ? (
-            <p className="text-ocean-400 text-center py-4 font-medium">No users yet</p>
+            <p className="text-bb-stone text-center py-4 font-medium">No users yet</p>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b-2 border-ocean-100">
-                    <th className="text-left px-4 py-3 text-xs font-bold text-ocean-500 uppercase">Name</th>
-                    <th className="text-left px-4 py-3 text-xs font-bold text-ocean-500 uppercase">Email</th>
-                    <th className="text-left px-4 py-3 text-xs font-bold text-ocean-500 uppercase">Role</th>
-                    <th className="text-left px-4 py-3 text-xs font-bold text-ocean-500 uppercase">Status</th>
+                  <tr className="border-b-2 border-bb-sand/30 bg-bb-sand/10">
+                    <th className="text-left px-6 py-4 text-xs font-bold text-bb-stone uppercase">Name</th>
+                    <th className="text-left px-6 py-4 text-xs font-bold text-bb-stone uppercase">Email</th>
+                    <th className="text-left px-6 py-4 text-xs font-bold text-bb-stone uppercase">Role</th>
+                    <th className="text-left px-6 py-4 text-xs font-bold text-bb-stone uppercase">Status</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-ocean-50">
+                <tbody className="divide-y divide-bb-sand/25">
                   {recentUsers.map((user) => (
-                    <tr key={user.id} className="hover:bg-ocean-50/30 transition-colors">
-                      <td className="px-4 py-3 text-sm font-bold text-ocean-800">{user.fullName}</td>
-                      <td className="px-4 py-3 text-sm text-ocean-500">{user.email}</td>
-                      <td className="px-4 py-3 text-sm">
-                        <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold ${
-                          user.role === 'admin' ? 'bg-krabs-50 text-krabs-500' : 'bg-ocean-50 text-ocean-600'
+                    <tr key={user.id} className="hover:bg-bb-sand/8 transition-colors">
+                      <td className="px-6 py-4 text-sm font-bold text-bb-brown">{user.fullName}</td>
+                      <td className="px-6 py-4 text-sm text-bb-stone">{user.email}</td>
+                      <td className="px-6 py-4 text-sm">
+                        <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                          user.role === 'admin' ? 'bg-bb-danger-light text-bb-coral' : 'bg-bb-info-light text-bb-ocean'
                         }`}>
                           {user.role}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-sm">
-                        <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold ${
-                          user.isActive ? 'bg-kelp-50 text-kelp-600' : 'bg-krabs-50 text-krabs-500'
+                      <td className="px-6 py-4 text-sm">
+                        <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                          user.isActive ? 'bg-bb-success-light text-bb-success' : 'bg-bb-danger-light text-bb-coral'
                         }`}>
                           {user.isActive ? '✅ Active' : '❌ Inactive'}
                         </span>

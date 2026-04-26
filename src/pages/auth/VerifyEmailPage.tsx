@@ -79,7 +79,7 @@ export default function VerifyEmailPage() {
       <div className="text-center">
         <div className="text-5xl mb-4">✅</div>
         <h2 className="text-2xl font-bold text-ocean-800 mb-2 font-[var(--font-display)]">Email Verified!</h2>
-        <p className="text-kelp-600 mb-6 font-medium">Welcome to Bikini Bottom! 🌊</p>
+        <p className="text-bb-success mb-6 font-medium">Welcome to Bikini Bottom! 🌊</p>
         <Link to="/login">
           <Button variant="sponge">🧽 Dive into the Lab!</Button>
         </Link>
@@ -122,7 +122,7 @@ export default function VerifyEmailPage() {
                 value={digit}
                 onChange={(e) => handleCodeChange(index, e.target.value)}
                 onKeyDown={(e) => handleKeyDown(index, e)}
-                className="w-12 h-12 text-center text-xl font-bold border-2 border-ocean-200 rounded-xl focus:outline-none focus:border-sponge-400 focus:shadow-[0_0_0_3px_rgba(255,215,0,0.15)] transition-all"
+                className="wooden-input w-12 h-12 text-center text-xl font-bold transition-all"
               />
             ))}
           </div>
@@ -135,14 +135,14 @@ export default function VerifyEmailPage() {
 
       <div className="mt-4 text-center">
         {resendSuccess ? (
-          <p className="text-kelp-600 text-sm font-medium">📧 A new code has been sent to your email!</p>
+          <p className="text-bb-success text-sm font-medium">📧 A new code has been sent to your email!</p>
         ) : (
           <p className="text-sm text-ocean-400">
             Didn't receive the code?{' '}
             <button
               onClick={handleResend}
               disabled={isResending || !email}
-              className="text-sponge-500 hover:text-sponge-600 font-bold disabled:opacity-50"
+              className="text-bb-pineapple hover:text-bb-pineapple-dark font-bold disabled:opacity-50"
             >
               {isResending ? 'Sending...' : 'Resend Code'}
             </button>
@@ -151,7 +151,7 @@ export default function VerifyEmailPage() {
       </div>
 
       <p className="mt-4 text-center text-sm text-ocean-400">
-        <Link to="/login" className="text-sponge-500 hover:text-sponge-600 font-bold">
+        <Link to="/login" className="text-bb-pineapple hover:text-bb-pineapple-dark font-bold">
           ← Back to Login
         </Link>
       </p>

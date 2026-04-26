@@ -1,7 +1,7 @@
 export function Spinner({ className }: { className?: string }) {
   return (
     <div className={className}>
-      <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-primary-600" />
+      <div className="h-8 w-8 animate-spin rounded-full border-4 border-bb-sand border-t-bb-pineapple" />
     </div>
   );
 }

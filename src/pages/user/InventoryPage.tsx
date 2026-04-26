@@ -79,11 +79,11 @@ export default function InventoryPage() {
       </div>
 
       {alerts.length > 0 && (
-        <div className="bg-krabs-400/10 border-2 border-krabs-400/30 rounded-2xl p-4 flex items-start gap-3 backdrop-blur-sm">
+        <div className="bg-bb-coral/10 border-2 border-bb-coral/30 rounded-3xl p-4 flex items-start gap-3 backdrop-blur-sm">
           <span className="text-2xl">🚨</span>
           <div>
-            <p className="font-bold text-krabs-300 text-sm">{alerts.length} items below minimum required!</p>
-            <p className="text-krabs-200/80 text-xs mt-1">{alerts.slice(0, 3).map((a: any) => a.name).join(', ')}{alerts.length > 3 ? ` and ${alerts.length - 3} more` : ''}</p>
+            <p className="font-bold text-bb-coral text-sm">{alerts.length} items below minimum required!</p>
+            <p className="text-bb-coral-light/80 text-xs mt-1">{alerts.slice(0, 3).map((a: any) => a.name).join(', ')}{alerts.length > 3 ? ` and ${alerts.length - 3} more` : ''}</p>
           </div>
         </div>
       )}
@@ -94,7 +94,7 @@ export default function InventoryPage() {
           <Input placeholder="Search the vault..." value={search} onChange={(e: any) => setSearch(e.target.value)} className="pl-11" />
         </div>
         <select
-          className="rounded-xl border-2 border-ocean-200 px-3 py-2.5 text-sm focus:outline-none focus:border-sponge-400 bg-white/90 font-semibold"
+          className="rounded-2xl border-2 border-bb-sand-dark/40 px-3 py-2.5 text-sm focus:outline-none focus:border-bb-pineapple bg-bb-sand-light/92 font-semibold"
           value={category}
           onChange={(e) => setCategory(e.target.value)}
         >
@@ -107,7 +107,7 @@ export default function InventoryPage() {
           <CardContent className="space-y-3">
             <div className="grid grid-cols-2 gap-3">
               <Input placeholder="Item name" value={form.name} onChange={(e: any) => setForm({ ...form, name: e.target.value })} />
-              <select className="rounded-xl border-2 border-ocean-200 px-3 py-2.5 text-sm focus:outline-none focus:border-sponge-400" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}>
+              <select className="rounded-2xl border-2 border-bb-sand-dark/40 px-3 py-2.5 text-sm focus:outline-none focus:border-bb-pineapple" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}>
                 {CATEGORIES.filter(c => c.value).map(c => <option key={c.value} value={c.value}>{c.emoji} {c.label}</option>)}
               </select>
             </div>
@@ -118,7 +118,7 @@ export default function InventoryPage() {
               <Input placeholder="Location" value={form.location} onChange={(e: any) => setForm({ ...form, location: e.target.value })} />
             </div>
             <textarea
-              className="w-full rounded-xl border-2 border-ocean-200 p-3 text-sm focus:outline-none focus:border-sponge-400 bg-white/90"
+              className="w-full rounded-xl border-2 border-bb-sand-dark/40 p-3 text-sm focus:outline-none focus:border-bb-pineapple bg-bb-sand-light/92"
               rows={2}
               placeholder="Description (optional)"
               value={form.description}
@@ -141,7 +141,7 @@ export default function InventoryPage() {
             </div>
             <div className="space-y-1">
               <label className="text-sm font-semibold text-ocean-700">Category</label>
-              <select className="block w-full rounded-xl border-2 border-ocean-200 px-3 py-2.5 text-sm focus:outline-none focus:border-sponge-400" value={editForm.category} onChange={(e) => setEditForm({ ...editForm, category: e.target.value })}>
+              <select className="block w-full rounded-2xl border-2 border-bb-sand-dark/40 px-3 py-2.5 text-sm focus:outline-none focus:border-bb-pineapple" value={editForm.category} onChange={(e) => setEditForm({ ...editForm, category: e.target.value })}>
                 {CATEGORIES.filter(c => c.value).map(c => <option key={c.value} value={c.value}>{c.emoji} {c.label}</option>)}
               </select>
             </div>
@@ -167,7 +167,7 @@ export default function InventoryPage() {
           <div className="space-y-1">
             <label className="text-sm font-semibold text-ocean-700">Description</label>
             <textarea
-              className="w-full rounded-xl border-2 border-ocean-200 p-3 text-sm focus:outline-none focus:border-sponge-400"
+              className="w-full rounded-xl border-2 border-bb-sand-dark/40 p-3 text-sm focus:outline-none focus:border-bb-pineapple"
               rows={2}
               value={editForm.description}
               onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
@@ -201,21 +201,21 @@ export default function InventoryPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b-2 border-ocean-100 text-left">
-                  <th className="pb-3 font-bold text-ocean-500 px-4">Name</th>
-                  <th className="pb-3 font-bold text-ocean-500 px-4">Category</th>
-                  <th className="pb-3 font-bold text-ocean-500 px-4">Stock</th>
-                  <th className="pb-3 font-bold text-ocean-500 px-4">Min Required</th>
-                  <th className="pb-3 font-bold text-ocean-500 px-4">Location</th>
-                  <th className="pb-3 font-bold text-ocean-500 px-4">Status</th>
-                  <th className="pb-3 font-bold text-ocean-500 px-4">Actions</th>
+                <tr className="border-b-2 border-bb-sand/40 text-left">
+                  <th className="pb-3 font-bold text-bb-stone px-4">Name</th>
+                  <th className="pb-3 font-bold text-bb-stone px-4">Category</th>
+                  <th className="pb-3 font-bold text-bb-stone px-4">Stock</th>
+                  <th className="pb-3 font-bold text-bb-stone px-4">Min Required</th>
+                  <th className="pb-3 font-bold text-bb-stone px-4">Location</th>
+                  <th className="pb-3 font-bold text-bb-stone px-4">Status</th>
+                  <th className="pb-3 font-bold text-bb-stone px-4">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {filtered.map((item) => {
                   const isLow = item.quantity <= item.minRequired;
                   return (
-                    <tr key={item.id} className="border-b border-ocean-50 hover:bg-ocean-50/30 transition-colors">
+                    <tr key={item.id} className="border-b border-bb-sand/20 hover:bg-bb-sand/15 transition-colors">
                       <td className="py-3 px-4">
                         <div>
                           <p className="font-bold text-ocean-800">{item.name}</p>
