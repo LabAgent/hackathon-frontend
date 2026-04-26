@@ -1,5 +1,5 @@
 import apiClient from './client';
-import type { Project, CreateProjectDTO, UpdateProjectDTO, ExperimentsLog, CreateExperimentLogDTO, ProjectRequirement, CreateProjectRequirementDTO, ProjectStats } from '@/types';
+import type { Project, CreateProjectDTO, UpdateProjectDTO, ExperimentsLog, CreateExperimentLogDTO, UpdateExperimentLogDTO, ProjectRequirement, CreateProjectRequirementDTO, UpdateProjectRequirementDTO, ProjectStats } from '@/types';
 
 export const researchApi = {
   create: (data: CreateProjectDTO) => apiClient.post<Project>('/projects', data),
@@ -17,6 +17,18 @@ export const researchApi = {
   addExperimentLog: (projectId: number, data: CreateExperimentLogDTO) =>
     apiClient.post<ExperimentsLog>(`/projects/${projectId}/experiments`, data),
 
+  updateExperimentLog: (expId: number, data: UpdateExperimentLogDTO) =>
+    apiClient.put<ExperimentsLog>(`/projects/experiments/${expId}`, data),
+
+  deleteExperimentLog: (expId: number) =>
+    apiClient.delete(`/projects/experiments/${expId}`),
+
   addRequirement: (data: CreateProjectRequirementDTO) =>
     apiClient.post<ProjectRequirement>('/projects/requirements', data),
+
+  updateRequirement: (reqId: number, data: UpdateProjectRequirementDTO) =>
+    apiClient.put<ProjectRequirement>(`/projects/requirements/${reqId}`, data),
+
+  deleteRequirement: (reqId: number) =>
+    apiClient.delete(`/projects/requirements/${reqId}`),
 };

@@ -56,10 +56,24 @@ export interface CreateExperimentLogDTO {
   status?: ExperimentStatus;
 }
 
+export interface UpdateExperimentLogDTO {
+  result?: string;
+  success?: boolean;
+  notes?: string;
+  hypothesis?: string;
+  methodology?: string;
+  status?: ExperimentStatus;
+}
+
 export interface CreateProjectRequirementDTO {
   projectId: number;
   inventoryId: number;
   requiredQuantity: number;
+}
+
+export interface UpdateProjectRequirementDTO {
+  inventoryId?: number;
+  requiredQuantity?: number;
 }
 
 export interface ProjectStats {

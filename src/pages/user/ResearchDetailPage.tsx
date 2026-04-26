@@ -4,7 +4,7 @@ import { ArrowLeft, Plus, Pencil, Trash2 } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent, Button, Spinner, Modal, Input } from '@/components/ui';
 import { researchApi, inventoryApi } from '@/api';
 import { useState } from 'react';
-import type { Project, ExperimentsLog, Inventory, ProjectStatus, ExperimentStatus } from '@/types';
+import type { Project, ExperimentsLog, Inventory, ProjectStatus, ExperimentStatus, ProjectRequirement } from '@/types';
 
 const PROJECT_STATUS_OPTIONS: { value: ProjectStatus; label: string }[] = [
   { value: 'planned', label: 'Planned' },
@@ -31,9 +31,23 @@ export default function ResearchDetailPage() {
   const [expMethodology, setExpMethodology] = useState('');
   const [expStatus, setExpStatus] = useState<ExperimentStatus>('planned');
 
+  const [editExp, setEditExp] = useState<ExperimentsLog | null>(null);
+  const [editExpResult, setEditExpResult] = useState('');
+  const [editExpSuccess, setEditExpSuccess] = useState(true);
+  const [editExpNotes, setEditExpNotes] = useState('');
+  const [editExpHypothesis, setEditExpHypothesis] = useState('');
+  const [editExpMethodology, setEditExpMethodology] = useState('');
+  const [editExpStatus, setEditExpStatus] = useState<ExperimentStatus>('planned');
+  const [deleteExp, setDeleteExp] = useState<ExperimentsLog | null>(null);
+
   const [showAddReq, setShowAddReq] = useState(false);
   const [reqItemId, setReqItemId] = useState<number | ''>('');
   const [reqQty, setReqQty] = useState(1);
+
+  const [editReq, setEditReq] = useState<ProjectRequirement | null>(null);
+  const [editReqItemId, setEditReqItemId] = useState<number | ''>('');
+  const [editReqQty, setEditReqQty] = useState(1);
+  const [deleteReq, setDeleteReq] = useState<ProjectRequirement | null>(null);
 
   const [editProject, setEditProject] = useState(false);
   const [editName, setEditName] = useState('');
@@ -61,6 +75,16 @@ export default function ResearchDetailPage() {
     onSuccess: () => { qc.invalidateQueries({ queryKey: ['project', id] }); setShowAddExp(false); setExpResult(''); setExpNotes(''); setExpHypothesis(''); setExpMethodology(''); setExpStatus('planned'); },
   });
 
+  const updateExpMutation = useMutation({
+    mutationFn: ({ expId, data }: { expId: number; data: any }) => researchApi.updateExperimentLog(expId, data),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['project', id] }); setEditExp(null); },
+  });
+
+  const deleteExpMutation = useMutation({
+    mutationFn: (expId: number) => researchApi.deleteExperimentLog(expId),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['project', id] }); setDeleteExp(null); },
+  });
+
   const updateStatusMutation = useMutation({
     mutationFn: (status: string) => researchApi.update(Number(id!), { status: status as any }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['project', id] }),
@@ -79,6 +103,16 @@ export default function ResearchDetailPage() {
   const addReqMutation = useMutation({
     mutationFn: (d: { projectId: number; inventoryId: number; requiredQuantity: number }) => researchApi.addRequirement(d),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ['project', id] }); setShowAddReq(false); setReqItemId(''); setReqQty(1); },
+  });
+
+  const updateReqMutation = useMutation({
+    mutationFn: ({ reqId, data }: { reqId: number; data: any }) => researchApi.updateRequirement(reqId, data),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['project', id] }); setEditReq(null); },
+  });
+
+  const deleteReqMutation = useMutation({
+    mutationFn: (reqId: number) => researchApi.deleteRequirement(reqId),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['project', id] }); setDeleteReq(null); },
   });
 
   if (isLoading || !project) return <div className="flex justify-center py-12"><Spinner /></div>;
@@ -115,6 +149,22 @@ export default function ResearchDetailPage() {
     setEditStatus(project.status);
     setEditPriority(String(project.priority));
     setEditProject(true);
+  };
+
+  const openEditExp = (exp: ExperimentsLog) => {
+    setEditExp(exp);
+    setEditExpResult(exp.result || '');
+    setEditExpSuccess(exp.success ?? true);
+    setEditExpNotes(exp.notes || '');
+    setEditExpHypothesis(exp.hypothesis || '');
+    setEditExpMethodology(exp.methodology || '');
+    setEditExpStatus((exp.status as ExperimentStatus) || 'planned');
+  };
+
+  const openEditReq = (req: ProjectRequirement) => {
+    setEditReq(req);
+    setEditReqItemId(req.inventoryId);
+    setEditReqQty(req.requiredQuantity);
   };
 
   return (
@@ -238,9 +288,60 @@ export default function ResearchDetailPage() {
               </div>
             </div>
           )}
+
+          <Modal open={!!editExp} onClose={() => setEditExp(null)} title="Edit Experiment Log">
+            <div className="space-y-3">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-sm text-ocean-600 font-semibold">Status</label>
+                  <select className="block w-full rounded-xl border-2 border-ocean-200 px-3 py-2 text-sm focus:outline-none focus:border-sponge-400" value={editExpStatus} onChange={(e) => setEditExpStatus(e.target.value as ExperimentStatus)}>
+                    {EXPERIMENT_STATUS_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                  </select>
+                </div>
+                <div className="flex items-end gap-2 pb-1">
+                  <label className="text-sm text-ocean-600 font-semibold">Success:</label>
+                  <input type="checkbox" checked={editExpSuccess} onChange={(e) => setEditExpSuccess(e.target.checked)} className="rounded" />
+                </div>
+              </div>
+              <div className="space-y-1">
+                <label className="text-sm text-ocean-600 font-semibold">Hypothesis</label>
+                <textarea className="w-full rounded-xl border-2 border-ocean-200 p-3 text-sm focus:outline-none focus:border-sponge-400" rows={2} value={editExpHypothesis} onChange={(e) => setEditExpHypothesis(e.target.value)} />
+              </div>
+              <div className="space-y-1">
+                <label className="text-sm text-ocean-600 font-semibold">Methodology</label>
+                <textarea className="w-full rounded-xl border-2 border-ocean-200 p-3 text-sm focus:outline-none focus:border-sponge-400" rows={2} value={editExpMethodology} onChange={(e) => setEditExpMethodology(e.target.value)} />
+              </div>
+              <div className="space-y-1">
+                <label className="text-sm text-ocean-600 font-semibold">Result</label>
+                <textarea className="w-full rounded-xl border-2 border-ocean-200 p-3 text-sm focus:outline-none focus:border-sponge-400" rows={2} value={editExpResult} onChange={(e) => setEditExpResult(e.target.value)} />
+              </div>
+              <div className="space-y-1">
+                <label className="text-sm text-ocean-600 font-semibold">Notes</label>
+                <input className="w-full rounded-xl border-2 border-ocean-200 p-2 text-sm focus:outline-none focus:border-sponge-400" value={editExpNotes} onChange={(e) => setEditExpNotes(e.target.value)} />
+              </div>
+              <div className="flex gap-2">
+                <Button size="sm" onClick={() => editExp && updateExpMutation.mutate({ expId: editExp.id, data: { result: editExpResult || undefined, success: editExpSuccess, notes: editExpNotes || undefined, hypothesis: editExpHypothesis || undefined, methodology: editExpMethodology || undefined, status: editExpStatus || undefined } })} loading={updateExpMutation.isPending} variant="sponge">Save</Button>
+                <Button size="sm" variant="secondary" onClick={() => setEditExp(null)}>Cancel</Button>
+              </div>
+            </div>
+          </Modal>
+
+          <Modal open={!!deleteExp} onClose={() => setDeleteExp(null)} title="Delete Experiment Log">
+            <div className="space-y-4">
+              <p className="text-sm text-ocean-600">Are you sure you want to delete this experiment log? This action cannot be undone.</p>
+              {deleteExp && (
+                <p className="text-xs text-ocean-400 bg-ocean-50 rounded-lg p-3">{deleteExp.result || 'No result recorded'}</p>
+              )}
+              <div className="flex gap-2">
+                <Button variant="danger" onClick={() => deleteExp && deleteExpMutation.mutate(deleteExp.id)} loading={deleteExpMutation.isPending}>Delete</Button>
+                <Button variant="secondary" onClick={() => setDeleteExp(null)}>Cancel</Button>
+              </div>
+            </div>
+          </Modal>
+
           <div className="space-y-3">
             {(project.experiments || []).map((exp: ExperimentsLog) => (
-              <div key={exp.id} className="flex items-center justify-between py-3 border-b border-ocean-100 last:border-0">
+              <div key={exp.id} className="flex items-start justify-between py-3 border-b border-ocean-100 last:border-0 gap-2">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
                     <span className={`text-xs px-2 py-0.5 rounded-full font-bold ${expStatusColor(exp.status || 'planned')}`}>
@@ -254,8 +355,16 @@ export default function ResearchDetailPage() {
                   {exp.hypothesis && <p className="text-xs text-ocean-500 mt-0.5 italic">Hypothesis: {exp.hypothesis}</p>}
                   {exp.methodology && <p className="text-xs text-ocean-500 mt-0.5">Method: {exp.methodology}</p>}
                   {exp.notes && <p className="text-xs text-ocean-400 mt-0.5">{exp.notes}</p>}
+                  <span className="text-xs text-ocean-400 mt-1 inline-block">{new Date(exp.createdAt).toLocaleDateString()}</span>
                 </div>
-                <span className="text-xs text-ocean-400 ml-3 whitespace-nowrap">{new Date(exp.createdAt).toLocaleDateString()}</span>
+                <div className="flex gap-1 shrink-0">
+                  <Button size="sm" variant="ghost" className="text-ocean-400 hover:text-ocean-600 text-xs px-2 py-1" onClick={() => openEditExp(exp)}>
+                    <Pencil className="h-3 w-3 mr-1" /> Edit
+                  </Button>
+                  <Button size="sm" variant="ghost" className="text-krabs-400 hover:text-krabs-600 text-xs px-2 py-1" onClick={() => setDeleteExp(exp)}>
+                    <Trash2 className="h-3 w-3 mr-1" /> Delete
+                  </Button>
+                </div>
               </div>
             ))}
             {(!project.experiments || project.experiments.length === 0) && (
@@ -307,6 +416,49 @@ export default function ResearchDetailPage() {
               </div>
             </div>
           )}
+
+          <Modal open={!!editReq} onClose={() => setEditReq(null)} title="Edit Requirement">
+            <div className="space-y-3">
+              <div className="space-y-1">
+                <label className="text-sm font-semibold text-ocean-700">Inventory Item</label>
+                <select
+                  className="block w-full rounded-xl border-2 border-ocean-200 px-3 py-2.5 text-sm focus:outline-none focus:border-sponge-400"
+                  value={editReqItemId}
+                  onChange={(e) => setEditReqItemId(Number(e.target.value))}
+                >
+                  <option value="">Select an item...</option>
+                  {inventoryItems.map((item) => (
+                    <option key={item.id} value={item.id}>{item.name} (Stock: {item.quantity} {item.unit || 'units'})</option>
+                  ))}
+                </select>
+              </div>
+              <div className="space-y-1">
+                <label className="text-sm font-semibold text-ocean-700">Required Quantity</label>
+                <input
+                  type="number"
+                  min={1}
+                  className="block w-full rounded-xl border-2 border-ocean-200 px-3 py-2.5 text-sm focus:outline-none focus:border-sponge-400"
+                  value={editReqQty}
+                  onChange={(e) => setEditReqQty(Number(e.target.value))}
+                />
+              </div>
+              <div className="flex gap-2">
+                <Button size="sm" onClick={() => editReq && updateReqMutation.mutate({ reqId: editReq.id, data: { inventoryId: editReqItemId || undefined, requiredQuantity: editReqQty } })} loading={updateReqMutation.isPending} disabled={!editReqItemId} variant="sponge">Save</Button>
+                <Button size="sm" variant="secondary" onClick={() => setEditReq(null)}>Cancel</Button>
+              </div>
+            </div>
+          </Modal>
+
+          <Modal open={!!deleteReq} onClose={() => setDeleteReq(null)} title="Delete Requirement">
+            <div className="space-y-4">
+              <p className="text-sm text-ocean-600">Are you sure you want to remove <strong>{deleteReq?.inventory?.name || `Item #${deleteReq?.inventoryId}`}</strong> from required materials?</p>
+              <div className="flex gap-2">
+                <Button variant="danger" onClick={() => deleteReq && deleteReqMutation.mutate(deleteReq.id)} loading={deleteReqMutation.isPending}>Delete</Button>
+                <Button variant="secondary" onClick={() => setDeleteReq(null)}>Cancel</Button>
+              </div>
+            </div>
+          </Modal>
+
           <div className="space-y-3">
             {(project.requirements || []).map((req) => (
               <div key={req.id} className="flex items-center justify-between py-3 border-b border-ocean-100 last:border-0">
@@ -314,11 +466,19 @@ export default function ResearchDetailPage() {
                   <p className="font-bold text-sm text-ocean-800">{req.inventory?.name || `Item #${req.inventoryId}`}</p>
                   <p className="text-xs text-ocean-400">Required: {req.requiredQuantity} units</p>
                 </div>
-                {req.inventory && (
-                  <span className={`text-xs px-2.5 py-0.5 rounded-full font-bold ${req.inventory.quantity >= req.requiredQuantity ? 'bg-kelp-50 text-kelp-600' : 'bg-krabs-50 text-krabs-500'}`}>
-                    {req.inventory.quantity >= req.requiredQuantity ? '✅ In Stock' : `⚠️ Short by ${req.requiredQuantity - req.inventory.quantity}`}
-                  </span>
-                )}
+                <div className="flex items-center gap-2">
+                  {req.inventory && (
+                    <span className={`text-xs px-2.5 py-0.5 rounded-full font-bold ${req.inventory.quantity >= req.requiredQuantity ? 'bg-kelp-50 text-kelp-600' : 'bg-krabs-50 text-krabs-500'}`}>
+                      {req.inventory.quantity >= req.requiredQuantity ? '✅ In Stock' : `⚠️ Short by ${req.requiredQuantity - req.inventory.quantity}`}
+                    </span>
+                  )}
+                  <Button size="sm" variant="ghost" className="text-ocean-400 hover:text-ocean-600 text-xs px-2 py-1" onClick={() => openEditReq(req)}>
+                    <Pencil className="h-3 w-3 mr-1" /> Edit
+                  </Button>
+                  <Button size="sm" variant="ghost" className="text-krabs-400 hover:text-krabs-600 text-xs px-2 py-1" onClick={() => setDeleteReq(req)}>
+                    <Trash2 className="h-3 w-3 mr-1" /> Delete
+                  </Button>
+                </div>
               </div>
             ))}
             {(!project.requirements || project.requirements.length === 0) && (
