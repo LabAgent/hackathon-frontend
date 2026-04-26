@@ -15,6 +15,36 @@ const sidebarItems = [
   { label: 'Back to Lab', path: '/dashboard', icon: '🔬' },
 ];
 
+function KrustyKrabScene() {
+  return (
+    <div className="sb-scene">
+      <div className="sand-floor" style={{
+        background: 'linear-gradient(0deg, rgba(229,57,53,0.12) 0%, rgba(229,57,53,0.06) 30%, rgba(229,57,53,0.02) 70%, transparent 100%)',
+        borderTopColor: 'rgba(229,57,53,0.08)',
+      }} />
+
+      <div className="kelp-decor kelp-left" style={{ opacity: 0.15 }} />
+      <div className="kelp-decor kelp-right" style={{ opacity: 0.15 }} />
+
+      <div className="sea-decorations">
+        <span className="sea-deco-item">🦀</span>
+        <span className="sea-deco-item">💰</span>
+        <span className="sea-deco-item">🦀</span>
+        <span className="sea-deco-item">🍔</span>
+        <span className="sea-deco-item">🦀</span>
+        <span className="sea-deco-item">💰</span>
+        <span className="sea-deco-item">🦀</span>
+        <span className="sea-deco-item">🍔</span>
+      </div>
+
+      <div className="ocean-waves">
+        <div className="ocean-wave" style={{ background: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 60'%3E%3Cpath fill='%23E53935' fill-opacity='0.08' d='M0,30 C360,60 720,0 1080,30 C1260,45 1350,15 1440,30 L1440,60 L0,60 Z'/%3E%3C/svg%3E\") repeat-x" }} />
+        <div className="ocean-wave" style={{ background: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 60'%3E%3Cpath fill='%23E53935' fill-opacity='0.05' d='M0,30 C360,60 720,0 1080,30 C1260,45 1350,15 1440,30 L1440,60 L0,60 Z'/%3E%3C/svg%3E\") repeat-x" }} />
+      </div>
+    </div>
+  );
+}
+
 export function AdminLayout() {
   const user = useAuthStore((s) => s.user);
   const logout = useAuthStore((s) => s.logout);
@@ -41,8 +71,10 @@ export function AdminLayout() {
 
   return (
     <div className="min-h-screen relative overflow-hidden"
-      style={{ background: 'linear-gradient(180deg, #001e3d 0%, #003660 30%, #004a77 60%, #005f99 100%)' }}
+      style={{ background: 'linear-gradient(180deg, #1a0a0a 0%, #2d1010 25%, #3d1a1a 50%, #4d2020 75%, #5c2828 100%)' }}
     >
+      <KrustyKrabScene />
+
       {sidebarOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-40 lg:hidden backdrop-blur-sm"

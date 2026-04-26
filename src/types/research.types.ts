@@ -1,5 +1,7 @@
 export type ProjectStatus = 'planned' | 'ongoing' | 'completed';
 
+export type ExperimentStatus = 'planned' | 'in_progress' | 'completed' | 'failed';
+
 export interface Project {
   id: number;
   name: string;
@@ -17,6 +19,9 @@ export interface ExperimentsLog {
   result: string | null;
   success: boolean | null;
   notes: string | null;
+  hypothesis: string | null;
+  methodology: string | null;
+  status: string | null;
   createdAt: string;
 }
 
@@ -31,6 +36,7 @@ export interface ProjectRequirement {
 export interface CreateProjectDTO {
   name: string;
   description?: string;
+  status?: ProjectStatus;
   priority?: number;
 }
 
@@ -45,6 +51,9 @@ export interface CreateExperimentLogDTO {
   result?: string;
   success?: boolean;
   notes?: string;
+  hypothesis?: string;
+  methodology?: string;
+  status?: ExperimentStatus;
 }
 
 export interface CreateProjectRequirementDTO {

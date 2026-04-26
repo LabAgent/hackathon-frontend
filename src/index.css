@@ -120,17 +120,17 @@
   }
 }
 
+/* ======================== */
+/* ANIMATIONS               */
+/* ======================== */
+
 @keyframes bubble-float {
   0% {
     transform: translateY(100vh) scale(0.4);
     opacity: 0;
   }
-  10% {
-    opacity: 0.6;
-  }
-  90% {
-    opacity: 0.3;
-  }
+  10% { opacity: 0.6; }
+  90% { opacity: 0.3; }
   100% {
     transform: translateY(-10vh) scale(1);
     opacity: 0;
@@ -165,6 +165,35 @@
   75% { transform: translateY(-10px) scaleX(0.98); }
 }
 
+@keyframes kelp-sway {
+  0%, 100% { transform: rotate(-3deg) scaleY(1); }
+  25% { transform: rotate(2deg) scaleY(1.02); }
+  50% { transform: rotate(-2deg) scaleY(0.98); }
+  75% { transform: rotate(3deg) scaleY(1.01); }
+}
+
+@keyframes flower-drift {
+  0%, 100% { transform: translateX(0) translateY(0) rotate(0deg); }
+  25% { transform: translateX(5px) translateY(-3px) rotate(5deg); }
+  50% { transform: translateX(-3px) translateY(-6px) rotate(-3deg); }
+  75% { transform: translateX(4px) translateY(-2px) rotate(4deg); }
+}
+
+@keyframes star-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes sand-shimmer {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ======================== */
+/* BUBBLES                   */
+/* ======================== */
+
 .bubble-bg {
   position: fixed;
   inset: 0;
@@ -195,6 +224,10 @@
 .bubble:nth-child(11) { left: 8%; width: 16px; height: 16px; animation-duration: 11s; animation-delay: 8s; }
 .bubble:nth-child(12) { left: 48%; width: 32px; height: 32px; animation-duration: 17s; animation-delay: 1.5s; }
 
+/* ======================== */
+/* OCEAN WAVES               */
+/* ======================== */
+
 .ocean-waves {
   position: fixed;
   bottom: 0;
@@ -220,6 +253,132 @@
   opacity: 0.5;
   bottom: 5px;
 }
+
+/* ======================== */
+/* SAND FLOOR                */
+/* ======================== */
+
+.sand-floor {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  pointer-events: none;
+  z-index: 1;
+  background:
+    linear-gradient(0deg,
+      rgba(244, 196, 48, 0.25) 0%,
+      rgba(244, 196, 48, 0.15) 30%,
+      rgba(244, 196, 48, 0.05) 70%,
+      transparent 100%
+    );
+  border-top: 2px solid rgba(244, 196, 48, 0.1);
+}
+
+.sand-floor::before {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: 0;
+  right: 0;
+  height: 15px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 15'%3E%3Cpath fill='%23f4c430' fill-opacity='0.12' d='M0,8 C120,2 240,12 360,8 C480,4 600,13 720,7 C840,2 960,11 1080,6 C1200,2 1320,10 1440,8 L1440,15 L0,15 Z'/%3E%3C/svg%3E") repeat-x;
+  background-size: 1440px 15px;
+}
+
+/* ======================== */
+/* KELP / SEAWEED            */
+/* ======================== */
+
+.kelp-decor {
+  position: fixed;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.3;
+}
+
+.kelp-left {
+  left: 0;
+  width: 60px;
+  height: 300px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 300'%3E%3Cpath fill='%2327ae60' fill-opacity='0.5' d='M30,300 C30,280 15,260 18,240 C20,225 35,210 32,190 C30,175 15,160 18,140 C20,125 35,110 32,90 C30,75 18,60 20,40 C22,25 30,15 28,0 C35,15 45,30 42,50 C40,65 25,80 28,100 C30,115 42,130 40,150 C38,165 22,180 25,200 C27,215 40,230 38,250 C36,265 25,280 30,300 Z'/%3E%3Cpath fill='%232ecc71' fill-opacity='0.35' d='M45,300 C45,275 30,255 33,235 C35,220 48,205 45,185 C43,170 30,155 33,135 C35,120 48,105 45,85 C43,70 33,55 35,35 C37,20 45,10 43,0 C50,15 55,30 52,50 C50,65 38,80 40,100 C42,115 52,130 50,150 C48,165 35,180 38,200 C40,215 50,230 48,250 C46,265 38,280 45,300 Z'/%3E%3C/svg%3E") no-repeat bottom;
+  background-size: contain;
+  animation: kelp-sway 6s ease-in-out infinite;
+}
+
+.kelp-right {
+  right: 0;
+  width: 60px;
+  height: 280px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 300'%3E%3Cpath fill='%2327ae60' fill-opacity='0.5' d='M30,300 C30,280 45,260 42,240 C40,225 25,210 28,190 C30,175 45,160 42,140 C40,125 25,110 28,90 C30,75 42,60 40,40 C38,25 30,15 32,0 C25,15 15,30 18,50 C20,65 35,80 32,100 C30,115 18,130 20,150 C22,165 38,180 35,200 C33,215 20,230 22,250 C24,265 35,280 30,300 Z'/%3E%3Cpath fill='%232ecc71' fill-opacity='0.35' d='M15,300 C15,275 30,255 27,235 C25,220 12,205 15,185 C17,170 30,155 27,135 C25,120 12,105 15,85 C17,70 27,55 25,35 C23,20 15,10 17,0 C10,15 5,30 8,50 C10,65 22,80 20,100 C18,115 8,130 10,150 C12,165 25,180 22,200 C20,215 10,230 12,250 C14,265 22,280 15,300 Z'/%3E%3C/svg%3E") no-repeat bottom;
+  background-size: contain;
+  animation: kelp-sway 7s ease-in-out infinite reverse;
+}
+
+/* ======================== */
+/* FLOWER CLOUDS             */
+/* ======================== */
+
+.flower-clouds {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 120px;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.flower-cloud {
+  position: absolute;
+  top: 20px;
+  opacity: 0.15;
+  animation: flower-drift 20s ease-in-out infinite;
+}
+
+.flower-cloud:nth-child(1) { left: 5%; animation-delay: 0s; }
+.flower-cloud:nth-child(2) { left: 25%; top: 10px; animation-delay: 4s; }
+.flower-cloud:nth-child(3) { left: 50%; top: 30px; animation-delay: 8s; }
+.flower-cloud:nth-child(4) { left: 70%; top: 15px; animation-delay: 2s; }
+.flower-cloud:nth-child(5) { left: 90%; top: 25px; animation-delay: 6s; }
+
+/* ======================== */
+/* DECORATIVE SHELLS/STARS   */
+/* ======================== */
+
+.sea-decorations {
+  position: fixed;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+  z-index: 2;
+  height: 40px;
+  overflow: hidden;
+}
+
+.sea-deco-item {
+  position: absolute;
+  bottom: 0;
+  opacity: 0.2;
+  font-size: 20px;
+}
+
+.sea-deco-item:nth-child(1) { left: 8%; }
+.sea-deco-item:nth-child(2) { left: 22%; font-size: 16px; bottom: 5px; }
+.sea-deco-item:nth-child(3) { left: 38%; font-size: 24px; }
+.sea-deco-item:nth-child(4) { left: 55%; font-size: 14px; bottom: 8px; }
+.sea-deco-item:nth-child(5) { left: 72%; font-size: 18px; }
+.sea-deco-item:nth-child(6) { left: 88%; font-size: 22px; bottom: 3px; }
+.sea-deco-item:nth-child(7) { left: 45%; font-size: 12px; bottom: 10px; }
+.sea-deco-item:nth-child(8) { left: 62%; font-size: 16px; bottom: 6px; }
+
+/* ======================== */
+/* UTILITY CLASSES           */
+/* ======================== */
 
 .font-display {
   font-family: var(--font-display);
@@ -300,4 +459,22 @@
 .sb-subtitle {
   color: #a8d4f0;
   font-size: 0.875rem;
+}
+
+/* ======================== */
+/* SPONGEBOB SCENE LAYERS    */
+/* ======================== */
+
+.sb-scene {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.sb-scene-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
 }

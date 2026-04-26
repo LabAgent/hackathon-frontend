@@ -2,7 +2,7 @@ export interface User {
   id: string;
   email: string;
   fullName: string;
-  role: 'user' | 'admin';
+  role: 'user' | 'admin' | 'researcher' | 'lab_assistant';
   image: string | null;
   mfaEnabled: boolean;
   isActive: boolean;

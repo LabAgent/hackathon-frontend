@@ -1,21 +1,47 @@
 import { useParams, Link } from 'react-router';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { ArrowLeft, Plus } from 'lucide-react';
-import { Card, CardHeader, CardTitle, CardContent, Button, Spinner } from '@/components/ui';
+import { ArrowLeft, Plus, Pencil, Trash2 } from 'lucide-react';
+import { Card, CardHeader, CardTitle, CardContent, Button, Spinner, Modal, Input } from '@/components/ui';
 import { researchApi, inventoryApi } from '@/api';
 import { useState } from 'react';
-import type { Project, ExperimentsLog, Inventory } from '@/types';
+import type { Project, ExperimentsLog, Inventory, ProjectStatus, ExperimentStatus } from '@/types';
+
+const PROJECT_STATUS_OPTIONS: { value: ProjectStatus; label: string }[] = [
+  { value: 'planned', label: 'Planned' },
+  { value: 'ongoing', label: 'Ongoing' },
+  { value: 'completed', label: 'Completed' },
+];
+
+const EXPERIMENT_STATUS_OPTIONS: { value: ExperimentStatus; label: string }[] = [
+  { value: 'planned', label: 'Planned' },
+  { value: 'in_progress', label: 'In Progress' },
+  { value: 'completed', label: 'Completed' },
+  { value: 'failed', label: 'Failed' },
+];
 
 export default function ResearchDetailPage() {
   const { id } = useParams<{ id: string }>();
   const qc = useQueryClient();
+
   const [showAddExp, setShowAddExp] = useState(false);
   const [expResult, setExpResult] = useState('');
   const [expSuccess, setExpSuccess] = useState(true);
   const [expNotes, setExpNotes] = useState('');
+  const [expHypothesis, setExpHypothesis] = useState('');
+  const [expMethodology, setExpMethodology] = useState('');
+  const [expStatus, setExpStatus] = useState<ExperimentStatus>('planned');
+
   const [showAddReq, setShowAddReq] = useState(false);
   const [reqItemId, setReqItemId] = useState<number | ''>('');
   const [reqQty, setReqQty] = useState(1);
+
+  const [editProject, setEditProject] = useState(false);
+  const [editName, setEditName] = useState('');
+  const [editDesc, setEditDesc] = useState('');
+  const [editStatus, setEditStatus] = useState<ProjectStatus>('planned');
+  const [editPriority, setEditPriority] = useState('1');
+
+  const [deleteConfirm, setDeleteConfirm] = useState(false);
 
   const { data, isLoading } = useQuery({
     queryKey: ['project', id],
@@ -28,16 +54,26 @@ export default function ResearchDetailPage() {
   });
 
   const inventoryItems: Inventory[] = (inventoryData as any)?.data || [];
-
   const project: Project = (data as any)?.data;
+
   const addExpMutation = useMutation({
-    mutationFn: (d: { result?: string; success?: boolean; notes?: string }) => researchApi.addExperimentLog(Number(id!), d),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['project', id] }); setShowAddExp(false); setExpResult(''); setExpNotes(''); },
+    mutationFn: (d: any) => researchApi.addExperimentLog(Number(id!), d),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['project', id] }); setShowAddExp(false); setExpResult(''); setExpNotes(''); setExpHypothesis(''); setExpMethodology(''); setExpStatus('planned'); },
   });
 
   const updateStatusMutation = useMutation({
     mutationFn: (status: string) => researchApi.update(Number(id!), { status: status as any }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['project', id] }),
+  });
+
+  const updateProjectMutation = useMutation({
+    mutationFn: (d: any) => researchApi.update(Number(id!), d),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['project', id] }); setEditProject(false); },
+  });
+
+  const deleteProjectMutation = useMutation({
+    mutationFn: () => researchApi.delete(Number(id!)),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['projects'] }); },
   });
 
   const addReqMutation = useMutation({
@@ -47,12 +83,38 @@ export default function ResearchDetailPage() {
 
   if (isLoading || !project) return <div className="flex justify-center py-12"><Spinner /></div>;
 
+  if (deleteProjectMutation.isSuccess) {
+    return (
+      <div className="text-center py-12 space-y-4">
+        <p className="text-ocean-300 text-lg">Project deleted successfully.</p>
+        <Link to="/research"><Button variant="sponge">Back to Projects</Button></Link>
+      </div>
+    );
+  }
+
   const statusColor = (s: string) => {
     switch (s) {
       case 'ongoing': return 'bg-kelp-50 text-kelp-600';
       case 'completed': return 'bg-ocean-50 text-ocean-600';
       default: return 'bg-sponge-50 text-sponge-700';
     }
+  };
+
+  const expStatusColor = (s: string | null) => {
+    switch (s) {
+      case 'completed': return 'bg-kelp-50 text-kelp-600';
+      case 'in_progress': return 'bg-ocean-50 text-ocean-600';
+      case 'failed': return 'bg-krabs-50 text-krabs-500';
+      default: return 'bg-sponge-50 text-sponge-700';
+    }
+  };
+
+  const openEditProject = () => {
+    setEditName(project.name);
+    setEditDesc(project.description || '');
+    setEditStatus(project.status);
+    setEditPriority(String(project.priority));
+    setEditProject(true);
   };
 
   return (
@@ -76,6 +138,12 @@ export default function ResearchDetailPage() {
           {project.status === 'ongoing' && (
             <Button size="sm" variant="ocean" onClick={() => updateStatusMutation.mutate('completed')}>✅ Complete</Button>
           )}
+          <Button size="sm" variant="ghost" className="text-ocean-300 hover:bg-ocean-400/10" onClick={openEditProject}>
+            <Pencil className="h-3 w-3 mr-1" /> Edit
+          </Button>
+          <Button size="sm" variant="ghost" className="text-krabs-400 hover:bg-krabs-400/10" onClick={() => setDeleteConfirm(true)}>
+            <Trash2 className="h-3 w-3 mr-1" /> Delete
+          </Button>
           <Link to="/assistant">
             <Button size="sm" variant="ghost" className="flex items-center gap-1 text-sponge-300 hover:bg-sponge-400/10">
               🤖 Ask AI
@@ -90,6 +158,45 @@ export default function ResearchDetailPage() {
         </Card>
       )}
 
+      <Modal open={editProject} onClose={() => setEditProject(false)} title="Edit Project">
+        <div className="space-y-4">
+          <div className="space-y-1">
+            <label className="text-sm font-semibold text-ocean-700">Project Name</label>
+            <Input value={editName} onChange={(e: any) => setEditName(e.target.value)} />
+          </div>
+          <div className="space-y-1">
+            <label className="text-sm font-semibold text-ocean-700">Description</label>
+            <textarea className="w-full rounded-xl border-2 border-ocean-200 p-3 text-sm focus:outline-none focus:border-sponge-400" rows={3} value={editDesc} onChange={(e) => setEditDesc(e.target.value)} />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-1">
+              <label className="text-sm font-semibold text-ocean-700">Status</label>
+              <select className="block w-full rounded-xl border-2 border-ocean-200 px-3 py-2.5 text-sm focus:outline-none focus:border-sponge-400" value={editStatus} onChange={(e) => setEditStatus(e.target.value as ProjectStatus)}>
+                {PROJECT_STATUS_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+              </select>
+            </div>
+            <div className="space-y-1">
+              <label className="text-sm font-semibold text-ocean-700">Priority</label>
+              <Input type="number" min={1} value={editPriority} onChange={(e: any) => setEditPriority(e.target.value)} />
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <Button onClick={() => updateProjectMutation.mutate({ name: editName, description: editDesc || undefined, status: editStatus, priority: Number(editPriority) })} loading={updateProjectMutation.isPending} variant="sponge">Save</Button>
+            <Button variant="secondary" onClick={() => setEditProject(false)}>Cancel</Button>
+          </div>
+        </div>
+      </Modal>
+
+      <Modal open={deleteConfirm} onClose={() => setDeleteConfirm(false)} title="Delete Project">
+        <div className="space-y-4">
+          <p className="text-sm text-ocean-600">Are you sure you want to delete <strong>{project.name}</strong>? This action cannot be undone.</p>
+          <div className="flex gap-2">
+            <Button variant="danger" onClick={() => deleteProjectMutation.mutate()} loading={deleteProjectMutation.isPending}>Delete</Button>
+            <Button variant="secondary" onClick={() => setDeleteConfirm(false)}>Cancel</Button>
+          </div>
+        </div>
+      </Modal>
+
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="flex items-center gap-2">
@@ -103,14 +210,30 @@ export default function ResearchDetailPage() {
         <CardContent>
           {showAddExp && (
             <div className="space-y-3 mb-4 p-4 bg-ocean-50/50 rounded-xl border-2 border-ocean-100">
-              <textarea className="w-full rounded-xl border-2 border-ocean-200 p-3 text-sm focus:outline-none focus:border-sponge-400" rows={2} placeholder="Result (optional)" value={expResult} onChange={(e) => setExpResult(e.target.value)} />
-              <div className="flex items-center gap-2">
-                <label className="text-sm text-ocean-600 font-semibold">Success:</label>
-                <input type="checkbox" checked={expSuccess} onChange={(e) => setExpSuccess(e.target.checked)} className="rounded" />
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-sm text-ocean-600 font-semibold">Status</label>
+                  <select className="block w-full rounded-xl border-2 border-ocean-200 px-3 py-2 text-sm focus:outline-none focus:border-sponge-400" value={expStatus} onChange={(e) => setExpStatus(e.target.value as ExperimentStatus)}>
+                    {EXPERIMENT_STATUS_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                  </select>
+                </div>
+                <div className="flex items-end gap-2 pb-1">
+                  <label className="text-sm text-ocean-600 font-semibold">Success:</label>
+                  <input type="checkbox" checked={expSuccess} onChange={(e) => setExpSuccess(e.target.checked)} className="rounded" />
+                </div>
               </div>
+              <div className="space-y-1">
+                <label className="text-sm text-ocean-600 font-semibold">Hypothesis</label>
+                <textarea className="w-full rounded-xl border-2 border-ocean-200 p-3 text-sm focus:outline-none focus:border-sponge-400" rows={2} placeholder="Hypothesis (optional)" value={expHypothesis} onChange={(e) => setExpHypothesis(e.target.value)} />
+              </div>
+              <div className="space-y-1">
+                <label className="text-sm text-ocean-600 font-semibold">Methodology</label>
+                <textarea className="w-full rounded-xl border-2 border-ocean-200 p-3 text-sm focus:outline-none focus:border-sponge-400" rows={2} placeholder="Methodology (optional)" value={expMethodology} onChange={(e) => setExpMethodology(e.target.value)} />
+              </div>
+              <textarea className="w-full rounded-xl border-2 border-ocean-200 p-3 text-sm focus:outline-none focus:border-sponge-400" rows={2} placeholder="Result (optional)" value={expResult} onChange={(e) => setExpResult(e.target.value)} />
               <input className="w-full rounded-xl border-2 border-ocean-200 p-2 text-sm focus:outline-none focus:border-sponge-400" placeholder="Notes (optional)" value={expNotes} onChange={(e) => setExpNotes(e.target.value)} />
               <div className="flex gap-2">
-                <Button size="sm" onClick={() => addExpMutation.mutate({ result: expResult || undefined, success: expSuccess, notes: expNotes || undefined })} loading={addExpMutation.isPending} variant="sponge">Add Log</Button>
+                <Button size="sm" onClick={() => addExpMutation.mutate({ result: expResult || undefined, success: expSuccess, notes: expNotes || undefined, hypothesis: expHypothesis || undefined, methodology: expMethodology || undefined, status: expStatus || undefined })} loading={addExpMutation.isPending} variant="sponge">Add Log</Button>
                 <Button size="sm" variant="ghost" onClick={() => setShowAddExp(false)}>Cancel</Button>
               </div>
             </div>
@@ -118,16 +241,21 @@ export default function ResearchDetailPage() {
           <div className="space-y-3">
             {(project.experiments || []).map((exp: ExperimentsLog) => (
               <div key={exp.id} className="flex items-center justify-between py-3 border-b border-ocean-100 last:border-0">
-                <div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className={`text-xs px-2 py-0.5 rounded-full font-bold ${expStatusColor(exp.status || 'planned')}`}>
+                      {exp.status || 'planned'}
+                    </span>
+                    <span className={`text-xs px-2 py-0.5 rounded-full font-bold ${exp.success ? 'bg-kelp-50 text-kelp-600' : exp.success === false ? 'bg-krabs-50 text-krabs-500' : 'bg-ocean-50 text-ocean-600'}`}>
+                      {exp.success === true ? '✅ Success' : exp.success === false ? '❌ Failed' : '❓ Unknown'}
+                    </span>
+                  </div>
                   <p className="font-bold text-sm text-ocean-800">{exp.result || 'No result recorded'}</p>
+                  {exp.hypothesis && <p className="text-xs text-ocean-500 mt-0.5 italic">Hypothesis: {exp.hypothesis}</p>}
+                  {exp.methodology && <p className="text-xs text-ocean-500 mt-0.5">Method: {exp.methodology}</p>}
                   {exp.notes && <p className="text-xs text-ocean-400 mt-0.5">{exp.notes}</p>}
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className={`text-xs px-2.5 py-0.5 rounded-full font-bold ${exp.success ? 'bg-kelp-50 text-kelp-600' : exp.success === false ? 'bg-krabs-50 text-krabs-500' : 'bg-ocean-50 text-ocean-600'}`}>
-                    {exp.success === true ? '✅ Success' : exp.success === false ? '❌ Failed' : '❓ Unknown'}
-                  </span>
-                  <span className="text-xs text-ocean-400">{new Date(exp.createdAt).toLocaleDateString()}</span>
-                </div>
+                <span className="text-xs text-ocean-400 ml-3 whitespace-nowrap">{new Date(exp.createdAt).toLocaleDateString()}</span>
               </div>
             ))}
             {(!project.experiments || project.experiments.length === 0) && (

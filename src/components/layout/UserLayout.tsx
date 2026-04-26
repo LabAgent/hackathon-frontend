@@ -21,6 +21,36 @@ function Bubbles() {
   );
 }
 
+function SpongeBobScene() {
+  return (
+    <div className="sb-scene">
+      <div className="flower-clouds">
+        {['🌸', '🌺', '🌸', '🌺', '🌸'].map((flower, i) => (
+          <div key={i} className="flower-cloud" style={{ fontSize: `${28 + (i % 3) * 8}px` }}>
+            {flower}
+          </div>
+        ))}
+      </div>
+
+      <div className="kelp-decor kelp-left" />
+      <div className="kelp-decor kelp-right" />
+
+      <div className="sand-floor" />
+
+      <div className="sea-decorations">
+        <span className="sea-deco-item">🐚</span>
+        <span className="sea-deco-item">⭐</span>
+        <span className="sea-deco-item">🐚</span>
+        <span className="sea-deco-item">🌟</span>
+        <span className="sea-deco-item">🐚</span>
+        <span className="sea-deco-item">⭐</span>
+        <span className="sea-deco-item">🪸</span>
+        <span className="sea-deco-item">🐚</span>
+      </div>
+    </div>
+  );
+}
+
 export function UserLayout() {
   const user = useAuthStore((s) => s.user);
   const isAdmin = useAuthStore((s) => s.isAdmin);
@@ -45,6 +75,7 @@ export function UserLayout() {
       style={{ background: 'linear-gradient(180deg, #001e3d 0%, #003660 25%, #004a77 50%, #005f99 75%, #0077be 100%)' }}
     >
       <Bubbles />
+      <SpongeBobScene />
 
       <nav className="bg-ocean-900/70 backdrop-blur-2xl border-b-2 border-sponge-400/20 sticky top-0 z-30 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

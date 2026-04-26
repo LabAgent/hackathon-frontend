@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useLocation } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
-import { Send, Loader2, Sparkles, ChevronDown, Menu, X } from 'lucide-react';
+import { Send, Loader2, Sparkles, ChevronDown, Menu, X, MessageSquare, Plus } from 'lucide-react';
 import { Card } from '@/components/ui';
 import { useAgentChat } from '@/hooks/useAgentChat';
 import { chatApi } from '@/api';
@@ -179,29 +179,78 @@ export default function LabAssistantPage() {
   return (
     <div className="flex h-[calc(100vh-4rem)] gap-4">
       {sidebarOpen && (
-        <div className="fixed inset-0 bg-black/30 z-40 md:hidden backdrop-blur-sm" onClick={() => setSidebarOpen(false)} />
+        <div className="fixed inset-0 bg-black/40 z-40 md:hidden backdrop-blur-sm" onClick={() => setSidebarOpen(false)} />
       )}
 
-      <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white/95 backdrop-blur-xl shadow-2xl transform transition-transform md:relative md:transform-none md:shadow-none md:bg-transparent md:backdrop-blur-none flex flex-col gap-2 p-4 pt-16 md:pt-0 overflow-y-auto rounded-2xl md:rounded-none ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
-        <button className="absolute top-4 right-4 md:hidden" onClick={() => setSidebarOpen(false)}>
-          <X className="h-5 w-5 text-ocean-400" />
-        </button>
-        <h3 className="text-sm font-bold text-ocean-500 uppercase tracking-wider px-2">💬 Conversations</h3>
-        <button
-          onClick={() => { setConvId(undefined); setMessages([]); reset(); setSidebarOpen(false); }}
-          className="w-full text-left px-3 py-2.5 rounded-xl bg-sponge-50 text-sponge-700 text-sm font-bold hover:bg-sponge-100 transition-all"
-        >
-          ✨ New Chat
-        </button>
-        {conversations.map((c: AgentConversation) => (
-          <button
-            key={c.id}
-            onClick={() => { handleSelectConversation(c.id); setSidebarOpen(false); }}
-            className={`w-full text-left px-3 py-2 rounded-xl text-sm truncate transition-all font-medium ${convId === c.id ? 'bg-ocean-50 text-ocean-700' : 'text-ocean-500 hover:bg-ocean-50/50'}`}
-          >
-            {c.title || 'Untitled'}
+      <div className={`fixed inset-y-0 left-0 z-50 w-72 flex flex-col transition-transform duration-300 md:relative md:transform-none ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}
+        style={{
+          background: 'linear-gradient(180deg, rgba(0,30,61,0.92) 0%, rgba(0,55,100,0.95) 50%, rgba(0,72,119,0.92) 100%)',
+          backdropFilter: 'blur(20px)',
+        }}
+      >
+        <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
+          <h3 className="text-sm font-bold text-sponge-300 uppercase tracking-wider flex items-center gap-2 font-[var(--font-display)]">
+            <MessageSquare className="h-4 w-4" />
+            Conversations
+          </h3>
+          <button className="md:hidden text-ocean-300 hover:text-white p-1" onClick={() => setSidebarOpen(false)}>
+            <X className="h-5 w-5" />
           </button>
-        ))}
+        </div>
+
+        <div className="px-3 py-3">
+          <button
+            onClick={() => { setConvId(undefined); setMessages([]); reset(); setSidebarOpen(false); }}
+            className={`w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-bold transition-all ${
+              !convId
+                ? 'bg-sponge-400/20 text-sponge-300 border border-sponge-400/30'
+                : 'bg-white/5 text-ocean-200 hover:bg-white/10 border border-transparent'
+            }`}
+          >
+            <Plus className="h-4 w-4" />
+            New Chat
+          </button>
+        </div>
+
+        <div className="flex-1 overflow-y-auto px-3 pb-3 space-y-1">
+          {conversations.length === 0 && (
+            <div className="text-center py-8">
+              <div className="text-3xl mb-2 opacity-50">🪼</div>
+              <p className="text-ocean-400 text-xs">No conversations yet</p>
+              <p className="text-ocean-500 text-xs mt-1">Start a new chat with Karen!</p>
+            </div>
+          )}
+          {conversations.map((c: AgentConversation) => {
+            const isActive = convId === c.id;
+            return (
+              <button
+                key={c.id}
+                onClick={() => { handleSelectConversation(c.id); setSidebarOpen(false); }}
+                className={`w-full text-left px-3 py-2.5 rounded-xl text-sm transition-all font-medium group ${
+                  isActive
+                    ? 'bg-sponge-400/15 text-sponge-200 border border-sponge-400/25'
+                    : 'text-ocean-300 hover:bg-white/8 border border-transparent hover:border-white/10'
+                }`}
+              >
+                <div className="flex items-start gap-2">
+                  <span className="text-base mt-0.5 shrink-0">{isActive ? '💬' : '💭'}</span>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate leading-tight">{c.title || 'Untitled Chat'}</p>
+                    <p className="text-[10px] text-ocean-500 mt-0.5">
+                      {c.id?.substring(0, 8)}...
+                    </p>
+                  </div>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="px-3 py-2 border-t border-white/10">
+          <div className="flex items-center gap-2 px-2 py-1.5 text-[10px] text-ocean-500">
+            <span>🪼</span> {conversations.length} conversation{conversations.length !== 1 ? 's' : ''}
+          </div>
+        </div>
       </div>
 
       <div className="flex-1 flex flex-col">

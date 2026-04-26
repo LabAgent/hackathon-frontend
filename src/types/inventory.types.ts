@@ -5,6 +5,8 @@ export interface Inventory {
   quantity: number;
   unit: string | null;
   minRequired: number;
+  location: string | null;
+  description: string | null;
   lastUpdated: string;
 }
 
@@ -14,6 +16,8 @@ export interface CreateInventoryItemDTO {
   quantity?: number;
   unit?: string;
   minRequired?: number;
+  location?: string;
+  description?: string;
 }
 
 export interface UpdateInventoryItemDTO {
@@ -22,6 +26,8 @@ export interface UpdateInventoryItemDTO {
   quantity?: number;
   unit?: string;
   minRequired?: number;
+  location?: string;
+  description?: string;
   reason?: string;
 }
 
