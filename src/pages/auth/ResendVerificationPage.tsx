@@ -31,26 +31,25 @@ export default function ResendVerificationPage() {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
-      <h2 className="text-2xl font-bold text-gray-900 text-center mb-2">Resend Verification Code</h2>
-      <p className="text-sm text-gray-500 text-center mb-6">
-        Enter your email to receive a new verification code
-      </p>
+    <div>
+      <div className="text-center mb-6">
+        <span className="text-4xl block mb-2">📧</span>
+        <h2 className="text-2xl font-bold text-ocean-800 font-[var(--font-display)]">Resend Verification</h2>
+        <p className="text-sm text-ocean-500 mt-1">
+          We'll send you a fresh verification code
+        </p>
+      </div>
 
       {sent ? (
         <div className="text-center">
-          <div className="mx-auto h-12 w-12 rounded-full bg-success-50 flex items-center justify-center mb-4">
-            <svg className="h-6 w-6 text-success-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-            </svg>
-          </div>
-          <p className="text-success-700 mb-4">Verification code sent! Please check your inbox.</p>
+          <div className="text-5xl mb-4">✅</div>
+          <p className="text-kelp-600 mb-4 font-medium">Verification code sent! Check your inbox.</p>
           <div className="space-y-2">
             <Link to="/verify-email">
-              <Button variant="secondary" className="w-full">Enter Code</Button>
+              <Button variant="ocean" className="w-full">Enter Code</Button>
             </Link>
             <Link to="/login" className="block">
-              <Button variant="secondary" className="w-full">Back to Login</Button>
+              <Button variant="secondary" className="w-full">← Back to Login</Button>
             </Link>
           </div>
         </div>
@@ -62,17 +61,17 @@ export default function ResendVerificationPage() {
               label="Email"
               id="email"
               type="email"
-              placeholder="john@example.com"
+              placeholder="sandy@bikini-bottom.ocean"
               error={errors.email?.message}
               {...reg('email')}
             />
-            <Button type="submit" loading={isPending} className="w-full">
-              Resend Code
+            <Button type="submit" loading={isPending} variant="sponge" className="w-full">
+              📧 Resend Code
             </Button>
           </form>
-          <p className="mt-4 text-center text-sm text-gray-500">
-            <Link to="/login" className="text-primary-600 hover:text-primary-700">
-              Back to Login
+          <p className="mt-4 text-center text-sm text-ocean-400">
+            <Link to="/login" className="text-sponge-500 hover:text-sponge-600 font-bold">
+              ← Back to Login
             </Link>
           </p>
         </>

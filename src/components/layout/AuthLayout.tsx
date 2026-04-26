@@ -1,26 +1,48 @@
 import { Outlet } from 'react-router';
 import { Link } from 'react-router';
-import { Shell } from 'lucide-react';
+
+function Bubbles() {
+  return (
+    <div className="bubble-bg">
+      {Array.from({ length: 12 }).map((_, i) => (
+        <div key={i} className="bubble" />
+      ))}
+    </div>
+  );
+}
 
 export function AuthLayout() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-ocean-900 via-ocean-800 to-ocean-900 px-4">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center gap-2">
-            <div className="h-10 w-10 bg-sandy-400 rounded-xl flex items-center justify-center shadow-lg shadow-sandy-400/30">
-              <Shell className="h-6 w-6 text-ocean-900" />
-            </div>
-            <span className="text-2xl font-bold text-white">Treedome Lab</span>
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden px-4"
+      style={{ background: 'linear-gradient(180deg, #001e3d 0%, #003660 30%, #004a77 60%, #005f99 100%)' }}
+    >
+      <Bubbles />
+
+      <div className="w-full max-w-md relative z-10">
+        <div className="text-center mb-8" style={{ animation: 'float-gentle 4s ease-in-out infinite' }}>
+          <Link to="/" className="inline-flex flex-col items-center gap-2">
+            <div className="text-5xl mb-1">🧽</div>
+            <span className="text-3xl font-bold text-sponge-400 font-[var(--font-display)] drop-shadow-lg">
+              Bikini Bottom Lab
+            </span>
           </Link>
-          <p className="text-ocean-300 text-sm mt-2">Sandy's Underwater Research Platform</p>
+          <p className="text-ocean-300 text-sm mt-2 font-medium">
+            🐿️ Sandy's Underwater Research Platform
+          </p>
         </div>
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-xl border border-ocean-700/20 p-8">
+
+        <div className="sb-card p-8">
           <Outlet />
         </div>
-        <p className="text-center text-ocean-400 text-xs mt-6">
-          &copy; 2025 Treedome Lab &mdash; Powered by Sandy's Science
+
+        <p className="text-center text-ocean-400/60 text-xs mt-6 font-medium">
+          &copy; 2025 Bikini Bottom Lab &mdash; Powered by Sandy's Science 🌊
         </p>
+      </div>
+
+      <div className="ocean-waves">
+        <div className="ocean-wave" />
+        <div className="ocean-wave" />
       </div>
     </div>
   );

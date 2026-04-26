@@ -3,20 +3,16 @@ import { Link, Outlet, useLocation, useNavigate } from 'react-router';
 import { useAuthStore } from '@/stores/auth.store';
 import { getInitials } from '@/lib/utils';
 import {
-  LayoutDashboard,
-  Users,
   LogOut,
   Menu,
   X,
-  Shield,
   ChevronDown,
-  Beaker,
 } from 'lucide-react';
 
 const sidebarItems = [
-  { label: 'Overview', path: '/admin', icon: LayoutDashboard },
-  { label: 'Users', path: '/admin/users', icon: Users },
-  { label: 'Back to Lab', path: '/dashboard', icon: Beaker },
+  { label: 'Overview', path: '/admin', icon: '📊' },
+  { label: 'Users', path: '/admin/users', icon: '👥' },
+  { label: 'Back to Lab', path: '/dashboard', icon: '🔬' },
 ];
 
 export function AdminLayout() {
@@ -44,26 +40,26 @@ export function AdminLayout() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-ocean-900 via-ocean-800 to-ocean-900">
+    <div className="min-h-screen relative overflow-hidden"
+      style={{ background: 'linear-gradient(180deg, #001e3d 0%, #003660 30%, #004a77 60%, #005f99 100%)' }}
+    >
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden backdrop-blur-sm"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
       <aside
-        className={`fixed top-0 left-0 z-50 h-full w-64 bg-ocean-900/95 backdrop-blur-xl border-r border-ocean-700/50 text-white transition-transform duration-200 lg:translate-x-0 ${
+        className={`fixed top-0 left-0 z-50 h-full w-64 bg-ocean-900/95 backdrop-blur-2xl border-r-2 border-krabs-400/20 text-white transition-transform duration-300 lg:translate-x-0 ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        <div className="flex items-center justify-between h-16 px-6 border-b border-ocean-700/50">
-          <div className="flex items-center gap-2">
-            <div className="h-8 w-8 bg-sandy-400 rounded-lg flex items-center justify-center shadow-md">
-              <Shield className="h-5 w-5 text-ocean-900" />
-            </div>
+        <div className="flex items-center justify-between h-16 px-6 border-b-2 border-krabs-400/20">
+          <div className="flex items-center gap-2.5">
+            <span className="text-xl">🦀</span>
             <div className="flex flex-col">
-              <span className="font-semibold text-white text-sm leading-tight">Treedome Lab</span>
+              <span className="font-bold text-krabs-300 text-sm leading-tight font-[var(--font-display)]">Mr. Krabs</span>
               <span className="text-ocean-400 text-xs">Admin Panel</span>
             </div>
           </div>
@@ -77,13 +73,13 @@ export function AdminLayout() {
               key={item.path}
               to={item.path}
               onClick={() => setSidebarOpen(false)}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold transition-all ${
                 isActive(item.path)
-                  ? 'bg-sandy-400/20 text-sandy-300'
-                  : 'text-ocean-200 hover:bg-ocean-700/40 hover:text-white'
+                  ? 'bg-krabs-400/20 text-krabs-300'
+                  : 'text-ocean-200 hover:bg-white/10 hover:text-white'
               }`}
             >
-              <item.icon className="h-5 w-5" />
+              <span className="emoji-icon">{item.icon}</span>
               {item.label}
             </Link>
           ))}
@@ -91,7 +87,7 @@ export function AdminLayout() {
       </aside>
 
       <div className="lg:ml-64">
-        <header className="bg-ocean-900/80 backdrop-blur-xl border-b border-ocean-700/50 sticky top-0 z-30">
+        <header className="bg-ocean-900/70 backdrop-blur-2xl border-b-2 border-krabs-400/20 sticky top-0 z-30">
           <div className="flex items-center justify-between h-16 px-4 sm:px-6">
             <button
               className="lg:hidden p-2 text-ocean-300 hover:text-white"
@@ -104,34 +100,34 @@ export function AdminLayout() {
               <div className="relative">
                 <button
                   onClick={() => setProfileDropdown(!profileDropdown)}
-                  className="flex items-center gap-2 p-1.5 rounded-lg hover:bg-ocean-700/40 transition-colors"
+                  className="flex items-center gap-2 p-1.5 rounded-xl hover:bg-white/10 transition-all"
                 >
                   {user?.image ? (
-                    <img src={user.image} alt="" className="h-8 w-8 rounded-full object-cover border-2 border-sandy-400" />
+                    <img src={user.image} alt="" className="h-8 w-8 rounded-full object-cover border-2 border-krabs-400" />
                   ) : (
-                    <div className="h-8 w-8 rounded-full bg-sandy-400 text-ocean-900 flex items-center justify-center text-sm font-bold">
+                    <div className="h-9 w-9 rounded-full bg-gradient-to-br from-krabs-400 to-krabs-500 text-white flex items-center justify-center text-sm font-bold shadow-lg">
                       {user ? getInitials(user.fullName) : 'A'}
                     </div>
                   )}
                   <div className="hidden sm:block text-left">
-                    <p className="text-sm font-medium text-white">{user?.fullName}</p>
-                    <p className="text-xs text-sandy-300">Administrator</p>
+                    <p className="text-sm font-bold text-white">{user?.fullName}</p>
+                    <p className="text-xs text-krabs-300">🦀 Administrator</p>
                   </div>
                   <ChevronDown className="h-4 w-4 text-ocean-300 hidden sm:block" />
                 </button>
                 {profileDropdown && (
                   <>
                     <div className="fixed inset-0 z-40" onClick={() => setProfileDropdown(false)} />
-                    <div className="absolute right-0 mt-2 w-48 bg-ocean-800 rounded-lg border border-ocean-700 shadow-lg z-50 py-1">
+                    <div className="absolute right-0 mt-2 w-48 bg-ocean-800/95 backdrop-blur-xl rounded-2xl border-2 border-krabs-400/20 shadow-2xl z-50 py-2">
                       <div className="px-4 py-2 border-b border-ocean-700">
-                        <p className="text-sm font-medium text-white">{user?.fullName}</p>
-                        <p className="text-xs text-sandy-300">Administrator</p>
+                        <p className="text-sm font-bold text-white">{user?.fullName}</p>
+                        <p className="text-xs text-krabs-300">🦀 Administrator</p>
                       </div>
                       <button
                         onClick={handleLogout}
-                        className="w-full text-left px-4 py-2 text-sm text-coral-400 hover:bg-ocean-700/40"
+                        className="w-full text-left px-4 py-2.5 text-sm text-krabs-400 hover:bg-krabs-400/10 font-bold flex items-center gap-2"
                       >
-                        <LogOut className="inline h-4 w-4 mr-2" />
+                        <LogOut className="h-4 w-4" />
                         Sign out
                       </button>
                     </div>
@@ -142,7 +138,7 @@ export function AdminLayout() {
           </div>
         </header>
 
-        <main className="p-4 sm:p-6 lg:p-8">
+        <main className="p-4 sm:p-6 lg:p-8 relative z-10">
           <Outlet />
         </main>
       </div>

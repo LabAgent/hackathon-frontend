@@ -45,56 +45,61 @@ export default function LoginPage() {
   const state = location.state as { registered?: boolean } | null;
 
   return (
-    <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-xl border border-ocean-700/20 p-8">
-        <h2 className="text-2xl font-bold text-gray-900 text-center mb-2">Welcome back</h2>
-        <p className="text-sm text-gray-500 text-center mb-6">
-          Enter your credentials to access Sandy's Treedome Lab
-        </p>
-
-        {state?.registered && (
-          <div className="mb-4 p-3 rounded-lg bg-kelp-50 text-kelp-700 text-sm">
-            Registration successful! Please check your email to verify your account, then sign in.
-          </div>
-        )}
-
-        <ErrorBanner error={error} />
-
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <Input
-            label="Email"
-            id="email"
-            type="email"
-            placeholder="sandy@treedome.lab"
-            error={errors.email?.message}
-            {...reg('email')}
-          />
-          <Input
-            label="Password"
-            id="password"
-            type="password"
-            placeholder="Enter your password"
-            error={errors.password?.message}
-            {...reg('password')}
-          />
-          <div className="flex items-center justify-end">
-            <Link
-              to="/forgot-password"
-              className="text-sm text-ocean-600 hover:text-ocean-700"
-            >
-              Forgot password?
-            </Link>
-          </div>
-          <Button type="submit" loading={isPending} className="w-full bg-ocean-600 hover:bg-ocean-700">
-            Sign in to Treedome Lab
-          </Button>
-        </form>
-
-        <p className="mt-6 text-center text-sm text-gray-500">
-          Don't have an account?{' '}
-          <Link to="/register" className="text-ocean-600 hover:text-ocean-700 font-medium">
-            Create one
-          </Link>
+    <div>
+      <div className="text-center mb-6">
+        <span className="text-4xl block mb-2">🧽</span>
+        <h2 className="text-2xl font-bold text-ocean-800 font-[var(--font-display)]">
+          Welcome back!
+        </h2>
+        <p className="text-sm text-ocean-500 mt-1">
+          Enter Sandy's Treedome to continue researching
         </p>
       </div>
+
+      {state?.registered && (
+        <div className="mb-4 p-3 rounded-xl bg-kelp-50 text-kelp-600 text-sm font-medium border-2 border-kelp-200">
+          🎉 Registration successful! Please check your email to verify your account, then sign in.
+        </div>
+      )}
+
+      <ErrorBanner error={error} />
+
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <Input
+          label="Email"
+          id="email"
+          type="email"
+          placeholder="sandy@bikini-bottom.ocean"
+          error={errors.email?.message}
+          {...reg('email')}
+        />
+        <Input
+          label="Password"
+          id="password"
+          type="password"
+          placeholder="Enter your secret formula"
+          error={errors.password?.message}
+          {...reg('password')}
+        />
+        <div className="flex items-center justify-end">
+          <Link
+            to="/forgot-password"
+            className="text-sm text-ocean-500 hover:text-ocean-600 font-semibold"
+          >
+            Forgot password? 🤔
+          </Link>
+        </div>
+        <Button type="submit" loading={isPending} variant="sponge" className="w-full text-base py-3">
+          🌊 Dive into the Lab!
+        </Button>
+      </form>
+
+      <p className="mt-6 text-center text-sm text-ocean-400">
+        New to Bikini Bottom?{' '}
+        <Link to="/register" className="text-sponge-500 hover:text-sponge-600 font-bold">
+          Join Sandy's Team
+        </Link>
+      </p>
+    </div>
   );
 }

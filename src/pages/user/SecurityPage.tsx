@@ -4,7 +4,7 @@ import { useProfile } from '@/hooks/useUser';
 import { useDisableMfa, useRegenerateBackupCodes } from '@/hooks/useAuth';
 import { Link } from 'react-router';
 import { useNavigate } from 'react-router';
-import { ArrowLeft, Shield, Key, AlertTriangle, Loader2 } from 'lucide-react';
+import { ArrowLeft, Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -37,7 +37,7 @@ export default function SecurityPage() {
   });
 
   if (isLoading || !profile) {
-    return <div className="flex justify-center py-12"><Loader2 className="h-6 w-6 animate-spin text-primary-600" /></div>;
+    return <div className="flex justify-center py-12"><Loader2 className="h-6 w-6 animate-spin text-sponge-500" /></div>;
   }
 
   const onDisable = (data: DisableFormData) => {
@@ -45,7 +45,7 @@ export default function SecurityPage() {
     disableMfa.mutate(data, {
       onSuccess: () => {
         setShowDisableModal(false);
-        setDisableSuccess('MFA has been disabled successfully');
+        setDisableSuccess('🛡️ MFA has been disabled successfully');
       },
     });
   };
@@ -62,88 +62,86 @@ export default function SecurityPage() {
 
   return (
     <div>
-      <Link to="/dashboard" className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 mb-4">
+      <Link to="/dashboard" className="inline-flex items-center gap-1.5 text-sm text-ocean-300 hover:text-white font-bold mb-4">
         <ArrowLeft className="h-4 w-4" />
-        Back to Dashboard
+        ← Back to Dashboard
       </Link>
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Security</h1>
+      <h1 className="text-2xl font-bold text-white mb-6 font-[var(--font-display)] flex items-center gap-2">
+        <span className="emoji-icon">🛡️</span> Security
+      </h1>
 
       {disableSuccess && <Alert variant="success" className="mb-4">{disableSuccess}</Alert>}
       {backupSuccess && <Alert variant="success" className="mb-4">{backupSuccess}</Alert>}
 
-      {/* MFA Status */}
       <Card className="mb-6">
         <CardHeader className="flex flex-row items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-lg bg-primary-50 flex items-center justify-center">
-              <Shield className="h-5 w-5 text-primary-600" />
+            <div className="h-11 w-11 rounded-xl bg-gary-50 flex items-center justify-center text-xl">
+              🛡️
             </div>
             <div>
               <CardTitle>Two-Factor Authentication</CardTitle>
-              <p className="text-sm text-gray-500 mt-0.5">
+              <p className="text-sm text-ocean-500 mt-0.5 font-medium">
                 {profile.mfaEnabled
-                  ? 'Your account is protected with 2FA'
+                  ? 'Your Treedome is protected with 2FA'
                   : 'Enable 2FA for extra security'}
               </p>
             </div>
           </div>
           <Badge variant={profile.mfaEnabled ? 'success' : 'warning'}>
-            {profile.mfaEnabled ? 'Enabled' : 'Disabled'}
+            {profile.mfaEnabled ? '✅ Enabled' : '⚠️ Disabled'}
           </Badge>
         </CardHeader>
         <CardContent>
           {profile.mfaEnabled ? (
             <div className="space-y-4">
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-ocean-600 font-medium">
                 Two-factor authentication is currently active. You'll need your authenticator app
-                each time you sign in.
+                each time you dive into the lab.
               </p>
               <div className="flex flex-wrap gap-3">
                 <Button
                   variant="danger"
                   onClick={() => setShowDisableModal(true)}
                 >
-                  Disable 2FA
+                  ❌ Disable 2FA
                 </Button>
                 <Button variant="secondary" onClick={() => navigate('/security/mfa/setup')}>
-                  <Key className="h-4 w-4 mr-2" />
-                  Manage 2FA
+                  🔑 Manage 2FA
                 </Button>
               </div>
             </div>
           ) : (
             <div className="space-y-4">
-              <div className="flex items-start gap-3 p-4 bg-warning-50 rounded-lg">
-                <AlertTriangle className="h-5 w-5 text-warning-500 mt-0.5" />
+              <div className="flex items-start gap-3 p-4 bg-sponge-50 rounded-xl border-2 border-sponge-200">
+                <span className="text-xl">⚠️</span>
                 <div>
-                  <p className="text-sm font-medium text-warning-600">
-                    Your account is not protected
+                  <p className="text-sm font-bold text-sponge-700">
+                    Your Treedome is not protected!
                   </p>
-                  <p className="text-sm text-warning-500 mt-1">
+                  <p className="text-sm text-sponge-600 mt-1">
                     Enable two-factor authentication to add an extra layer of security.
                   </p>
                 </div>
               </div>
-              <Button onClick={() => navigate('/security/mfa/setup')}>
-                <Shield className="h-4 w-4 mr-2" />
-                Enable 2FA
+              <Button onClick={() => navigate('/security/mfa/setup')} variant="sponge">
+                🛡️ Enable 2FA
               </Button>
             </div>
           )}
         </CardContent>
       </Card>
 
-      {/* Backup Codes (only if MFA enabled) */}
       {profile.mfaEnabled && (
         <Card>
           <CardHeader>
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-lg bg-gray-100 flex items-center justify-center">
-                <Key className="h-5 w-5 text-gray-600" />
+              <div className="h-11 w-11 rounded-xl bg-ocean-50 flex items-center justify-center text-xl">
+                🔑
               </div>
               <div>
                 <CardTitle>Backup Codes</CardTitle>
-                <p className="text-sm text-gray-500 mt-0.5">
+                <p className="text-sm text-ocean-500 mt-0.5 font-medium">
                   Generate new backup codes if you've lost yours
                 </p>
               </div>
@@ -151,9 +149,8 @@ export default function SecurityPage() {
           </CardHeader>
           <CardContent>
             <Button variant="secondary" onClick={onRegenerate} loading={regenerateBackup.isPending}>
-              Regenerate Backup Codes
+              🔄 Regenerate Backup Codes
             </Button>
-
             {disableMfa.isError && (
               <ErrorBanner error={disableMfa.error} />
             )}
@@ -161,9 +158,8 @@ export default function SecurityPage() {
         </Card>
       )}
 
-      {/* Disable MFA Modal */}
-      <Modal open={showDisableModal} onClose={() => setShowDisableModal(false)} title="Disable 2FA">
-        <p className="text-sm text-gray-500 mb-4">
+      <Modal open={showDisableModal} onClose={() => setShowDisableModal(false)} title="❌ Disable 2FA">
+        <p className="text-sm text-ocean-500 mb-4 font-medium">
           This will remove two-factor authentication from your account. Please enter your password to confirm.
         </p>
         {disableMfa.isError && (
@@ -183,16 +179,15 @@ export default function SecurityPage() {
               Cancel
             </Button>
             <Button variant="danger" type="submit" loading={disableMfa.isPending}>
-              Disable 2FA
+              ❌ Disable 2FA
             </Button>
           </div>
         </form>
       </Modal>
 
-      {/* Backup Codes Modal */}
-      <Modal open={showBackupModal} onClose={() => setShowBackupModal(false)} title="Your Backup Codes">
-        <div className="mb-4 p-3 bg-warning-50 rounded-lg">
-          <p className="text-sm text-warning-600">
+      <Modal open={showBackupModal} onClose={() => setShowBackupModal(false)} title="🔑 Your Backup Codes">
+        <div className="mb-4 p-3 bg-sponge-50 rounded-xl border-2 border-sponge-200">
+          <p className="text-sm text-sponge-700 font-bold">
             Save these backup codes in a safe place. Each code can only be used once.
           </p>
         </div>
@@ -200,14 +195,14 @@ export default function SecurityPage() {
           {backupCodes.map((code) => (
             <div
               key={code}
-              className="px-3 py-2 bg-gray-50 rounded font-mono text-sm text-center"
+              className="px-3 py-2 bg-ocean-50 rounded-xl font-mono text-sm text-center font-bold text-ocean-800"
             >
               {code}
             </div>
           ))}
         </div>
         <div className="flex justify-end">
-          <Button onClick={() => setShowBackupModal(false)}>Done</Button>
+          <Button variant="sponge" onClick={() => setShowBackupModal(false)}>✅ Done</Button>
         </div>
       </Modal>
     </div>

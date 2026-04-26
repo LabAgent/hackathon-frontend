@@ -33,7 +33,7 @@ const UserEdit = lazy(() => import('@/pages/admin/UserEdit'));
 
 function LazyPage({ Component }: { Component: LazyExoticComponent<ComponentType> }) {
   return (
-    <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="h-8 w-8 animate-spin rounded-full border-4 border-ocean-400 border-t-transparent" /></div>}>
+    <Suspense fallback={<div className="flex items-center justify-center min-h-screen" style={{ background: 'linear-gradient(180deg, #001e3d 0%, #003660 30%, #005f99 100%)' }}><div className="text-center"><div className="text-5xl mb-4" style={{ animation: 'jellyfish 2s ease-in-out infinite' }}>🪼</div><div className="h-6 w-6 animate-spin rounded-full border-4 border-sponge-400 border-t-transparent mx-auto" /></div></div>}>
       <Component />
     </Suspense>
   );

@@ -55,13 +55,9 @@ export default function AdminLoginPage() {
   return (
     <>
       <div className="text-center mb-6">
-        <div className="mx-auto h-12 w-12 rounded-full bg-gray-900 flex items-center justify-center mb-4">
-          <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-2.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-          </svg>
-        </div>
-        <h2 className="text-2xl font-bold text-gray-900">Admin Login</h2>
-        <p className="text-sm text-gray-500 mt-1">Sign in to your admin account</p>
+        <div className="text-5xl mb-3">🦀</div>
+        <h2 className="text-2xl font-bold text-ocean-800 font-[var(--font-display)]">Mr. Krabs' Office</h2>
+        <p className="text-sm text-ocean-500 mt-1">Admin access only - authorized personnel beyond this point!</p>
       </div>
 
       <ErrorBanner error={adminError ? new Error(adminError) : error} />
@@ -71,7 +67,7 @@ export default function AdminLoginPage() {
           label="Email"
           id="email"
           type="email"
-          placeholder="admin@example.com"
+          placeholder="mr-krabs@krusty-krab.ocean"
           error={errors.email?.message}
           {...reg('email')}
         />
@@ -79,27 +75,27 @@ export default function AdminLoginPage() {
           label="Password"
           id="password"
           type="password"
-          placeholder="Enter your password"
+          placeholder="The secret formula..."
           error={errors.password?.message}
           {...reg('password')}
         />
         <div className="flex items-center justify-end">
           <Link
             to="/forgot-password"
-            className="text-sm text-primary-600 hover:text-primary-700"
+            className="text-sm text-ocean-500 hover:text-ocean-600 font-semibold"
           >
-            Forgot password?
+            Forgot password? 🤔
           </Link>
         </div>
-        <Button type="submit" loading={isPending} className="w-full">
-          Sign in to Admin
+        <Button type="submit" loading={isPending} variant="ocean" className="w-full text-base py-3">
+          🦀 Enter the Office
         </Button>
       </form>
 
-      <p className="mt-6 text-center text-sm text-gray-500">
-        Regular user?{' '}
-        <Link to="/login" className="text-primary-600 hover:text-primary-700 font-medium">
-          Sign in here
+      <p className="mt-6 text-center text-sm text-ocean-400">
+        Regular researcher?{' '}
+        <Link to="/login" className="text-sponge-500 hover:text-sponge-600 font-bold">
+          🧽 Sign in here
         </Link>
       </p>
     </>

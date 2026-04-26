@@ -47,57 +47,62 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
-        <h2 className="text-2xl font-bold text-gray-900 text-center mb-2">Create an account</h2>
-        <p className="text-sm text-gray-500 text-center mb-6">
-          Enter your details to get started
-        </p>
-
-        <ErrorBanner error={error} />
-
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <Input
-            label="Full Name"
-            id="fullName"
-            placeholder="John Doe"
-            error={errors.fullName?.message}
-            {...reg('fullName')}
-          />
-          <Input
-            label="Email"
-            id="email"
-            type="email"
-            placeholder="john@example.com"
-            error={errors.email?.message}
-            {...reg('email')}
-          />
-          <Input
-            label="Password"
-            id="password"
-            type="password"
-            placeholder="Password123!"
-            error={errors.password?.message}
-            {...reg('password')}
-          />
-          <Input
-            label="Confirm Password"
-            id="confirmPassword"
-            type="password"
-            placeholder="Repeat your password"
-            error={errors.confirmPassword?.message}
-            {...reg('confirmPassword')}
-          />
-          <Button type="submit" loading={isPending} className="w-full">
-            Create Account
-          </Button>
-        </form>
-
-        <p className="mt-6 text-center text-sm text-gray-500">
-          Already have an account?{' '}
-          <Link to="/login" className="text-primary-600 hover:text-primary-700 font-medium">
-            Sign in
-          </Link>
+    <div>
+      <div className="text-center mb-6">
+        <span className="text-4xl block mb-2">🐿️</span>
+        <h2 className="text-2xl font-bold text-ocean-800 font-[var(--font-display)]">
+          Join the Treedome!
+        </h2>
+        <p className="text-sm text-ocean-500 mt-1">
+          Create your Bikini Bottom research account
         </p>
       </div>
+
+      <ErrorBanner error={error} />
+
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <Input
+          label="Full Name"
+          id="fullName"
+          placeholder="Sandy Cheeks"
+          error={errors.fullName?.message}
+          {...reg('fullName')}
+        />
+        <Input
+          label="Email"
+          id="email"
+          type="email"
+          placeholder="sandy@bikini-bottom.ocean"
+          error={errors.email?.message}
+          {...reg('email')}
+        />
+        <Input
+          label="Password"
+          id="password"
+          type="password"
+          placeholder="KrabbyPatty123!"
+          error={errors.password?.message}
+          {...reg('password')}
+        />
+        <Input
+          label="Confirm Password"
+          id="confirmPassword"
+          type="password"
+          placeholder="Repeat your secret formula"
+          error={errors.confirmPassword?.message}
+          {...reg('confirmPassword')}
+        />
+        <Button type="submit" loading={isPending} variant="sponge" className="w-full text-base py-3">
+          🧪 Create Research Account
+        </Button>
+      </form>
+
+      <p className="mt-6 text-center text-sm text-ocean-400">
+        Already a researcher?{' '}
+        <Link to="/login" className="text-sponge-500 hover:text-sponge-600 font-bold">
+          Dive back in!
+        </Link>
+      </p>
+    </div>
   );
 }

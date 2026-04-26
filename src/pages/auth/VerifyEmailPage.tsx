@@ -76,27 +76,26 @@ export default function VerifyEmailPage() {
 
   if (success) {
     return (
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 text-center">
-        <div className="mx-auto h-12 w-12 rounded-full bg-success-50 flex items-center justify-center mb-4">
-          <svg className="h-6 w-6 text-success-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-          </svg>
-        </div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Email Verified!</h2>
-        <p className="text-success-700 mb-6">Your email has been verified successfully!</p>
+      <div className="text-center">
+        <div className="text-5xl mb-4">✅</div>
+        <h2 className="text-2xl font-bold text-ocean-800 mb-2 font-[var(--font-display)]">Email Verified!</h2>
+        <p className="text-kelp-600 mb-6 font-medium">Welcome to Bikini Bottom! 🌊</p>
         <Link to="/login">
-          <Button>Continue to Login</Button>
+          <Button variant="sponge">🧽 Dive into the Lab!</Button>
         </Link>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
-      <h2 className="text-2xl font-bold text-gray-900 text-center mb-2">Verify Your Email</h2>
-      <p className="text-sm text-gray-500 text-center mb-6">
-        Enter the 6-digit code we sent to your email
-      </p>
+    <div>
+      <div className="text-center mb-6">
+        <span className="text-4xl block mb-2">📧</span>
+        <h2 className="text-2xl font-bold text-ocean-800 font-[var(--font-display)]">Verify Your Email</h2>
+        <p className="text-sm text-ocean-500 mt-1">
+          Enter the 6-digit code we sent to your email
+        </p>
+      </div>
 
       <ErrorBanner error={error} />
 
@@ -105,13 +104,13 @@ export default function VerifyEmailPage() {
           label="Email"
           id="email"
           type="email"
-          placeholder="john@example.com"
+          placeholder="sandy@bikini-bottom.ocean"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Verification Code</label>
+          <label className="block text-sm font-semibold text-ocean-700 mb-2">Verification Code</label>
           <div className="flex justify-center gap-2" onPaste={handlePaste}>
             {code.map((digit, index) => (
               <input
@@ -123,27 +122,27 @@ export default function VerifyEmailPage() {
                 value={digit}
                 onChange={(e) => handleCodeChange(index, e.target.value)}
                 onKeyDown={(e) => handleKeyDown(index, e)}
-                className="w-12 h-12 text-center text-xl font-bold border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                className="w-12 h-12 text-center text-xl font-bold border-2 border-ocean-200 rounded-xl focus:outline-none focus:border-sponge-400 focus:shadow-[0_0_0_3px_rgba(255,215,0,0.15)] transition-all"
               />
             ))}
           </div>
         </div>
 
-        <Button type="submit" loading={isPending} className="w-full" disabled={code.join('').length !== 6 || !email}>
-          Verify Email
+        <Button type="submit" loading={isPending} variant="sponge" className="w-full" disabled={code.join('').length !== 6 || !email}>
+          ✅ Verify Email
         </Button>
       </form>
 
       <div className="mt-4 text-center">
         {resendSuccess ? (
-          <p className="text-success-600 text-sm">A new code has been sent to your email.</p>
+          <p className="text-kelp-600 text-sm font-medium">📧 A new code has been sent to your email!</p>
         ) : (
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-ocean-400">
             Didn't receive the code?{' '}
             <button
               onClick={handleResend}
               disabled={isResending || !email}
-              className="text-primary-600 hover:text-primary-700 font-medium disabled:opacity-50"
+              className="text-sponge-500 hover:text-sponge-600 font-bold disabled:opacity-50"
             >
               {isResending ? 'Sending...' : 'Resend Code'}
             </button>
@@ -151,9 +150,9 @@ export default function VerifyEmailPage() {
         )}
       </div>
 
-      <p className="mt-4 text-center text-sm text-gray-500">
-        <Link to="/login" className="text-primary-600 hover:text-primary-700">
-          Back to Login
+      <p className="mt-4 text-center text-sm text-ocean-400">
+        <Link to="/login" className="text-sponge-500 hover:text-sponge-600 font-bold">
+          ← Back to Login
         </Link>
       </p>
     </div>

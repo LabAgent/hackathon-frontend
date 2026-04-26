@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { Card, CardHeader, CardTitle, CardContent, Button, Input, Alert, ErrorBanner } from '@/components/ui';
 import { ArrowLeft } from 'lucide-react';
 import { useChangePassword } from '@/hooks/useUser';
+import { useNavigate } from 'react-router';
 
 const schema = z
   .object({
@@ -24,8 +25,6 @@ const schema = z
   });
 
 type FormData = z.infer<typeof schema>;
-
-import { useNavigate } from 'react-router';
 
 export default function ChangePasswordPage() {
   const [success, setSuccess] = useState(false);
@@ -57,20 +56,22 @@ export default function ChangePasswordPage() {
 
   return (
     <div>
-      <button onClick={() => navigate('/dashboard')} className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 mb-4">
+      <button onClick={() => navigate('/dashboard')} className="inline-flex items-center gap-1.5 text-sm text-ocean-300 hover:text-white font-bold mb-4">
         <ArrowLeft className="h-4 w-4" />
-        Back to Dashboard
+        ← Back to Dashboard
       </button>
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Change Password</h1>
+      <h1 className="text-2xl font-bold text-white mb-6 font-[var(--font-display)] flex items-center gap-2">
+        <span className="emoji-icon">🔐</span> Change Password
+      </h1>
 
       <Card className="max-w-lg">
         <CardHeader>
-          <CardTitle>Update Your Password</CardTitle>
+          <CardTitle>🔑 Update Your Secret Formula</CardTitle>
         </CardHeader>
         <CardContent>
           {success && (
             <Alert variant="success" className="mb-4">
-              Password changed successfully
+              🎉 Password changed successfully!
             </Alert>
           )}
           {error && (
@@ -90,7 +91,7 @@ export default function ChangePasswordPage() {
               label="New Password"
               id="newPassword"
               type="password"
-              placeholder="Enter new password"
+              placeholder="New secret formula"
               error={errors.newPassword?.message}
               {...reg('newPassword')}
             />
@@ -98,13 +99,13 @@ export default function ChangePasswordPage() {
               label="Confirm New Password"
               id="confirmPassword"
               type="password"
-              placeholder="Confirm new password"
+              placeholder="Confirm new formula"
               error={errors.confirmPassword?.message}
               {...reg('confirmPassword')}
             />
             <div className="flex justify-end">
-              <Button type="submit" loading={isPending}>
-                Change Password
+              <Button type="submit" loading={isPending} variant="sponge">
+                🔐 Change Password
               </Button>
             </div>
           </form>

@@ -32,11 +32,14 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
-      <h2 className="text-2xl font-bold text-gray-900 text-center mb-2">Forgot Password</h2>
-      <p className="text-sm text-gray-500 text-center mb-6">
-        Enter your email and we'll send you a reset code
-      </p>
+    <div>
+      <div className="text-center mb-6">
+        <span className="text-4xl block mb-2">🔑</span>
+        <h2 className="text-2xl font-bold text-ocean-800 font-[var(--font-display)]">Forgot Password?</h2>
+        <p className="text-sm text-ocean-500 mt-1">
+          Even Patrick forgets things sometimes! We'll send you a reset code.
+        </p>
+      </div>
 
       <ErrorBanner error={error} />
 
@@ -45,17 +48,17 @@ export default function ForgotPasswordPage() {
           label="Email"
           id="email"
           type="email"
-          placeholder="john@example.com"
+          placeholder="sandy@bikini-bottom.ocean"
           error={errors.email?.message}
           {...reg('email')}
         />
-        <Button type="submit" loading={isPending} className="w-full">
-          Send Reset Code
+        <Button type="submit" loading={isPending} variant="sponge" className="w-full">
+          📧 Send Reset Code
         </Button>
       </form>
-      <p className="mt-4 text-center text-sm text-gray-500">
-        <Link to="/login" className="text-primary-600 hover:text-primary-700">
-          Back to Login
+      <p className="mt-4 text-center text-sm text-ocean-400">
+        <Link to="/login" className="text-sponge-500 hover:text-sponge-600 font-bold">
+          ← Back to Login
         </Link>
       </p>
     </div>

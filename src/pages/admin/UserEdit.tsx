@@ -61,18 +61,20 @@ export default function UserEdit() {
   return (
     <div>
       <div className="flex items-center gap-3 mb-6">
-        <Link to={`/admin/users/${id}`} className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+        <Link to={`/admin/users/${id}`} className="p-2 text-ocean-400 hover:text-white hover:bg-white/10 rounded-xl transition-all">
           <ArrowLeft className="h-5 w-5" />
         </Link>
-        <h1 className="text-2xl font-bold text-gray-900">Edit User</h1>
+        <h1 className="text-2xl font-bold text-white font-[var(--font-display)] flex items-center gap-2">
+          <span className="emoji-icon">✏️</span> Edit Crew Member
+        </h1>
       </div>
 
       <Card className="max-w-lg">
         <CardHeader>
-          <CardTitle>Edit {user.fullName}</CardTitle>
+          <CardTitle>✏️ Edit {user.fullName}</CardTitle>
         </CardHeader>
         <CardContent>
-          {success && <Alert variant="success" className="mb-4">User updated successfully</Alert>}
+          {success && <Alert variant="success" className="mb-4">🎉 Crew member updated successfully</Alert>}
           {updateUser.isError && (
             <ErrorBanner error={updateUser.error} />
           )}
@@ -86,19 +88,19 @@ export default function UserEdit() {
               {...reg('fullName')}
             />
 
-            <div className="space-y-1">
-              <label htmlFor="role" className="block text-sm font-medium text-gray-700">Role</label>
+            <div className="space-y-1.5">
+              <label htmlFor="role" className="block text-sm font-semibold text-ocean-700">Role</label>
               <select
                 id="role"
                 {...reg('role')}
-                className="block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                className="block w-full rounded-xl border-2 border-ocean-200 px-3 py-2.5 text-sm focus:outline-none focus:border-sponge-400 transition-all"
               >
-                <option value="user">User</option>
-                <option value="admin">Admin</option>
-                <option value="researcher">Researcher</option>
-                <option value="lab_assistant">Lab Assistant</option>
+                <option value="user">🧽 User</option>
+                <option value="admin">🦀 Admin</option>
+                <option value="researcher">🔬 Researcher</option>
+                <option value="lab_assistant">🐿️ Lab Assistant</option>
               </select>
-              {errors.role && <p className="text-sm text-danger-600">{errors.role.message}</p>}
+              {errors.role && <p className="text-sm text-krabs-400 font-medium">{errors.role.message}</p>}
             </div>
 
             <div className="flex items-center gap-3">
@@ -106,18 +108,18 @@ export default function UserEdit() {
                 type="checkbox"
                 id="isActive"
                 {...reg('isActive')}
-                className="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                className="h-4 w-4 rounded border-ocean-300 text-sponge-500 focus:ring-sponge-400"
               />
-              <label htmlFor="isActive" className="text-sm text-gray-700">
-                Account Active {isActive !== undefined && <span className="text-gray-500">({isActive ? 'Currently active' : 'Currently inactive'})</span>}
+              <label htmlFor="isActive" className="text-sm text-ocean-700 font-semibold">
+                Account Active {isActive !== undefined && <span className="text-ocean-400">({isActive ? '✅ Currently active' : '💤 Currently inactive'})</span>}
               </label>
             </div>
 
-            <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+            <div className="flex justify-end gap-3 pt-4 border-t-2 border-ocean-100">
               <Link to={`/admin/users/${id}`}>
                 <Button variant="secondary" type="button">Cancel</Button>
               </Link>
-              <Button type="submit" loading={updateUser.isPending}>Save Changes</Button>
+              <Button type="submit" loading={updateUser.isPending} variant="sponge">💾 Save Changes</Button>
             </div>
           </form>
         </CardContent>
