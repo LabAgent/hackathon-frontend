@@ -19,6 +19,9 @@ const EXPERIMENT_STATUS_OPTIONS: { value: ExperimentStatus; label: string }[] = 
   { value: 'failed', label: 'Failed' },
 ];
 
+const inputCls = 'w-full rounded-xl border-2 border-ocean-200 px-3 py-2.5 text-sm focus:outline-none focus:border-sponge-400 bg-white transition-colors';
+const labelCls = 'block text-sm font-semibold text-ocean-700 mb-1';
+
 export default function ResearchDetailPage() {
   const { id } = useParams<{ id: string }>();
   const qc = useQueryClient();
@@ -33,7 +36,7 @@ export default function ResearchDetailPage() {
 
   const [editExp, setEditExp] = useState<ExperimentsLog | null>(null);
   const [editExpResult, setEditExpResult] = useState('');
-  const [editExpSuccess, setEditExpSuccess] = useState(true);
+  const [editExpSuccess, setEditExpSuccess] = useState(false);
   const [editExpNotes, setEditExpNotes] = useState('');
   const [editExpHypothesis, setEditExpHypothesis] = useState('');
   const [editExpMethodology, setEditExpMethodology] = useState('');
@@ -45,7 +48,7 @@ export default function ResearchDetailPage() {
   const [reqQty, setReqQty] = useState(1);
 
   const [editReq, setEditReq] = useState<ProjectRequirement | null>(null);
-  const [editReqItemId, setEditReqItemId] = useState<number | ''>('');
+  const [editReqItemId, setEditReqItemId] = useState<number>(0);
   const [editReqQty, setEditReqQty] = useState(1);
   const [deleteReq, setDeleteReq] = useState<ProjectRequirement | null>(null);
 
@@ -154,7 +157,7 @@ export default function ResearchDetailPage() {
   const openEditExp = (exp: ExperimentsLog) => {
     setEditExp(exp);
     setEditExpResult(exp.result || '');
-    setEditExpSuccess(exp.success ?? true);
+    setEditExpSuccess(exp.success ?? false);
     setEditExpNotes(exp.notes || '');
     setEditExpHypothesis(exp.hypothesis || '');
     setEditExpMethodology(exp.methodology || '');
@@ -167,8 +170,14 @@ export default function ResearchDetailPage() {
     setEditReqQty(req.requiredQuantity);
   };
 
+  const resetExpForm = () => {
+    setShowAddExp(false);
+    setExpResult(''); setExpNotes(''); setExpHypothesis(''); setExpMethodology(''); setExpStatus('planned'); setExpSuccess(true);
+  };
+
   return (
     <div className="space-y-6">
+      {/* ====== HEADER ====== */}
       <div className="flex items-center gap-3 flex-wrap">
         <Link to="/research" className="p-2 text-ocean-400 hover:text-white hover:bg-white/10 rounded-xl transition-all">
           <ArrowLeft className="h-5 w-5" />
@@ -181,9 +190,9 @@ export default function ResearchDetailPage() {
             <span className="text-xs text-ocean-400">📅 {new Date(project.createdAt).toLocaleDateString()}</span>
           </div>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           {project.status === 'planned' && (
-            <Button size="sm" variant="ocean" onClick={() => updateStatusMutation.mutate('ongoing')}>▶ Start Project</Button>
+            <Button size="sm" variant="ocean" onClick={() => updateStatusMutation.mutate('ongoing')}>▶ Start</Button>
           )}
           {project.status === 'ongoing' && (
             <Button size="sm" variant="ocean" onClick={() => updateStatusMutation.mutate('completed')}>✅ Complete</Button>
@@ -208,45 +217,7 @@ export default function ResearchDetailPage() {
         </Card>
       )}
 
-      <Modal open={editProject} onClose={() => setEditProject(false)} title="Edit Project">
-        <div className="space-y-4">
-          <div className="space-y-1">
-            <label className="text-sm font-semibold text-ocean-700">Project Name</label>
-            <Input value={editName} onChange={(e: any) => setEditName(e.target.value)} />
-          </div>
-          <div className="space-y-1">
-            <label className="text-sm font-semibold text-ocean-700">Description</label>
-            <textarea className="w-full rounded-xl border-2 border-ocean-200 p-3 text-sm focus:outline-none focus:border-sponge-400" rows={3} value={editDesc} onChange={(e) => setEditDesc(e.target.value)} />
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-1">
-              <label className="text-sm font-semibold text-ocean-700">Status</label>
-              <select className="block w-full rounded-xl border-2 border-ocean-200 px-3 py-2.5 text-sm focus:outline-none focus:border-sponge-400" value={editStatus} onChange={(e) => setEditStatus(e.target.value as ProjectStatus)}>
-                {PROJECT_STATUS_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-              </select>
-            </div>
-            <div className="space-y-1">
-              <label className="text-sm font-semibold text-ocean-700">Priority</label>
-              <Input type="number" min={1} value={editPriority} onChange={(e: any) => setEditPriority(e.target.value)} />
-            </div>
-          </div>
-          <div className="flex gap-2">
-            <Button onClick={() => updateProjectMutation.mutate({ name: editName, description: editDesc || undefined, status: editStatus, priority: Number(editPriority) })} loading={updateProjectMutation.isPending} variant="sponge">Save</Button>
-            <Button variant="secondary" onClick={() => setEditProject(false)}>Cancel</Button>
-          </div>
-        </div>
-      </Modal>
-
-      <Modal open={deleteConfirm} onClose={() => setDeleteConfirm(false)} title="Delete Project">
-        <div className="space-y-4">
-          <p className="text-sm text-ocean-600">Are you sure you want to delete <strong>{project.name}</strong>? This action cannot be undone.</p>
-          <div className="flex gap-2">
-            <Button variant="danger" onClick={() => deleteProjectMutation.mutate()} loading={deleteProjectMutation.isPending}>Delete</Button>
-            <Button variant="secondary" onClick={() => setDeleteConfirm(false)}>Cancel</Button>
-          </div>
-        </div>
-      </Modal>
-
+      {/* ====== EXPERIMENT LOGS CARD ====== */}
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="flex items-center gap-2">
@@ -261,107 +232,63 @@ export default function ResearchDetailPage() {
           {showAddExp && (
             <div className="space-y-3 mb-4 p-4 bg-ocean-50/50 rounded-xl border-2 border-ocean-100">
               <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1">
-                  <label className="text-sm text-ocean-600 font-semibold">Status</label>
-                  <select className="block w-full rounded-xl border-2 border-ocean-200 px-3 py-2 text-sm focus:outline-none focus:border-sponge-400" value={expStatus} onChange={(e) => setExpStatus(e.target.value as ExperimentStatus)}>
+                <div>
+                  <label className={labelCls}>Status</label>
+                  <select className={inputCls} value={expStatus} onChange={(e) => setExpStatus(e.target.value as ExperimentStatus)}>
                     {EXPERIMENT_STATUS_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                   </select>
                 </div>
-                <div className="flex items-end gap-2 pb-1">
-                  <label className="text-sm text-ocean-600 font-semibold">Success:</label>
-                  <input type="checkbox" checked={expSuccess} onChange={(e) => setExpSuccess(e.target.checked)} className="rounded" />
+                <div className="flex items-end gap-2 pb-0.5">
+                  <label className="text-sm font-semibold text-ocean-700">Success:</label>
+                  <input type="checkbox" checked={expSuccess} onChange={(e) => setExpSuccess(e.target.checked)} className="h-4 w-4 rounded border-ocean-300 text-ocean-600 focus:ring-ocean-500" />
                 </div>
               </div>
-              <div className="space-y-1">
-                <label className="text-sm text-ocean-600 font-semibold">Hypothesis</label>
-                <textarea className="w-full rounded-xl border-2 border-ocean-200 p-3 text-sm focus:outline-none focus:border-sponge-400" rows={2} placeholder="Hypothesis (optional)" value={expHypothesis} onChange={(e) => setExpHypothesis(e.target.value)} />
+              <div>
+                <label className={labelCls}>Hypothesis</label>
+                <textarea className={inputCls} rows={2} placeholder="Hypothesis (optional)" value={expHypothesis} onChange={(e) => setExpHypothesis(e.target.value)} />
               </div>
-              <div className="space-y-1">
-                <label className="text-sm text-ocean-600 font-semibold">Methodology</label>
-                <textarea className="w-full rounded-xl border-2 border-ocean-200 p-3 text-sm focus:outline-none focus:border-sponge-400" rows={2} placeholder="Methodology (optional)" value={expMethodology} onChange={(e) => setExpMethodology(e.target.value)} />
+              <div>
+                <label className={labelCls}>Methodology</label>
+                <textarea className={inputCls} rows={2} placeholder="Methodology (optional)" value={expMethodology} onChange={(e) => setExpMethodology(e.target.value)} />
               </div>
-              <textarea className="w-full rounded-xl border-2 border-ocean-200 p-3 text-sm focus:outline-none focus:border-sponge-400" rows={2} placeholder="Result (optional)" value={expResult} onChange={(e) => setExpResult(e.target.value)} />
-              <input className="w-full rounded-xl border-2 border-ocean-200 p-2 text-sm focus:outline-none focus:border-sponge-400" placeholder="Notes (optional)" value={expNotes} onChange={(e) => setExpNotes(e.target.value)} />
-              <div className="flex gap-2">
+              <div>
+                <label className={labelCls}>Result</label>
+                <textarea className={inputCls} rows={2} placeholder="Result (optional)" value={expResult} onChange={(e) => setExpResult(e.target.value)} />
+              </div>
+              <div>
+                <label className={labelCls}>Notes</label>
+                <input className={inputCls} placeholder="Notes (optional)" value={expNotes} onChange={(e) => setExpNotes(e.target.value)} />
+              </div>
+              <div className="flex gap-2 pt-1">
                 <Button size="sm" onClick={() => addExpMutation.mutate({ result: expResult || undefined, success: expSuccess, notes: expNotes || undefined, hypothesis: expHypothesis || undefined, methodology: expMethodology || undefined, status: expStatus || undefined })} loading={addExpMutation.isPending} variant="sponge">Add Log</Button>
-                <Button size="sm" variant="ghost" onClick={() => setShowAddExp(false)}>Cancel</Button>
+                <Button size="sm" variant="ghost" onClick={resetExpForm}>Cancel</Button>
               </div>
             </div>
           )}
 
-          <Modal open={!!editExp} onClose={() => setEditExp(null)} title="Edit Experiment Log">
-            <div className="space-y-3">
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1">
-                  <label className="text-sm text-ocean-600 font-semibold">Status</label>
-                  <select className="block w-full rounded-xl border-2 border-ocean-200 px-3 py-2 text-sm focus:outline-none focus:border-sponge-400" value={editExpStatus} onChange={(e) => setEditExpStatus(e.target.value as ExperimentStatus)}>
-                    {EXPERIMENT_STATUS_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-                  </select>
-                </div>
-                <div className="flex items-end gap-2 pb-1">
-                  <label className="text-sm text-ocean-600 font-semibold">Success:</label>
-                  <input type="checkbox" checked={editExpSuccess} onChange={(e) => setEditExpSuccess(e.target.checked)} className="rounded" />
-                </div>
-              </div>
-              <div className="space-y-1">
-                <label className="text-sm text-ocean-600 font-semibold">Hypothesis</label>
-                <textarea className="w-full rounded-xl border-2 border-ocean-200 p-3 text-sm focus:outline-none focus:border-sponge-400" rows={2} value={editExpHypothesis} onChange={(e) => setEditExpHypothesis(e.target.value)} />
-              </div>
-              <div className="space-y-1">
-                <label className="text-sm text-ocean-600 font-semibold">Methodology</label>
-                <textarea className="w-full rounded-xl border-2 border-ocean-200 p-3 text-sm focus:outline-none focus:border-sponge-400" rows={2} value={editExpMethodology} onChange={(e) => setEditExpMethodology(e.target.value)} />
-              </div>
-              <div className="space-y-1">
-                <label className="text-sm text-ocean-600 font-semibold">Result</label>
-                <textarea className="w-full rounded-xl border-2 border-ocean-200 p-3 text-sm focus:outline-none focus:border-sponge-400" rows={2} value={editExpResult} onChange={(e) => setEditExpResult(e.target.value)} />
-              </div>
-              <div className="space-y-1">
-                <label className="text-sm text-ocean-600 font-semibold">Notes</label>
-                <input className="w-full rounded-xl border-2 border-ocean-200 p-2 text-sm focus:outline-none focus:border-sponge-400" value={editExpNotes} onChange={(e) => setEditExpNotes(e.target.value)} />
-              </div>
-              <div className="flex gap-2">
-                <Button size="sm" onClick={() => editExp && updateExpMutation.mutate({ expId: editExp.id, data: { result: editExpResult || undefined, success: editExpSuccess, notes: editExpNotes || undefined, hypothesis: editExpHypothesis || undefined, methodology: editExpMethodology || undefined, status: editExpStatus || undefined } })} loading={updateExpMutation.isPending} variant="sponge">Save</Button>
-                <Button size="sm" variant="secondary" onClick={() => setEditExp(null)}>Cancel</Button>
-              </div>
-            </div>
-          </Modal>
-
-          <Modal open={!!deleteExp} onClose={() => setDeleteExp(null)} title="Delete Experiment Log">
-            <div className="space-y-4">
-              <p className="text-sm text-ocean-600">Are you sure you want to delete this experiment log? This action cannot be undone.</p>
-              {deleteExp && (
-                <p className="text-xs text-ocean-400 bg-ocean-50 rounded-lg p-3">{deleteExp.result || 'No result recorded'}</p>
-              )}
-              <div className="flex gap-2">
-                <Button variant="danger" onClick={() => deleteExp && deleteExpMutation.mutate(deleteExp.id)} loading={deleteExpMutation.isPending}>Delete</Button>
-                <Button variant="secondary" onClick={() => setDeleteExp(null)}>Cancel</Button>
-              </div>
-            </div>
-          </Modal>
-
           <div className="space-y-3">
             {(project.experiments || []).map((exp: ExperimentsLog) => (
-              <div key={exp.id} className="flex items-start justify-between py-3 border-b border-ocean-100 last:border-0 gap-2">
+              <div key={exp.id} className="flex items-start justify-between py-3 border-b border-ocean-100 last:border-0 gap-3">
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
+                  <div className="flex items-center gap-2 mb-1 flex-wrap">
                     <span className={`text-xs px-2 py-0.5 rounded-full font-bold ${expStatusColor(exp.status || 'planned')}`}>
                       {exp.status || 'planned'}
                     </span>
                     <span className={`text-xs px-2 py-0.5 rounded-full font-bold ${exp.success ? 'bg-kelp-50 text-kelp-600' : exp.success === false ? 'bg-krabs-50 text-krabs-500' : 'bg-ocean-50 text-ocean-600'}`}>
                       {exp.success === true ? '✅ Success' : exp.success === false ? '❌ Failed' : '❓ Unknown'}
                     </span>
+                    <span className="text-xs text-ocean-400">{new Date(exp.createdAt).toLocaleDateString()}</span>
                   </div>
                   <p className="font-bold text-sm text-ocean-800">{exp.result || 'No result recorded'}</p>
-                  {exp.hypothesis && <p className="text-xs text-ocean-500 mt-0.5 italic">Hypothesis: {exp.hypothesis}</p>}
-                  {exp.methodology && <p className="text-xs text-ocean-500 mt-0.5">Method: {exp.methodology}</p>}
-                  {exp.notes && <p className="text-xs text-ocean-400 mt-0.5">{exp.notes}</p>}
-                  <span className="text-xs text-ocean-400 mt-1 inline-block">{new Date(exp.createdAt).toLocaleDateString()}</span>
+                  {exp.hypothesis && <p className="text-xs text-ocean-500 mt-1 italic">💡 Hypothesis: {exp.hypothesis}</p>}
+                  {exp.methodology && <p className="text-xs text-ocean-500 mt-0.5">🔬 Method: {exp.methodology}</p>}
+                  {exp.notes && <p className="text-xs text-ocean-400 mt-0.5">📝 {exp.notes}</p>}
                 </div>
                 <div className="flex gap-1 shrink-0">
-                  <Button size="sm" variant="ghost" className="text-ocean-400 hover:text-ocean-600 text-xs px-2 py-1" onClick={() => openEditExp(exp)}>
+                  <Button size="sm" variant="ghost" className="text-ocean-400 hover:text-ocean-600 hover:bg-ocean-50 text-xs px-2 py-1" onClick={() => openEditExp(exp)}>
                     <Pencil className="h-3 w-3 mr-1" /> Edit
                   </Button>
-                  <Button size="sm" variant="ghost" className="text-krabs-400 hover:text-krabs-600 text-xs px-2 py-1" onClick={() => setDeleteExp(exp)}>
+                  <Button size="sm" variant="ghost" className="text-krabs-400 hover:text-krabs-600 hover:bg-krabs-50 text-xs px-2 py-1" onClick={() => setDeleteExp(exp)}>
                     <Trash2 className="h-3 w-3 mr-1" /> Delete
                   </Button>
                 </div>
@@ -374,6 +301,7 @@ export default function ResearchDetailPage() {
         </CardContent>
       </Card>
 
+      {/* ====== REQUIRED MATERIALS CARD ====== */}
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="flex items-center gap-2">
@@ -387,95 +315,43 @@ export default function ResearchDetailPage() {
         <CardContent>
           {showAddReq && (
             <div className="space-y-3 mb-4 p-4 bg-ocean-50/50 rounded-xl border-2 border-ocean-100">
-              <div className="space-y-1">
-                <label className="text-sm font-semibold text-ocean-700">Inventory Item</label>
-                <select
-                  className="block w-full rounded-xl border-2 border-ocean-200 px-3 py-2.5 text-sm focus:outline-none focus:border-sponge-400"
-                  value={reqItemId}
-                  onChange={(e) => setReqItemId(Number(e.target.value))}
-                >
+              <div>
+                <label className={labelCls}>Inventory Item</label>
+                <select className={inputCls} value={reqItemId} onChange={(e) => setReqItemId(Number(e.target.value))}>
                   <option value="">Select an item...</option>
                   {inventoryItems.map((item) => (
                     <option key={item.id} value={item.id}>{item.name} (Stock: {item.quantity} {item.unit || 'units'})</option>
                   ))}
                 </select>
               </div>
-              <div className="space-y-1">
-                <label className="text-sm font-semibold text-ocean-700">Required Quantity</label>
-                <input
-                  type="number"
-                  min={1}
-                  className="block w-full rounded-xl border-2 border-ocean-200 px-3 py-2.5 text-sm focus:outline-none focus:border-sponge-400"
-                  value={reqQty}
-                  onChange={(e) => setReqQty(Number(e.target.value))}
-                />
+              <div>
+                <label className={labelCls}>Required Quantity</label>
+                <input type="number" min={1} className={inputCls} value={reqQty} onChange={(e) => setReqQty(Number(e.target.value))} />
               </div>
-              <div className="flex gap-2">
+              <div className="flex gap-2 pt-1">
                 <Button size="sm" onClick={() => addReqMutation.mutate({ projectId: Number(id!), inventoryId: Number(reqItemId), requiredQuantity: reqQty })} loading={addReqMutation.isPending} disabled={!reqItemId} variant="sponge">Add</Button>
-                <Button size="sm" variant="ghost" onClick={() => setShowAddReq(false)}>Cancel</Button>
+                <Button size="sm" variant="ghost" onClick={() => { setShowAddReq(false); setReqItemId(''); setReqQty(1); }}>Cancel</Button>
               </div>
             </div>
           )}
 
-          <Modal open={!!editReq} onClose={() => setEditReq(null)} title="Edit Requirement">
-            <div className="space-y-3">
-              <div className="space-y-1">
-                <label className="text-sm font-semibold text-ocean-700">Inventory Item</label>
-                <select
-                  className="block w-full rounded-xl border-2 border-ocean-200 px-3 py-2.5 text-sm focus:outline-none focus:border-sponge-400"
-                  value={editReqItemId}
-                  onChange={(e) => setEditReqItemId(Number(e.target.value))}
-                >
-                  <option value="">Select an item...</option>
-                  {inventoryItems.map((item) => (
-                    <option key={item.id} value={item.id}>{item.name} (Stock: {item.quantity} {item.unit || 'units'})</option>
-                  ))}
-                </select>
-              </div>
-              <div className="space-y-1">
-                <label className="text-sm font-semibold text-ocean-700">Required Quantity</label>
-                <input
-                  type="number"
-                  min={1}
-                  className="block w-full rounded-xl border-2 border-ocean-200 px-3 py-2.5 text-sm focus:outline-none focus:border-sponge-400"
-                  value={editReqQty}
-                  onChange={(e) => setEditReqQty(Number(e.target.value))}
-                />
-              </div>
-              <div className="flex gap-2">
-                <Button size="sm" onClick={() => editReq && updateReqMutation.mutate({ reqId: editReq.id, data: { inventoryId: editReqItemId || undefined, requiredQuantity: editReqQty } })} loading={updateReqMutation.isPending} disabled={!editReqItemId} variant="sponge">Save</Button>
-                <Button size="sm" variant="secondary" onClick={() => setEditReq(null)}>Cancel</Button>
-              </div>
-            </div>
-          </Modal>
-
-          <Modal open={!!deleteReq} onClose={() => setDeleteReq(null)} title="Delete Requirement">
-            <div className="space-y-4">
-              <p className="text-sm text-ocean-600">Are you sure you want to remove <strong>{deleteReq?.inventory?.name || `Item #${deleteReq?.inventoryId}`}</strong> from required materials?</p>
-              <div className="flex gap-2">
-                <Button variant="danger" onClick={() => deleteReq && deleteReqMutation.mutate(deleteReq.id)} loading={deleteReqMutation.isPending}>Delete</Button>
-                <Button variant="secondary" onClick={() => setDeleteReq(null)}>Cancel</Button>
-              </div>
-            </div>
-          </Modal>
-
           <div className="space-y-3">
             {(project.requirements || []).map((req) => (
-              <div key={req.id} className="flex items-center justify-between py-3 border-b border-ocean-100 last:border-0">
-                <div>
+              <div key={req.id} className="flex items-center justify-between py-3 border-b border-ocean-100 last:border-0 gap-3">
+                <div className="min-w-0">
                   <p className="font-bold text-sm text-ocean-800">{req.inventory?.name || `Item #${req.inventoryId}`}</p>
                   <p className="text-xs text-ocean-400">Required: {req.requiredQuantity} units</p>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 shrink-0">
                   {req.inventory && (
-                    <span className={`text-xs px-2.5 py-0.5 rounded-full font-bold ${req.inventory.quantity >= req.requiredQuantity ? 'bg-kelp-50 text-kelp-600' : 'bg-krabs-50 text-krabs-500'}`}>
+                    <span className={`text-xs px-2.5 py-0.5 rounded-full font-bold whitespace-nowrap ${req.inventory.quantity >= req.requiredQuantity ? 'bg-kelp-50 text-kelp-600' : 'bg-krabs-50 text-krabs-500'}`}>
                       {req.inventory.quantity >= req.requiredQuantity ? '✅ In Stock' : `⚠️ Short by ${req.requiredQuantity - req.inventory.quantity}`}
                     </span>
                   )}
-                  <Button size="sm" variant="ghost" className="text-ocean-400 hover:text-ocean-600 text-xs px-2 py-1" onClick={() => openEditReq(req)}>
+                  <Button size="sm" variant="ghost" className="text-ocean-400 hover:text-ocean-600 hover:bg-ocean-50 text-xs px-2 py-1" onClick={() => openEditReq(req)}>
                     <Pencil className="h-3 w-3 mr-1" /> Edit
                   </Button>
-                  <Button size="sm" variant="ghost" className="text-krabs-400 hover:text-krabs-600 text-xs px-2 py-1" onClick={() => setDeleteReq(req)}>
+                  <Button size="sm" variant="ghost" className="text-krabs-400 hover:text-krabs-600 hover:bg-krabs-50 text-xs px-2 py-1" onClick={() => setDeleteReq(req)}>
                     <Trash2 className="h-3 w-3 mr-1" /> Delete
                   </Button>
                 </div>
@@ -487,6 +363,155 @@ export default function ResearchDetailPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* ====== ALL MODALS (at root level) ====== */}
+
+      {/* Edit Project Modal */}
+      <Modal open={editProject} onClose={() => setEditProject(false)} title="Edit Project" className="max-w-lg">
+        <div className="space-y-4">
+          <div>
+            <label className={labelCls}>Project Name</label>
+            <Input value={editName} onChange={(e: any) => setEditName(e.target.value)} />
+          </div>
+          <div>
+            <label className={labelCls}>Description</label>
+            <textarea className={inputCls} rows={3} value={editDesc} onChange={(e) => setEditDesc(e.target.value)} />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className={labelCls}>Status</label>
+              <select className={inputCls} value={editStatus} onChange={(e) => setEditStatus(e.target.value as ProjectStatus)}>
+                {PROJECT_STATUS_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className={labelCls}>Priority</label>
+              <Input type="number" min={1} value={editPriority} onChange={(e: any) => setEditPriority(e.target.value)} />
+            </div>
+          </div>
+          <div className="flex gap-2 pt-2">
+            <Button onClick={() => updateProjectMutation.mutate({ name: editName, description: editDesc || undefined, status: editStatus, priority: Number(editPriority) })} loading={updateProjectMutation.isPending} variant="sponge">Save Changes</Button>
+            <Button variant="secondary" onClick={() => setEditProject(false)}>Cancel</Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Delete Project Modal */}
+      <Modal open={deleteConfirm} onClose={() => setDeleteConfirm(false)} title="Delete Project">
+        <div className="space-y-4">
+          <p className="text-sm text-gray-600">Are you sure you want to delete <strong className="text-gray-900">{project.name}</strong>? This action cannot be undone.</p>
+          <div className="flex gap-2">
+            <Button variant="danger" onClick={() => deleteProjectMutation.mutate()} loading={deleteProjectMutation.isPending}>Delete</Button>
+            <Button variant="secondary" onClick={() => setDeleteConfirm(false)}>Cancel</Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Edit Experiment Log Modal */}
+      <Modal open={!!editExp} onClose={() => setEditExp(null)} title="Edit Experiment Log" className="max-w-lg">
+        <div className="space-y-4">
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className={labelCls}>Status</label>
+              <select className={inputCls} value={editExpStatus} onChange={(e) => setEditExpStatus(e.target.value as ExperimentStatus)}>
+                {EXPERIMENT_STATUS_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+              </select>
+            </div>
+            <div className="flex items-end gap-2 pb-0.5">
+              <label className="text-sm font-semibold text-ocean-700">Success:</label>
+              <input type="checkbox" checked={editExpSuccess} onChange={(e) => setEditExpSuccess(e.target.checked)} className="h-4 w-4 rounded border-ocean-300 text-ocean-600 focus:ring-ocean-500" />
+            </div>
+          </div>
+          <div>
+            <label className={labelCls}>Hypothesis</label>
+            <textarea className={inputCls} rows={2} placeholder="Hypothesis (optional)" value={editExpHypothesis} onChange={(e) => setEditExpHypothesis(e.target.value)} />
+          </div>
+          <div>
+            <label className={labelCls}>Methodology</label>
+            <textarea className={inputCls} rows={2} placeholder="Methodology (optional)" value={editExpMethodology} onChange={(e) => setEditExpMethodology(e.target.value)} />
+          </div>
+          <div>
+            <label className={labelCls}>Result</label>
+            <textarea className={inputCls} rows={2} placeholder="Result (optional)" value={editExpResult} onChange={(e) => setEditExpResult(e.target.value)} />
+          </div>
+          <div>
+            <label className={labelCls}>Notes</label>
+            <input className={inputCls} placeholder="Notes (optional)" value={editExpNotes} onChange={(e) => setEditExpNotes(e.target.value)} />
+          </div>
+          <div className="flex gap-2 pt-2">
+            <Button onClick={() => editExp && updateExpMutation.mutate({
+              expId: editExp.id,
+              data: {
+                result: editExpResult || undefined,
+                success: editExpSuccess,
+                notes: editExpNotes || undefined,
+                hypothesis: editExpHypothesis || undefined,
+                methodology: editExpMethodology || undefined,
+                status: editExpStatus || undefined,
+              },
+            })} loading={updateExpMutation.isPending} variant="sponge">Save Changes</Button>
+            <Button variant="secondary" onClick={() => setEditExp(null)}>Cancel</Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Delete Experiment Log Modal */}
+      <Modal open={!!deleteExp} onClose={() => setDeleteExp(null)} title="Delete Experiment Log">
+        <div className="space-y-4">
+          <p className="text-sm text-gray-600">Are you sure you want to delete this experiment log?</p>
+          {deleteExp && deleteExp.result && (
+            <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+              <p className="text-sm text-gray-700">{deleteExp.result}</p>
+            </div>
+          )}
+          <div className="flex gap-2">
+            <Button variant="danger" onClick={() => deleteExp && deleteExpMutation.mutate(deleteExp.id)} loading={deleteExpMutation.isPending}>Delete</Button>
+            <Button variant="secondary" onClick={() => setDeleteExp(null)}>Cancel</Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Edit Requirement Modal */}
+      <Modal open={!!editReq} onClose={() => setEditReq(null)} title="Edit Requirement">
+        <div className="space-y-4">
+          <div>
+            <label className={labelCls}>Inventory Item</label>
+            <select className={inputCls} value={editReqItemId} onChange={(e) => setEditReqItemId(Number(e.target.value))}>
+              <option value={0}>Select an item...</option>
+              {inventoryItems.map((item) => (
+                <option key={item.id} value={item.id}>{item.name} (Stock: {item.quantity} {item.unit || 'units'})</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className={labelCls}>Required Quantity</label>
+            <input type="number" min={1} className={inputCls} value={editReqQty} onChange={(e) => setEditReqQty(Number(e.target.value))} />
+          </div>
+          <div className="flex gap-2 pt-2">
+            <Button onClick={() => editReq && updateReqMutation.mutate({
+              reqId: editReq.id,
+              data: {
+                inventoryId: editReqItemId || undefined,
+                requiredQuantity: editReqQty,
+              },
+            })} loading={updateReqMutation.isPending} disabled={!editReqItemId} variant="sponge">Save Changes</Button>
+            <Button variant="secondary" onClick={() => setEditReq(null)}>Cancel</Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Delete Requirement Modal */}
+      <Modal open={!!deleteReq} onClose={() => setDeleteReq(null)} title="Delete Requirement">
+        <div className="space-y-4">
+          <p className="text-sm text-gray-600">
+            Remove <strong className="text-gray-900">{deleteReq?.inventory?.name || `Item #${deleteReq?.inventoryId}`}</strong> from required materials?
+          </p>
+          <div className="flex gap-2">
+            <Button variant="danger" onClick={() => deleteReq && deleteReqMutation.mutate(deleteReq.id)} loading={deleteReqMutation.isPending}>Delete</Button>
+            <Button variant="secondary" onClick={() => setDeleteReq(null)}>Cancel</Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }
