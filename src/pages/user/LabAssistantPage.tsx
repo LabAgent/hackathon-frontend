@@ -320,6 +320,18 @@ export default function LabAssistantPage() {
                       <p className="whitespace-pre-wrap">{content}<span className="animate-pulse">|</span></p>
                     </div>
                   )}
+                  {!content && (
+                    <div className="bg-ocean-50 rounded-2xl px-4 py-3 text-sm text-ocean-500">
+                      <div className="flex items-center gap-2">
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        <span>
+                          {activeAgent && activeAgent !== 'planner'
+                            ? `${AGENT_ICONS[activeAgent] || ''} ${activeAgent.charAt(0).toUpperCase() + activeAgent.slice(1)} agent is working...`
+                            : 'Analyzing your request...'}
+                        </span>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             )}

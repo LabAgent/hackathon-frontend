@@ -84,8 +84,15 @@ export function useAgentChat(): UseAgentChatReturn {
                 setContent(prev => prev + (event as any).chunk);
                 setActiveAgent((event as any).agent);
               }
-              if (event.type === 'agent_start' || event.type === 'route') {
-                setActiveAgent((event as any).agent || (event as any).to);
+              if (event.type === 'route') {
+                setContent('');
+                setReasoning('');
+                setActiveAgent((event as any).to);
+              }
+              if (event.type === 'agent_start') {
+                setContent('');
+                setReasoning('');
+                setActiveAgent((event as any).agent);
               }
               if (event.type === 'complete' || event.type === 'error') {
                 setIsStreaming(false);
