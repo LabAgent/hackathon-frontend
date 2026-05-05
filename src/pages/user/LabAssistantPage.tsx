@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useLocation } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import { Send, Loader2, Sparkles, ChevronDown, Menu, X, MessageSquare, Plus } from 'lucide-react';
+import Markdown from 'react-markdown';
 import { Card } from '@/components/ui';
 import { useAgentChat } from '@/hooks/useAgentChat';
 import { chatApi } from '@/api';
@@ -303,7 +304,31 @@ export default function LabAssistantPage() {
                     ? 'bg-gradient-to-r from-bb-pineapple to-bb-pineapple-light text-white font-medium'
                     : 'bg-bb-sand-light/60 text-ocean-800'
                 }`}>
-                  <p className="whitespace-pre-wrap">{msg.content}</p>
+                  {msg.role === 'user' ? (
+                    <p className="whitespace-pre-wrap">{msg.content}</p>
+                  ) : (
+                    <div className="prose prose-sm prose-ocean max-w-none
+                      [&_h1]:text-base [&_h1]:font-bold [&_h1]:text-ocean-800 [&_h1]:mt-3 [&_h1]:mb-1
+                      [&_h2]:text-sm [&_h2]:font-bold [&_h2]:text-ocean-700 [&_h2]:mt-2 [&_h2]:mb-1
+                      [&_h3]:text-sm [&_h3]:font-bold [&_h3]:text-ocean-700 [&_h3]:mt-2 [&_h3]:mb-1
+                      [&_p]:text-ocean-800 [&_p]:leading-relaxed [&_p]:mb-2
+                      [&_strong]:text-ocean-900 [&_strong]:font-bold
+                      [&_em]:text-ocean-700
+                      [&_ul]:list-disc [&_ul]:pl-4 [&_ul]:mb-2 [&_ul]:space-y-0.5
+                      [&_ol]:list-decimal [&_ol]:pl-4 [&_ol]:mb-2 [&_ol]:space-y-0.5
+                      [&_li]:text-ocean-800 [&_li]:text-sm
+                      [&_a]:text-bb-pineapple [&_a]:underline [&_a]:font-medium hover:[&_a]:text-bb-pineapple-light
+                      [&_code]:bg-ocean-100 [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-xs [&_code]:font-mono
+                      [&_pre]:bg-ocean-900 [&_pre]:text-ocean-100 [&_pre]:p-3 [&_pre]:rounded-lg [&_pre]:text-xs [&_pre]:overflow-x-auto [&_pre]:mb-2
+                      [&_blockquote]:border-l-3 [&_blockquote]:border-bb-pineapple [&_blockquote]:pl-3 [&_blockquote]:italic [&_blockquote]:text-ocean-600
+                      [&_table]:w-full [&_table]:text-xs [&_table]:mb-2
+                      [&_th]:bg-ocean-100 [&_th]:px-2 [&_th]:py-1 [&_th]:text-left [&_th]:font-bold [&_th]:text-ocean-700 [&_th]:rounded
+                      [&_td]:px-2 [&_td]:py-1 [&_td]:border-b [&_td]:border-ocean-100 [&_td]:text-ocean-800
+                      [&_hr]:border-ocean-200 [&_hr]:my-2
+                    ">
+                      <Markdown>{msg.content}</Markdown>
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
@@ -317,7 +342,28 @@ export default function LabAssistantPage() {
                   <ThinkingBlock events={events} reasoning={reasoning} />
                   {content && (
                     <div className="bg-ocean-50 rounded-2xl px-4 py-3 text-sm text-ocean-800">
-                      <p className="whitespace-pre-wrap">{content}<span className="animate-pulse">|</span></p>
+                      <div className="prose prose-sm prose-ocean max-w-none
+                        [&_h1]:text-base [&_h1]:font-bold [&_h1]:text-ocean-800 [&_h1]:mt-3 [&_h1]:mb-1
+                        [&_h2]:text-sm [&_h2]:font-bold [&_h2]:text-ocean-700 [&_h2]:mt-2 [&_h2]:mb-1
+                        [&_h3]:text-sm [&_h3]:font-bold [&_h3]:text-ocean-700 [&_h3]:mt-2 [&_h3]:mb-1
+                        [&_p]:text-ocean-800 [&_p]:leading-relaxed [&_p]:mb-2
+                        [&_strong]:text-ocean-900 [&_strong]:font-bold
+                        [&_em]:text-ocean-700
+                        [&_ul]:list-disc [&_ul]:pl-4 [&_ul]:mb-2 [&_ul]:space-y-0.5
+                        [&_ol]:list-decimal [&_ol]:pl-4 [&_ol]:mb-2 [&_ol]:space-y-0.5
+                        [&_li]:text-ocean-800 [&_li]:text-sm
+                        [&_a]:text-bb-pineapple [&_a]:underline [&_a]:font-medium hover:[&_a]:text-bb-pineapple-light
+                        [&_code]:bg-ocean-100 [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-xs [&_code]:font-mono
+                        [&_pre]:bg-ocean-900 [&_pre]:text-ocean-100 [&_pre]:p-3 [&_pre]:rounded-lg [&_pre]:text-xs [&_pre]:overflow-x-auto [&_pre]:mb-2
+                        [&_blockquote]:border-l-3 [&_blockquote]:border-bb-pineapple [&_blockquote]:pl-3 [&_blockquote]:italic [&_blockquote]:text-ocean-600
+                        [&_table]:w-full [&_table]:text-xs [&_table]:mb-2
+                        [&_th]:bg-ocean-100 [&_th]:px-2 [&_th]:py-1 [&_th]:text-left [&_th]:font-bold [&_th]:text-ocean-700 [&_th]:rounded
+                        [&_td]:px-2 [&_td]:py-1 [&_td]:border-b [&_td]:border-ocean-100 [&_td]:text-ocean-800
+                        [&_hr]:border-ocean-200 [&_hr]:my-2
+                      ">
+                        <Markdown>{content}</Markdown>
+                        <span className="animate-pulse">|</span>
+                      </div>
                     </div>
                   )}
                   {!content && (
