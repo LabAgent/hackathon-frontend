@@ -280,4 +280,3 @@ All UI components use Tailwind classes with the `bb-*` theme tokens:
 
 ---
 
-*built for CodeItUp 6.0 — "I'm ready! I'm ready!"* 🧽
